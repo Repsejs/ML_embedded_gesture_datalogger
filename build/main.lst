@@ -1,0 +1,3323 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 1
+
+
+   1              		.file	"main.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              		.comm	dataBuffer,22,4
+  10              		.globl	last_Sample_buffer
+  11              		.globl	pDatabuffer
+  12              		.globl	time_elapsed
+  13              		.globl	__udivdi3
+  14              		.section	.text.startup.main,"ax",@progbits
+  15              		.align	1
+  16              		.globl	main
+  18              	main:
+  19              	.LFB7:
+  20              		.file 1 "main.c"
+   1:main.c        **** #include "gd32vf103.h"
+   2:main.c        **** #include "usb_serial_if.h"
+   3:main.c        **** #include "usb_delay.h"
+   4:main.c        **** #include <stdlib.h>
+   5:main.c        **** #include <string.h>
+   6:main.c        **** #include "systick.h"
+   7:main.c        **** #include "gd32v_tf_card_if.h"
+   8:main.c        **** #include "ff.h"
+   9:main.c        **** #include "gd32v_mpu6500_if.h"
+  10:main.c        **** #include "dma.h"
+  11:main.c        **** #include "mpu6500_registers.h"
+  12:main.c        **** #include "mpu6500_driver.h"
+  13:main.c        **** #include "queue.h"
+  14:main.c        **** #include "tf_card.h"
+  15:main.c        **** 
+  16:main.c        **** #define BUFFER_SIZE 512
+  17:main.c        **** #define DESIRED_FREQUENCY_HZ 50
+  18:main.c        **** 
+  19:main.c        **** /* FILENAME should be at most 8 chars long and the extension should be at most 3 */
+  20:main.c        **** 
+  21:main.c        **** volatile int16_t last_Sample_buffer[7] = {0};
+  22:main.c        **** 
+  23:main.c        **** void ledInit (void);
+  24:main.c        **** void led_on_B1();
+  25:main.c        **** void led_off_B1();
+  26:main.c        **** void led_on_B0();
+  27:main.c        **** void led_off_B0();
+  28:main.c        **** void timer_interrupt_config();
+  29:main.c        **** void init_mpu(void);
+  30:main.c        **** int millis(void);
+  31:main.c        **** void append_newLine(char *string, int length);
+  32:main.c        **** int append_int_to_string(char *string, int integer);
+  33:main.c        **** int int_to_string(char *string, int integer);
+  34:main.c        **** void formatTime(char *output, int minutes, int seconds, int milliseconds);
+  35:main.c        ****          
+  36:main.c        **** uint8_t* pDatabuffer = (uint8_t*)&dataBuffer;
+  37:main.c        **** uint32_t time_elapsed = 0;
+  38:main.c        **** 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 2
+
+
+  39:main.c        **** int main(void){
+  21              		.loc 1 39 15
+  22              		.cfi_startproc
+  40:main.c        **** 	uint32_t count = 0;
+  23              		.loc 1 40 2
+  24              	.LVL0:
+  41:main.c        ****     char usb_data_buffer[512] = {'\0'};
+  25              		.loc 1 41 5
+  42:main.c        ****     char usb_read_buf[80] = {'\0'};
+  26              		.loc 1 42 5
+  43:main.c        **** 
+  44:main.c        ****     configure_usb_serial();
+  27              		.loc 1 44 5
+  39:main.c        **** 	uint32_t count = 0;
+  28              		.loc 1 39 15 is_stmt 0
+  29 0000 13010181 		addi	sp,sp,-2032
+  30              	.LCFI0:
+  31              		.cfi_def_cfa_offset 2032
+  32 0004 2326117E 		sw	ra,2028(sp)
+  33 0008 2324817E 		sw	s0,2024(sp)
+  34 000c 2322917E 		sw	s1,2020(sp)
+  35 0010 2320217F 		sw	s2,2016(sp)
+  36 0014 232E317D 		sw	s3,2012(sp)
+  37 0018 232C417D 		sw	s4,2008(sp)
+  38 001c 232A517D 		sw	s5,2004(sp)
+  39 0020 2328617D 		sw	s6,2000(sp)
+  40 0024 2326717D 		sw	s7,1996(sp)
+  41 0028 2324817D 		sw	s8,1992(sp)
+  42 002c 2322917D 		sw	s9,1988(sp)
+  43 0030 13010194 		addi	sp,sp,-1728
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_offset 3760
+  46              		.cfi_offset 1, -4
+  47              		.cfi_offset 8, -8
+  48              		.cfi_offset 9, -12
+  49              		.cfi_offset 18, -16
+  50              		.cfi_offset 19, -20
+  51              		.cfi_offset 20, -24
+  52              		.cfi_offset 21, -28
+  53              		.cfi_offset 22, -32
+  54              		.cfi_offset 23, -36
+  55              		.cfi_offset 24, -40
+  56              		.cfi_offset 25, -44
+  57              		.loc 1 44 5
+  58 0034 97000000 		call	configure_usb_serial
+  58      E7800000 
+  59              	.LVL1:
+  45:main.c        ****     usb_delay_1ms(1);
+  60              		.loc 1 45 5 is_stmt 1
+  61 003c 0545     		li	a0,1
+  62 003e 97000000 		call	usb_delay_1ms
+  62      E7800000 
+  63              	.LVL2:
+  46:main.c        **** 
+  47:main.c        ****     while (!usb_serial_available()) {
+  64              		.loc 1 47 5
+  65              	.L2:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 3
+
+
+  66              		.loc 1 47 13 is_stmt 0
+  67 0046 97000000 		call	usb_serial_available
+  67      E7800000 
+  68              	.LVL3:
+  69              		.loc 1 47 11
+  70 004e 6305052A 		beq	a0,zero,.L3
+  48:main.c        ****         usb_delay_1ms(100);
+  49:main.c        ****     }
+  50:main.c        **** 	printf("ready\r\n");
+  71              		.loc 1 50 2 is_stmt 1
+  72 0052 37050000 		lui	a0,%hi(.LC0)
+  73 0056 13050500 		addi	a0,a0,%lo(.LC0)
+  74 005a 97000000 		call	puts
+  74      E7800000 
+  75              	.LVL4:
+  51:main.c        **** 
+  52:main.c        ****     init_q();
+  76              		.loc 1 52 5
+  77 0062 97000000 		call	init_q
+  77      E7800000 
+  78              	.LVL5:
+  53:main.c        ****     ledInit();
+  79              		.loc 1 53 5
+  80 006a 97000000 		call	ledInit
+  80      E7800000 
+  81              	.LVL6:
+  54:main.c        ****     usb_delay_1ms(1);
+  82              		.loc 1 54 5
+  83 0072 0545     		li	a0,1
+  84 0074 97000000 		call	usb_delay_1ms
+  84      E7800000 
+  85              	.LVL7:
+  55:main.c        ****     /* Handle for the mounted filesystem */
+  56:main.c        ****     FATFS fs;
+  86              		.loc 1 56 5
+  57:main.c        **** 
+  58:main.c        ****     /* FatFs return code */
+  59:main.c        ****     volatile FRESULT fr;
+  87              		.loc 1 59 5
+  60:main.c        **** 
+  61:main.c        ****     /* File handle */
+  62:main.c        ****     FIL fil;
+  88              		.loc 1 62 5
+  63:main.c        **** 
+  64:main.c        ****     /* Used for bytes written */
+  65:main.c        ****     UINT bw = 0;
+  89              		.loc 1 65 5
+  66:main.c        ****     
+  67:main.c        ****     /* Sets a valid date for when writing to file */
+  68:main.c        ****     set_fattime(1980, 1, 1, 0, 0, 0); // 1980 Jan 1st, 00:00:00
+  90              		.loc 1 68 5 is_stmt 0
+  91 007c 0147     		li	a4,0
+  92 007e 8146     		li	a3,0
+  93 0080 8147     		li	a5,0
+  94 0082 0546     		li	a2,1
+  95 0084 8545     		li	a1,1
+  96 0086 1305C07B 		li	a0,1980
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 4
+
+
+  65:main.c        ****     
+  97              		.loc 1 65 10
+  98 008a 02C8     		sw	zero,16(sp)
+  99              		.loc 1 68 5 is_stmt 1
+ 100 008c 97000000 		call	set_fattime
+ 100      E7800000 
+ 101              	.LVL8:
+  69:main.c        ****     delay_1ms(100);
+ 102              		.loc 1 69 5
+ 103 0094 13054006 		li	a0,100
+ 104 0098 97000000 		call	delay_1ms
+ 104      E7800000 
+ 105              	.LVL9:
+  70:main.c        **** 
+  71:main.c        ****     /* This function "mounts" the SD-card which makes the filesystem available */
+  72:main.c        ****     fr = f_mount(&fs, "test", 1); // Mount storage device
+ 106              		.loc 1 72 5
+ 107              		.loc 1 72 10 is_stmt 0
+ 108 00a0 856A     		li	s5,4096
+  65:main.c        ****     
+ 109              		.loc 1 65 10
+ 110 00a2 FD74     		li	s1,-4096
+ 111              		.loc 1 72 10
+ 112 00a4 93870AE8 		addi	a5,s5,-384
+ 113 00a8 8A97     		add	a5,a5,sp
+ 114 00aa 1389043D 		addi	s2,s1,976
+ 115 00ae 3E99     		add	s2,a5,s2
+ 116 00b0 370A0000 		lui	s4,%hi(.LC1)
+ 117 00b4 93050A00 		addi	a1,s4,%lo(.LC1)
+ 118 00b8 0546     		li	a2,1
+ 119 00ba 4A85     		mv	a0,s2
+ 120 00bc 97000000 		call	f_mount
+ 120      E7800000 
+ 121              	.LVL10:
+  73:main.c        ****     f_sync(&fil);
+ 122              		.loc 1 73 5
+ 123 00c4 93870AE8 		addi	a5,s5,-384
+ 124 00c8 8A97     		add	a5,a5,sp
+ 125 00ca 9389841A 		addi	s3,s1,424
+ 126 00ce BE99     		add	s3,a5,s3
+  72:main.c        ****     f_sync(&fil);
+ 127              		.loc 1 72 8
+ 128 00d0 2AC6     		sw	a0,12(sp)
+ 129              		.loc 1 73 5 is_stmt 1
+ 130 00d2 4E85     		mv	a0,s3
+ 131 00d4 97000000 		call	f_sync
+ 131      E7800000 
+ 132              	.LVL11:
+  74:main.c        **** 
+  75:main.c        ****     /* This function opens a file. In this case, we are creating a file which we want to write to *
+  76:main.c        ****     
+  77:main.c        ****     delay_1ms(400);
+ 133              		.loc 1 77 5
+ 134 00dc 13050019 		li	a0,400
+ 135 00e0 97000000 		call	delay_1ms
+ 135      E7800000 
+ 136              	.LVL12:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 5
+
+
+  78:main.c        **** 	printf("mpu\r\n");
+ 137              		.loc 1 78 2
+ 138 00e8 37050000 		lui	a0,%hi(.LC2)
+ 139 00ec 13050500 		addi	a0,a0,%lo(.LC2)
+ 140 00f0 97000000 		call	puts
+ 140      E7800000 
+ 141              	.LVL13:
+  79:main.c        ****     init_mpu();
+ 142              		.loc 1 79 5
+ 143 00f8 97000000 		call	init_mpu
+ 143      E7800000 
+ 144              	.LVL14:
+  80:main.c        **** 	printf("mpu2\r\n");
+ 145              		.loc 1 80 2
+ 146 0100 37050000 		lui	a0,%hi(.LC3)
+ 147 0104 13050500 		addi	a0,a0,%lo(.LC3)
+ 148 0108 97000000 		call	puts
+ 148      E7800000 
+ 149              	.LVL15:
+  81:main.c        **** 
+  82:main.c        ****     rcu_periph_clock_enable(RCU_DMA0);
+ 150              		.loc 1 82 5
+ 151 0110 13050050 		li	a0,1280
+ 152 0114 97000000 		call	rcu_periph_clock_enable
+ 152      E7800000 
+ 153              	.LVL16:
+  83:main.c        **** 
+  84:main.c        ****     delay_1ms(20);
+ 154              		.loc 1 84 5
+ 155 011c 5145     		li	a0,20
+  85:main.c        **** 
+  86:main.c        ****     char write_to_sd[2560] = {'\0'};
+ 156              		.loc 1 86 10 is_stmt 0
+ 157 011e 0564     		li	s0,4096
+  84:main.c        **** 
+ 158              		.loc 1 84 5
+ 159 0120 97000000 		call	delay_1ms
+ 159      E7800000 
+ 160              	.LVL17:
+ 161              		.loc 1 86 5 is_stmt 1
+ 162              		.loc 1 86 10 is_stmt 0
+ 163 0128 130404A0 		addi	s0,s0,-1536
+ 164 012c 2286     		mv	a2,s0
+ 165 012e 8145     		li	a1,0
+ 166 0130 13050148 		addi	a0,sp,1152
+ 167 0134 97000000 		call	memset
+ 167      E7800000 
+ 168              	.LVL18:
+  87:main.c        ****     char buf[BUFFER_SIZE] = {'\0'};
+ 169              		.loc 1 87 5 is_stmt 1
+  88:main.c        ****     
+  89:main.c        ****     
+  90:main.c        ****     int blink = 0;
+ 170              		.loc 1 90 5
+  91:main.c        ****     int onOff = 0;
+ 171              		.loc 1 91 5
+  92:main.c        **** 	
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 6
+
+
+  93:main.c        **** 	fr = f_mount(&fs, "test", 1); // Mount storage device
+ 172              		.loc 1 93 2
+ 173              		.loc 1 93 7 is_stmt 0
+ 174 013c 93050A00 		addi	a1,s4,%lo(.LC1)
+ 175 0140 0546     		li	a2,1
+ 176 0142 4A85     		mv	a0,s2
+ 177 0144 97000000 		call	f_mount
+ 177      E7800000 
+ 178              	.LVL19:
+ 179              		.loc 1 93 5
+ 180 014c 2AC6     		sw	a0,12(sp)
+  94:main.c        **** 	f_sync(&fil);
+ 181              		.loc 1 94 2 is_stmt 1
+  95:main.c        **** 
+  96:main.c        **** 	fr = f_open(&fil, "TData.CSV", FA_WRITE | FA_CREATE_ALWAYS);
+ 182              		.loc 1 96 7 is_stmt 0
+ 183 014e 370A0000 		lui	s4,%hi(.LANCHOR0)
+  94:main.c        **** 	f_sync(&fil);
+ 184              		.loc 1 94 2
+ 185 0152 4E85     		mv	a0,s3
+ 186 0154 97000000 		call	f_sync
+ 186      E7800000 
+ 187              	.LVL20:
+ 188              		.loc 1 96 2 is_stmt 1
+ 189              		.loc 1 96 7 is_stmt 0
+ 190 015c 13090A00 		addi	s2,s4,%lo(.LANCHOR0)
+ 191 0160 93050902 		addi	a1,s2,32
+ 192 0164 2946     		li	a2,10
+ 193 0166 4E85     		mv	a0,s3
+ 194 0168 97000000 		call	f_open
+ 194      E7800000 
+ 195              	.LVL21:
+ 196              		.loc 1 96 5
+ 197 0170 2AC6     		sw	a0,12(sp)
+  97:main.c        **** 	clear_queues();
+ 198              		.loc 1 97 2 is_stmt 1
+ 199 0172 97000000 		call	clear_queues
+ 199      E7800000 
+ 200              	.LVL22:
+  98:main.c        **** 	/* Write the header to the file */
+  99:main.c        **** 	char header[] = "X-acc;Y-acc;Z-acc\n";
+ 201              		.loc 1 99 2
+ 202              		.loc 1 99 7 is_stmt 0
+ 203 017a 9305C902 		addi	a1,s2,44
+ 204 017e 4D46     		li	a2,19
+ 205 0180 4808     		addi	a0,sp,20
+ 206 0182 97000000 		call	memcpy
+ 206      E7800000 
+ 207              	.LVL23:
+ 100:main.c        **** 	//clear queue
+ 101:main.c        **** 	enqueue_string(header);
+ 208              		.loc 1 101 2 is_stmt 1
+ 209 018a 93870AE8 		addi	a5,s5,-384
+ 210 018e 8A97     		add	a5,a5,sp
+ 211 0190 13854419 		addi	a0,s1,404
+ 212 0194 3E95     		add	a0,a5,a0
+ 213 0196 97000000 		call	enqueue_string
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 7
+
+
+ 213      E7800000 
+ 214              	.LVL24:
+ 102:main.c        **** 	
+ 103:main.c        **** 	//START IMU DMA
+ 104:main.c        **** 	//i2c_dma_master_read_register(I2C0, MPU6500_ADDR, MPU6500_ACCEL_XOUT_H);
+ 105:main.c        **** 	//ENABLE interrupts for data collection
+ 106:main.c        **** 	timer_interrupt_config();
+ 215              		.loc 1 106 2
+ 216 019e 97000000 		call	timer_interrupt_config
+ 216      E7800000 
+ 217              	.LVL25:
+ 107:main.c        **** 	config_clic_irqs();
+ 218              		.loc 1 107 2
+ 219 01a6 97000000 		call	config_clic_irqs
+ 219      E7800000 
+ 220              	.LVL26:
+ 108:main.c        **** 	eclic_global_interrupt_enable();  
+ 221              		.loc 1 108 2
+ 222 01ae 97000000 		call	eclic_global_interrupt_enable
+ 222      E7800000 
+ 223              	.LVL27:
+ 109:main.c        **** 	printf("running\r\n");
+ 224              		.loc 1 109 2
+ 225 01b6 13050904 		addi	a0,s2,64
+ 226 01ba 97000000 		call	puts
+ 226      E7800000 
+ 227              	.LVL28:
+ 110:main.c        ****     uint64_t start_time = millis();
+ 228              		.loc 1 110 5
+ 229              		.loc 1 110 27 is_stmt 0
+ 230 01c2 97000000 		call	millis
+ 230      E7800000 
+ 231              	.LVL29:
+ 101:main.c        **** 	
+ 232              		.loc 1 101 2
+ 233 01ca D68C     		mv	s9,s5
+ 111:main.c        ****     while(time_elapsed < 10000){
+ 112:main.c        **** 		blink++;
+ 113:main.c        **** 		if (blink == 1000000){
+ 114:main.c        **** 			blink = 0;
+ 115:main.c        **** 			if(onOff){
+ 116:main.c        **** 				led_on_B0();
+ 117:main.c        **** 				onOff = 0;
+ 118:main.c        **** 			}else{
+ 119:main.c        **** 				led_off_B0();
+ 120:main.c        **** 				onOff = 1;
+ 121:main.c        **** 			}
+ 122:main.c        **** 		}
+ 123:main.c        **** 		
+ 124:main.c        **** 		if(queue_str_len() > 5){ //Behövs högre hastighet så kan vi öka denna 5:an
+ 125:main.c        **** 			memset(write_to_sd, '\0', sizeof(write_to_sd));
+ 234              		.loc 1 125 4
+ 235 01cc 13870CE8 		addi	a4,s9,-384
+ 236 01d0 0A97     		add	a4,a4,sp
+ 126:main.c        **** 			//printf("x=%d, y=%d, z=%d\r\n", last_Sample_buffer[0],last_Sample_buffer[1],last_Sample_buffer[
+ 127:main.c        **** 			fflush(0);
+ 128:main.c        **** 			if (dequeue_string(write_to_sd, 5)) { //Behövs högre hastighet så kan vi öka denna 5:an
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 8
+
+
+ 129:main.c        **** 				f_write(&fil, write_to_sd, strlen(write_to_sd), &bw);
+ 237              		.loc 1 129 5
+ 238 01d2 93840419 		addi	s1,s1,400
+ 110:main.c        ****     while(time_elapsed < 10000){
+ 239              		.loc 1 110 27
+ 240 01d6 2A8B     		mv	s6,a0
+ 110:main.c        ****     while(time_elapsed < 10000){
+ 241              		.loc 1 110 14
+ 242 01d8 935AF541 		srai	s5,a0,31
+ 243              	.LVL30:
+ 111:main.c        ****     while(time_elapsed < 10000){
+ 244              		.loc 1 111 5 is_stmt 1
+  91:main.c        **** 	
+ 245              		.loc 1 91 9 is_stmt 0
+ 246 01dc 814B     		li	s7,0
+  90:main.c        ****     int onOff = 0;
+ 247              		.loc 1 90 9
+ 248 01de 0149     		li	s2,0
+ 249 01e0 130A0A00 		addi	s4,s4,%lo(.LANCHOR0)
+ 111:main.c        **** 		blink++;
+ 250              		.loc 1 111 24
+ 251 01e4 370C0000 		lui	s8,%hi(.LANCHOR1)
+ 125:main.c        **** 			//printf("x=%d, y=%d, z=%d\r\n", last_Sample_buffer[0],last_Sample_buffer[1],last_Sample_buffer[
+ 252              		.loc 1 125 4
+ 253 01e8 33048740 		sub	s0,a4,s0
+ 254              		.loc 1 129 5
+ 255 01ec BA94     		add	s1,a4,s1
+ 256              	.LVL31:
+ 257              	.L4:
+ 111:main.c        **** 		blink++;
+ 258              		.loc 1 111 10
+ 259 01ee 03270C00 		lw	a4,%lo(.LANCHOR1)(s8)
+ 260 01f2 8967     		li	a5,8192
+ 261 01f4 9387F770 		addi	a5,a5,1807
+ 262 01f8 63F7E710 		bleu	a4,a5,.L10
+ 130:main.c        **** 				f_sync(&fil);
+ 131:main.c        **** 			}
+ 132:main.c        **** 		}
+ 133:main.c        **** 
+ 134:main.c        **** 	}
+ 135:main.c        ****     uint64_t end_time = millis();
+ 263              		.loc 1 135 5 is_stmt 1
+ 264              		.loc 1 135 25 is_stmt 0
+ 265 01fc 97000000 		call	millis
+ 265      E7800000 
+ 266              	.LVL32:
+ 267 0204 2A84     		mv	s0,a0
+ 268              	.LVL33:
+ 136:main.c        **** 	printf("breaking\r\n");
+ 269              		.loc 1 136 2 is_stmt 1
+ 270 0206 1305CA04 		addi	a0,s4,76
+ 271 020a 97000000 		call	puts
+ 271      E7800000 
+ 272              	.LVL34:
+ 137:main.c        ****     printf("finished in %d (s)\r\n", ((end_time - start_time)/10));
+ 273              		.loc 1 137 5
+ 135:main.c        **** 	printf("breaking\r\n");
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 9
+
+
+ 274              		.loc 1 135 14 is_stmt 0
+ 275 0212 9355F441 		srai	a1,s0,31
+ 276              		.loc 1 137 49
+ 277 0216 33056441 		sub	a0,s0,s6
+ 278 021a 3334A400 		sgtu	s0,a0,s0
+ 279              	.LVL35:
+ 280 021e B3855541 		sub	a1,a1,s5
+ 281              		.loc 1 137 5
+ 282 0222 2946     		li	a2,10
+ 283 0224 8146     		li	a3,0
+ 284 0226 818D     		sub	a1,a1,s0
+ 285 0228 97000000 		call	__udivdi3
+ 285      E7800000 
+ 286              	.LVL36:
+ 287 0230 AE86     		mv	a3,a1
+ 288 0232 2A86     		mv	a2,a0
+ 289 0234 13058A05 		addi	a0,s4,88
+ 290 0238 97000000 		call	printf
+ 290      E7800000 
+ 291              	.LVL37:
+ 138:main.c        **** 	timer_interrupt_disable(TIMER1, TIMER_INT_CH0);
+ 292              		.loc 1 138 2 is_stmt 1
+ 293 0240 8945     		li	a1,2
+ 294 0242 37050040 		li	a0,1073741824
+ 295 0246 97000000 		call	timer_interrupt_disable
+ 295      E7800000 
+ 296              	.LVL38:
+ 139:main.c        **** 	write_to_sd[0] = '\0';
+ 297              		.loc 1 139 2
+ 298              		.loc 1 139 17 is_stmt 0
+ 299 024e 0567     		li	a4,4096
+ 300 0250 930607E8 		addi	a3,a4,-384
+ 301 0254 8A96     		add	a3,a3,sp
+ 302 0256 FD77     		li	a5,-4096
+ 303 0258 B697     		add	a5,a3,a5
+ 140:main.c        **** 	while(empty_string_queue(write_to_sd, 5)){
+ 304              		.loc 1 140 8
+ 305 025a 7D74     		li	s0,-4096
+ 306 025c 930607E8 		addi	a3,a4,-384
+ 307 0260 8A96     		add	a3,a3,sp
+ 308 0262 13090460 		addi	s2,s0,1536
+ 309              	.LVL39:
+ 310 0266 3699     		add	s2,a3,s2
+ 141:main.c        **** 		f_write(&fil, write_to_sd, strlen(write_to_sd), &bw); // testa byt strlen till buf_size för bät
+ 311              		.loc 1 141 3
+ 312 0268 930607E8 		addi	a3,a4,-384
+ 313 026c 8A96     		add	a3,a3,sp
+ 314 026e 130A0419 		addi	s4,s0,400
+ 315 0272 9309841A 		addi	s3,s0,424
+ 139:main.c        **** 	write_to_sd[0] = '\0';
+ 316              		.loc 1 139 17
+ 317 0276 23800760 		sb	zero,1536(a5)
+ 140:main.c        **** 	while(empty_string_queue(write_to_sd, 5)){
+ 318              		.loc 1 140 2 is_stmt 1
+ 319              		.loc 1 141 3 is_stmt 0
+ 320 027a 369A     		add	s4,a3,s4
+ 321 027c B699     		add	s3,a3,s3
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 10
+
+
+ 142:main.c        **** 		f_sync(&fil);
+ 143:main.c        **** 		write_to_sd[0] = '\0';
+ 322              		.loc 1 143 18
+ 323 027e BE84     		mv	s1,a5
+ 324              	.L11:
+ 140:main.c        **** 		f_write(&fil, write_to_sd, strlen(write_to_sd), &bw); // testa byt strlen till buf_size för bät
+ 325              		.loc 1 140 8
+ 326 0280 9545     		li	a1,5
+ 327 0282 4A85     		mv	a0,s2
+ 328 0284 97000000 		call	empty_string_queue
+ 328      E7800000 
+ 329              	.LVL40:
+ 140:main.c        **** 		f_write(&fil, write_to_sd, strlen(write_to_sd), &bw); // testa byt strlen till buf_size för bät
+ 330              		.loc 1 140 7
+ 331 028c 63130510 		bne	a0,zero,.L12
+ 144:main.c        **** 	}    
+ 145:main.c        **** 
+ 146:main.c        **** 	f_close(&fil);
+ 332              		.loc 1 146 2 is_stmt 1
+ 333 0290 8567     		li	a5,4096
+ 334 0292 938707E8 		addi	a5,a5,-384
+ 335 0296 8A97     		add	a5,a5,sp
+ 336 0298 1305841A 		addi	a0,s0,424
+ 337 029c 3E95     		add	a0,a5,a0
+ 338 029e 97000000 		call	f_close
+ 338      E7800000 
+ 339              	.LVL41:
+ 147:main.c        **** 	printf("done\r\n");
+ 340              		.loc 1 147 2
+ 341 02a6 37050000 		lui	a0,%hi(.LC9)
+ 342 02aa 13050500 		addi	a0,a0,%lo(.LC9)
+ 343 02ae 97000000 		call	puts
+ 343      E7800000 
+ 344              	.LVL42:
+ 148:main.c        **** 	fflush(0);
+ 345              		.loc 1 148 2
+ 346 02b6 0145     		li	a0,0
+ 347 02b8 97000000 		call	fflush
+ 347      E7800000 
+ 348              	.LVL43:
+ 149:main.c        **** }
+ 349              		.loc 1 149 1 is_stmt 0
+ 350 02c0 1301016C 		addi	sp,sp,1728
+ 351              	.LCFI2:
+ 352              		.cfi_remember_state
+ 353              		.cfi_def_cfa_offset 2032
+ 354 02c4 8320C17E 		lw	ra,2028(sp)
+ 355              		.cfi_restore 1
+ 356 02c8 0145     		li	a0,0
+ 357 02ca 0324817E 		lw	s0,2024(sp)
+ 358              		.cfi_restore 8
+ 359 02ce 8324417E 		lw	s1,2020(sp)
+ 360              		.cfi_restore 9
+ 361 02d2 0329017E 		lw	s2,2016(sp)
+ 362              		.cfi_restore 18
+ 363 02d6 8329C17D 		lw	s3,2012(sp)
+ 364              		.cfi_restore 19
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 11
+
+
+ 365 02da 032A817D 		lw	s4,2008(sp)
+ 366              		.cfi_restore 20
+ 367 02de 832A417D 		lw	s5,2004(sp)
+ 368              		.cfi_restore 21
+ 369              	.LVL44:
+ 370 02e2 032B017D 		lw	s6,2000(sp)
+ 371              		.cfi_restore 22
+ 372              	.LVL45:
+ 373 02e6 832BC17C 		lw	s7,1996(sp)
+ 374              		.cfi_restore 23
+ 375              	.LVL46:
+ 376 02ea 032C817C 		lw	s8,1992(sp)
+ 377              		.cfi_restore 24
+ 378 02ee 832C417C 		lw	s9,1988(sp)
+ 379              		.cfi_restore 25
+ 380 02f2 1301017F 		addi	sp,sp,2032
+ 381              	.LCFI3:
+ 382              		.cfi_def_cfa_offset 0
+ 383 02f6 8280     		jr	ra
+ 384              	.L3:
+ 385              	.LCFI4:
+ 386              		.cfi_restore_state
+  48:main.c        ****     }
+ 387              		.loc 1 48 9 is_stmt 1
+ 388 02f8 13054006 		li	a0,100
+ 389 02fc 97000000 		call	usb_delay_1ms
+ 389      E7800000 
+ 390              	.LVL47:
+ 391 0304 89B3     		j	.L2
+ 392              	.LVL48:
+ 393              	.L10:
+ 112:main.c        **** 		if (blink == 1000000){
+ 394              		.loc 1 112 3
+ 113:main.c        **** 			blink = 0;
+ 395              		.loc 1 113 6 is_stmt 0
+ 396 0306 B7470F00 		li	a5,999424
+ 112:main.c        **** 		if (blink == 1000000){
+ 397              		.loc 1 112 8
+ 398 030a 0509     		addi	s2,s2,1
+ 399              	.LVL49:
+ 113:main.c        **** 			blink = 0;
+ 400              		.loc 1 113 3 is_stmt 1
+ 113:main.c        **** 			blink = 0;
+ 401              		.loc 1 113 6 is_stmt 0
+ 402 030c 93870724 		addi	a5,a5,576
+ 403 0310 631AF900 		bne	s2,a5,.L5
+ 114:main.c        **** 			if(onOff){
+ 404              		.loc 1 114 4 is_stmt 1
+ 405              	.LVL50:
+ 115:main.c        **** 				led_on_B0();
+ 406              		.loc 1 115 4
+ 115:main.c        **** 				led_on_B0();
+ 407              		.loc 1 115 6 is_stmt 0
+ 408 0314 63880B06 		beq	s7,zero,.L6
+ 116:main.c        **** 				onOff = 0;
+ 409              		.loc 1 116 5 is_stmt 1
+ 410 0318 97000000 		call	led_on_B0
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 12
+
+
+ 410      E7800000 
+ 411              	.LVL51:
+ 117:main.c        **** 			}else{
+ 412              		.loc 1 117 5
+ 117:main.c        **** 			}else{
+ 413              		.loc 1 117 11 is_stmt 0
+ 414 0320 814B     		li	s7,0
+ 114:main.c        **** 			if(onOff){
+ 415              		.loc 1 114 10
+ 416 0322 0149     		li	s2,0
+ 417              	.LVL52:
+ 418              	.L5:
+ 124:main.c        **** 			memset(write_to_sd, '\0', sizeof(write_to_sd));
+ 419              		.loc 1 124 3 is_stmt 1
+ 124:main.c        **** 			memset(write_to_sd, '\0', sizeof(write_to_sd));
+ 420              		.loc 1 124 6 is_stmt 0
+ 421 0324 97000000 		call	queue_str_len
+ 421      E7800000 
+ 422              	.LVL53:
+ 124:main.c        **** 			memset(write_to_sd, '\0', sizeof(write_to_sd));
+ 423              		.loc 1 124 5
+ 424 032c 9547     		li	a5,5
+ 425 032e E3D0A7EC 		ble	a0,a5,.L4
+ 125:main.c        **** 			//printf("x=%d, y=%d, z=%d\r\n", last_Sample_buffer[0],last_Sample_buffer[1],last_Sample_buffer[
+ 426              		.loc 1 125 4 is_stmt 1
+ 427 0332 0566     		li	a2,4096
+ 428 0334 8145     		li	a1,0
+ 429 0336 130606A0 		addi	a2,a2,-1536
+ 430 033a 2285     		mv	a0,s0
+ 431 033c 97000000 		call	memset
+ 431      E7800000 
+ 432              	.LVL54:
+ 127:main.c        **** 			if (dequeue_string(write_to_sd, 5)) { //Behövs högre hastighet så kan vi öka denna 5:an
+ 433              		.loc 1 127 4
+ 434 0344 0145     		li	a0,0
+ 435 0346 97000000 		call	fflush
+ 435      E7800000 
+ 436              	.LVL55:
+ 128:main.c        **** 				f_write(&fil, write_to_sd, strlen(write_to_sd), &bw);
+ 437              		.loc 1 128 4
+ 128:main.c        **** 				f_write(&fil, write_to_sd, strlen(write_to_sd), &bw);
+ 438              		.loc 1 128 8 is_stmt 0
+ 439 034e 9545     		li	a1,5
+ 440 0350 2285     		mv	a0,s0
+ 441 0352 97000000 		call	dequeue_string
+ 441      E7800000 
+ 442              	.LVL56:
+ 128:main.c        **** 				f_write(&fil, write_to_sd, strlen(write_to_sd), &bw);
+ 443              		.loc 1 128 7
+ 444 035a E30A05E8 		beq	a0,zero,.L4
+ 129:main.c        **** 				f_sync(&fil);
+ 445              		.loc 1 129 5 is_stmt 1
+ 446 035e 2285     		mv	a0,s0
+ 447 0360 97000000 		call	strlen
+ 447      E7800000 
+ 448              	.LVL57:
+ 449 0368 2A86     		mv	a2,a0
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 13
+
+
+ 450 036a A686     		mv	a3,s1
+ 451 036c A285     		mv	a1,s0
+ 452 036e 4E85     		mv	a0,s3
+ 453 0370 97000000 		call	f_write
+ 453      E7800000 
+ 454              	.LVL58:
+ 130:main.c        **** 			}
+ 455              		.loc 1 130 5
+ 456 0378 4E85     		mv	a0,s3
+ 457 037a 97000000 		call	f_sync
+ 457      E7800000 
+ 458              	.LVL59:
+ 459 0382 B5B5     		j	.L4
+ 460              	.LVL60:
+ 461              	.L6:
+ 119:main.c        **** 				onOff = 1;
+ 462              		.loc 1 119 5
+ 463 0384 97000000 		call	led_off_B0
+ 463      E7800000 
+ 464              	.LVL61:
+ 120:main.c        **** 			}
+ 465              		.loc 1 120 5
+ 114:main.c        **** 			if(onOff){
+ 466              		.loc 1 114 10 is_stmt 0
+ 467 038c 0149     		li	s2,0
+ 120:main.c        **** 			}
+ 468              		.loc 1 120 11
+ 469 038e 854B     		li	s7,1
+ 470 0390 51BF     		j	.L5
+ 471              	.LVL62:
+ 472              	.L12:
+ 141:main.c        **** 		f_sync(&fil);
+ 473              		.loc 1 141 3 is_stmt 1
+ 474 0392 4A85     		mv	a0,s2
+ 475 0394 97000000 		call	strlen
+ 475      E7800000 
+ 476              	.LVL63:
+ 477 039c 2A86     		mv	a2,a0
+ 478 039e D286     		mv	a3,s4
+ 479 03a0 CA85     		mv	a1,s2
+ 480 03a2 4E85     		mv	a0,s3
+ 481 03a4 97000000 		call	f_write
+ 481      E7800000 
+ 482              	.LVL64:
+ 142:main.c        **** 		write_to_sd[0] = '\0';
+ 483              		.loc 1 142 3
+ 484 03ac 4E85     		mv	a0,s3
+ 485 03ae 97000000 		call	f_sync
+ 485      E7800000 
+ 486              	.LVL65:
+ 143:main.c        **** 	}    
+ 487              		.loc 1 143 3
+ 143:main.c        **** 	}    
+ 488              		.loc 1 143 18 is_stmt 0
+ 489 03b6 23800460 		sb	zero,1536(s1)
+ 490 03ba D9B5     		j	.L11
+ 491              		.cfi_endproc
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 14
+
+
+ 492              	.LFE7:
+ 494              		.globl	__fixsfsi
+ 495              		.section	.text.TIMER1_IRQHandler,"ax",@progbits
+ 496              		.align	1
+ 497              		.globl	TIMER1_IRQHandler
+ 499              	TIMER1_IRQHandler:
+ 500              	.LFB8:
+ 150:main.c        **** 
+ 151:main.c        **** 
+ 152:main.c        **** void TIMER1_IRQHandler(void){
+ 501              		.loc 1 152 29 is_stmt 1
+ 502              		.cfi_startproc
+ 153:main.c        ****     char buf[64] = {'\0'};
+ 503              		.loc 1 153 5
+ 152:main.c        ****     char buf[64] = {'\0'};
+ 504              		.loc 1 152 29 is_stmt 0
+ 505 0000 1D71     		addi	sp,sp,-96
+ 506              	.LCFI5:
+ 507              		.cfi_def_cfa_offset 96
+ 508              		.loc 1 153 10
+ 509 0002 13060004 		li	a2,64
+ 510 0006 8145     		li	a1,0
+ 511 0008 0808     		addi	a0,sp,16
+ 152:main.c        ****     char buf[64] = {'\0'};
+ 512              		.loc 1 152 29
+ 513 000a 86CE     		sw	ra,92(sp)
+ 514 000c A2CC     		sw	s0,88(sp)
+ 515              		.cfi_offset 1, -4
+ 516              		.cfi_offset 8, -8
+ 517              		.loc 1 153 10
+ 518 000e 97000000 		call	memset
+ 518      E7800000 
+ 519              	.LVL66:
+ 154:main.c        ****     int buf_size = 0;   
+ 520              		.loc 1 154 5 is_stmt 1
+ 155:main.c        **** 	time_elapsed++;
+ 521              		.loc 1 155 2
+ 522              		.loc 1 155 14 is_stmt 0
+ 523 0016 B7070000 		lui	a5,%hi(.LANCHOR1)
+ 524 001a 93870700 		addi	a5,a5,%lo(.LANCHOR1)
+ 525 001e 9843     		lw	a4,0(a5)
+ 156:main.c        ****     dma_vector_t vector_write;
+ 157:main.c        **** 	mpu_vector_t vec;
+ 158:main.c        ****     /* Check which channel triggered the interrupt */
+ 159:main.c        ****     if(SET == timer_interrupt_flag_get(TIMER1, TIMER_INT_CH0)){
+ 526              		.loc 1 159 15
+ 527 0020 8945     		li	a1,2
+ 528 0022 37050040 		li	a0,1073741824
+ 155:main.c        **** 	time_elapsed++;
+ 529              		.loc 1 155 14
+ 530 0026 0507     		addi	a4,a4,1
+ 531 0028 98C3     		sw	a4,0(a5)
+ 156:main.c        ****     dma_vector_t vector_write;
+ 532              		.loc 1 156 5 is_stmt 1
+ 157:main.c        ****     /* Check which channel triggered the interrupt */
+ 533              		.loc 1 157 2
+ 534              		.loc 1 159 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 15
+
+
+ 535              		.loc 1 159 15 is_stmt 0
+ 536 002a 97000000 		call	timer_interrupt_flag_get
+ 536      E7800000 
+ 537              	.LVL67:
+ 538              		.loc 1 159 7
+ 539 0032 8547     		li	a5,1
+ 540 0034 6318F50A 		bne	a0,a5,.L17
+ 160:main.c        ****         
+ 161:main.c        **** 		mpu6500_getAccel(&vec);
+ 541              		.loc 1 161 3 is_stmt 1
+ 542 0038 4800     		addi	a0,sp,4
+ 543 003a 97000000 		call	mpu6500_getAccel
+ 543      E7800000 
+ 544              	.LVL68:
+ 162:main.c        **** 		last_Sample_buffer[0] = (int16_t)vec.x;
+ 545              		.loc 1 162 3
+ 546              		.loc 1 162 27 is_stmt 0
+ 547 0042 1245     		lw	a0,4(sp)
+ 548              		.loc 1 162 25
+ 549 0044 37040000 		lui	s0,%hi(.LANCHOR2)
+ 550 0048 13040400 		addi	s0,s0,%lo(.LANCHOR2)
+ 551              		.loc 1 162 27
+ 552 004c 97000000 		call	__fixsfsi
+ 552      E7800000 
+ 553              	.LVL69:
+ 554 0054 4205     		slli	a0,a0,16
+ 555 0056 4185     		srai	a0,a0,16
+ 556              		.loc 1 162 25
+ 557 0058 2310A400 		sh	a0,0(s0)
+ 163:main.c        **** 		last_Sample_buffer[1] = (int16_t)vec.y;
+ 558              		.loc 1 163 3 is_stmt 1
+ 559              		.loc 1 163 27 is_stmt 0
+ 560 005c 2245     		lw	a0,8(sp)
+ 561 005e 97000000 		call	__fixsfsi
+ 561      E7800000 
+ 562              	.LVL70:
+ 563 0066 4205     		slli	a0,a0,16
+ 564 0068 4185     		srai	a0,a0,16
+ 565              		.loc 1 163 25
+ 566 006a 2311A400 		sh	a0,2(s0)
+ 164:main.c        **** 		last_Sample_buffer[2] = (int16_t)vec.z;
+ 567              		.loc 1 164 3 is_stmt 1
+ 568              		.loc 1 164 27 is_stmt 0
+ 569 006e 3245     		lw	a0,12(sp)
+ 570 0070 97000000 		call	__fixsfsi
+ 570      E7800000 
+ 571              	.LVL71:
+ 572 0078 4205     		slli	a0,a0,16
+ 573 007a 4185     		srai	a0,a0,16
+ 574              		.loc 1 164 25
+ 575 007c 2312A400 		sh	a0,4(s0)
+ 165:main.c        **** 		append_int_to_string(buf, last_Sample_buffer[0]);
+ 576              		.loc 1 165 3 is_stmt 1
+ 577              		.loc 1 165 47 is_stmt 0
+ 578 0080 83550400 		lhu	a1,0(s0)
+ 579              		.loc 1 165 3
+ 580 0084 0808     		addi	a0,sp,16
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 16
+
+
+ 581 0086 C205     		slli	a1,a1,16
+ 582 0088 C185     		srai	a1,a1,16
+ 583 008a 97000000 		call	append_int_to_string
+ 583      E7800000 
+ 584              	.LVL72:
+ 166:main.c        ****         append_int_to_string(buf, last_Sample_buffer[1]);
+ 585              		.loc 1 166 9 is_stmt 1
+ 586              		.loc 1 166 53 is_stmt 0
+ 587 0092 83552400 		lhu	a1,2(s0)
+ 588              		.loc 1 166 9
+ 589 0096 0808     		addi	a0,sp,16
+ 590 0098 C205     		slli	a1,a1,16
+ 591 009a C185     		srai	a1,a1,16
+ 592 009c 97000000 		call	append_int_to_string
+ 592      E7800000 
+ 593              	.LVL73:
+ 167:main.c        ****         append_int_to_string(buf, last_Sample_buffer[2]);
+ 594              		.loc 1 167 9 is_stmt 1
+ 595              		.loc 1 167 53 is_stmt 0
+ 596 00a4 83554400 		lhu	a1,4(s0)
+ 597              		.loc 1 167 9
+ 598 00a8 0808     		addi	a0,sp,16
+ 599 00aa C205     		slli	a1,a1,16
+ 600 00ac C185     		srai	a1,a1,16
+ 601 00ae 97000000 		call	append_int_to_string
+ 601      E7800000 
+ 602              	.LVL74:
+ 168:main.c        **** 
+ 169:main.c        ****         append_newLine(buf, strlen(buf)); //Testa byt strlen till buf_size för bättre prestanda
+ 603              		.loc 1 169 9 is_stmt 1
+ 604              		.loc 1 169 29 is_stmt 0
+ 605 00b6 0808     		addi	a0,sp,16
+ 606 00b8 97000000 		call	strlen
+ 606      E7800000 
+ 607              	.LVL75:
+ 608              		.loc 1 169 9
+ 609 00c0 AA85     		mv	a1,a0
+ 610 00c2 0808     		addi	a0,sp,16
+ 611 00c4 97000000 		call	append_newLine
+ 611      E7800000 
+ 612              	.LVL76:
+ 170:main.c        ****         enqueue_string(buf);
+ 613              		.loc 1 170 9 is_stmt 1
+ 614 00cc 0808     		addi	a0,sp,16
+ 615 00ce 97000000 		call	enqueue_string
+ 615      E7800000 
+ 616              	.LVL77:
+ 171:main.c        **** 
+ 172:main.c        ****         timer_interrupt_flag_clear(TIMER1, TIMER_INT_CH0);
+ 617              		.loc 1 172 9
+ 618 00d6 8945     		li	a1,2
+ 619 00d8 37050040 		li	a0,1073741824
+ 620 00dc 97000000 		call	timer_interrupt_flag_clear
+ 620      E7800000 
+ 621              	.LVL78:
+ 622              	.L17:
+ 173:main.c        ****     }
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 17
+
+
+ 174:main.c        **** }
+ 623              		.loc 1 174 1 is_stmt 0
+ 624 00e4 F640     		lw	ra,92(sp)
+ 625              		.cfi_restore 1
+ 626 00e6 6644     		lw	s0,88(sp)
+ 627              		.cfi_restore 8
+ 628 00e8 2561     		addi	sp,sp,96
+ 629              	.LCFI6:
+ 630              		.cfi_def_cfa_offset 0
+ 631 00ea 8280     		jr	ra
+ 632              		.cfi_endproc
+ 633              	.LFE8:
+ 635              		.section	.text.ledInit,"ax",@progbits
+ 636              		.align	1
+ 637              		.globl	ledInit
+ 639              	ledInit:
+ 640              	.LFB9:
+ 175:main.c        **** 
+ 176:main.c        **** void ledInit (void){
+ 641              		.loc 1 176 20 is_stmt 1
+ 642              		.cfi_startproc
+ 177:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 643              		.loc 1 177 5
+ 176:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 644              		.loc 1 176 20 is_stmt 0
+ 645 0000 4111     		addi	sp,sp,-16
+ 646              	.LCFI7:
+ 647              		.cfi_def_cfa_offset 16
+ 648              		.loc 1 177 5
+ 649 0002 13053060 		li	a0,1539
+ 176:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 650              		.loc 1 176 20
+ 651 0006 06C6     		sw	ra,12(sp)
+ 652              		.cfi_offset 1, -4
+ 653              		.loc 1 177 5
+ 654 0008 97000000 		call	rcu_periph_clock_enable
+ 654      E7800000 
+ 655              	.LVL79:
+ 178:main.c        **** 	gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0 | GPIO_PIN_1);
+ 656              		.loc 1 178 2 is_stmt 1
+ 179:main.c        **** }
+ 657              		.loc 1 179 1 is_stmt 0
+ 658 0010 B240     		lw	ra,12(sp)
+ 659              		.cfi_restore 1
+ 178:main.c        **** 	gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0 | GPIO_PIN_1);
+ 660              		.loc 1 178 2
+ 661 0012 37150140 		li	a0,1073811456
+ 662              		.loc 1 179 1
+ 178:main.c        **** 	gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0 | GPIO_PIN_1);
+ 663              		.loc 1 178 2
+ 664 0016 8D46     		li	a3,3
+ 665 0018 0D46     		li	a2,3
+ 666 001a C145     		li	a1,16
+ 667 001c 130505C0 		addi	a0,a0,-1024
+ 668              		.loc 1 179 1
+ 669 0020 4101     		addi	sp,sp,16
+ 670              	.LCFI8:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 18
+
+
+ 671              		.cfi_def_cfa_offset 0
+ 178:main.c        **** 	gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0 | GPIO_PIN_1);
+ 672              		.loc 1 178 2
+ 673 0022 17030000 		tail	gpio_init
+ 673      67000300 
+ 674              	.LVL80:
+ 675              		.cfi_endproc
+ 676              	.LFE9:
+ 678              		.section	.text.led_on_B1,"ax",@progbits
+ 679              		.align	1
+ 680              		.globl	led_on_B1
+ 682              	led_on_B1:
+ 683              	.LFB10:
+ 180:main.c        **** 
+ 181:main.c        **** void led_on_B1(){
+ 684              		.loc 1 181 17 is_stmt 1
+ 685              		.cfi_startproc
+ 182:main.c        ****     gpio_bit_write(GPIOB, GPIO_PIN_1, 1);
+ 686              		.loc 1 182 5
+ 687 0000 37150140 		li	a0,1073811456
+ 688 0004 0546     		li	a2,1
+ 689 0006 8945     		li	a1,2
+ 690 0008 130505C0 		addi	a0,a0,-1024
+ 691 000c 17030000 		tail	gpio_bit_write
+ 691      67000300 
+ 692              	.LVL81:
+ 693              		.cfi_endproc
+ 694              	.LFE10:
+ 696              		.section	.text.led_off_B1,"ax",@progbits
+ 697              		.align	1
+ 698              		.globl	led_off_B1
+ 700              	led_off_B1:
+ 701              	.LFB11:
+ 183:main.c        **** }
+ 184:main.c        **** void led_off_B1(){
+ 702              		.loc 1 184 18
+ 703              		.cfi_startproc
+ 185:main.c        ****     gpio_bit_write(GPIOB, GPIO_PIN_1, 0);
+ 704              		.loc 1 185 5
+ 705 0000 37150140 		li	a0,1073811456
+ 706 0004 0146     		li	a2,0
+ 707 0006 8945     		li	a1,2
+ 708 0008 130505C0 		addi	a0,a0,-1024
+ 709 000c 17030000 		tail	gpio_bit_write
+ 709      67000300 
+ 710              	.LVL82:
+ 711              		.cfi_endproc
+ 712              	.LFE11:
+ 714              		.section	.text.led_on_B0,"ax",@progbits
+ 715              		.align	1
+ 716              		.globl	led_on_B0
+ 718              	led_on_B0:
+ 719              	.LFB12:
+ 186:main.c        **** }
+ 187:main.c        **** 
+ 188:main.c        **** void led_on_B0(){
+ 720              		.loc 1 188 17
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 19
+
+
+ 721              		.cfi_startproc
+ 189:main.c        ****     gpio_bit_write(GPIOB, GPIO_PIN_0, 1);
+ 722              		.loc 1 189 5
+ 723 0000 37150140 		li	a0,1073811456
+ 724 0004 0546     		li	a2,1
+ 725 0006 8545     		li	a1,1
+ 726 0008 130505C0 		addi	a0,a0,-1024
+ 727 000c 17030000 		tail	gpio_bit_write
+ 727      67000300 
+ 728              	.LVL83:
+ 729              		.cfi_endproc
+ 730              	.LFE12:
+ 732              		.section	.text.led_off_B0,"ax",@progbits
+ 733              		.align	1
+ 734              		.globl	led_off_B0
+ 736              	led_off_B0:
+ 737              	.LFB13:
+ 190:main.c        **** }
+ 191:main.c        **** void led_off_B0(){
+ 738              		.loc 1 191 18
+ 739              		.cfi_startproc
+ 192:main.c        ****     gpio_bit_write(GPIOB, GPIO_PIN_0, 0);
+ 740              		.loc 1 192 5
+ 741 0000 37150140 		li	a0,1073811456
+ 742 0004 0146     		li	a2,0
+ 743 0006 8545     		li	a1,1
+ 744 0008 130505C0 		addi	a0,a0,-1024
+ 745 000c 17030000 		tail	gpio_bit_write
+ 745      67000300 
+ 746              	.LVL84:
+ 747              		.cfi_endproc
+ 748              	.LFE13:
+ 750              		.section	.text.timer_interrupt_config,"ax",@progbits
+ 751              		.align	1
+ 752              		.globl	timer_interrupt_config
+ 754              	timer_interrupt_config:
+ 755              	.LFB14:
+ 193:main.c        **** }
+ 194:main.c        **** 
+ 195:main.c        **** void timer_interrupt_config(){
+ 756              		.loc 1 195 30
+ 757              		.cfi_startproc
+ 196:main.c        ****     /* This configuration has a lot in common with the PWM configuration since both relies on a tim
+ 197:main.c        ****        this time though instead of generating a puls each timer period we get an interrupt. This ex
+ 198:main.c        ****        generates an interrupt each millisecond to update a counter and when an even count of 1000 (
+ 199:main.c        ****        the interrupt will toggle an LED. */
+ 200:main.c        **** 
+ 201:main.c        ****     /* Configuration structs */ 
+ 202:main.c        ****     timer_oc_parameter_struct timer_ocinitpara;
+ 758              		.loc 1 202 5
+ 203:main.c        ****     timer_parameter_struct timer_initpara;
+ 759              		.loc 1 203 5
+ 204:main.c        **** 
+ 205:main.c        ****     /* Enable the TIMER1 interrupt request */
+ 206:main.c        ****     eclic_irq_enable(TIMER1_IRQn,1,0);
+ 760              		.loc 1 206 5
+ 195:main.c        ****     /* This configuration has a lot in common with the PWM configuration since both relies on a tim
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 20
+
+
+ 761              		.loc 1 195 30 is_stmt 0
+ 762 0000 7971     		addi	sp,sp,-48
+ 763              	.LCFI9:
+ 764              		.cfi_def_cfa_offset 48
+ 765              		.loc 1 206 5
+ 766 0002 0146     		li	a2,0
+ 767 0004 8545     		li	a1,1
+ 768 0006 1305F002 		li	a0,47
+ 195:main.c        ****     /* This configuration has a lot in common with the PWM configuration since both relies on a tim
+ 769              		.loc 1 195 30
+ 770 000a 06D6     		sw	ra,44(sp)
+ 771 000c 22D4     		sw	s0,40(sp)
+ 772 000e 26D2     		sw	s1,36(sp)
+ 773              		.cfi_offset 1, -4
+ 774              		.cfi_offset 8, -8
+ 775              		.cfi_offset 9, -12
+ 776              		.loc 1 206 5
+ 777 0010 97000000 		call	eclic_irq_enable
+ 777      E7800000 
+ 778              	.LVL85:
+ 207:main.c        ****     
+ 208:main.c        ****     /* Enable the peripheral clock. */
+ 209:main.c        ****     rcu_periph_clock_enable(RCU_TIMER1);
+ 779              		.loc 1 209 5 is_stmt 1
+ 780 0018 13050070 		li	a0,1792
+ 781 001c 97000000 		call	rcu_periph_clock_enable
+ 781      E7800000 
+ 782              	.LVL86:
+ 210:main.c        **** 
+ 211:main.c        ****     /* Reset the timer */
+ 212:main.c        ****     timer_deinit(TIMER1);
+ 783              		.loc 1 212 5
+ 784 0024 37050040 		li	a0,1073741824
+ 785 0028 97000000 		call	timer_deinit
+ 785      E7800000 
+ 786              	.LVL87:
+ 213:main.c        **** 
+ 214:main.c        ****     /* initialize timer configuration struct */
+ 215:main.c        ****     timer_struct_para_init(&timer_initpara);
+ 787              		.loc 1 215 5
+ 788 0030 0808     		addi	a0,sp,16
+ 789 0032 97000000 		call	timer_struct_para_init
+ 789      E7800000 
+ 790              	.LVL88:
+ 216:main.c        ****     /* TIMER1 configuration */
+ 217:main.c        ****     /* Frequency = core clock / ((1+prescaler)*period) = 108MHz / (2*54000) = 1KHz */
+ 218:main.c        ****     
+ 219:main.c        ****     uint32_t period = SystemCoreClock / (DESIRED_FREQUENCY_HZ * 2);
+ 791              		.loc 1 219 5
+ 792              		.loc 1 219 39 is_stmt 0
+ 793 003a 37040000 		lui	s0,%hi(SystemCoreClock)
+ 794              		.loc 1 219 14
+ 795 003e 83270400 		lw	a5,%lo(SystemCoreClock)(s0)
+ 796 0042 13074006 		li	a4,100
+ 220:main.c        ****     timer_initpara.prescaler         = 1;
+ 221:main.c        ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+ 222:main.c        ****     timer_initpara.counterdirection  = TIMER_COUNTER_UP;
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 21
+
+
+ 223:main.c        ****     timer_initpara.period            = period;
+ 224:main.c        ****     timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
+ 225:main.c        ****     timer_init(TIMER1, &timer_initpara);
+ 797              		.loc 1 225 5
+ 798 0046 0C08     		addi	a1,sp,16
+ 219:main.c        ****     timer_initpara.prescaler         = 1;
+ 799              		.loc 1 219 14
+ 800 0048 B3D7E702 		divu	a5,a5,a4
+ 801              	.LVL89:
+ 220:main.c        ****     timer_initpara.prescaler         = 1;
+ 802              		.loc 1 220 5 is_stmt 1
+ 221:main.c        ****     timer_initpara.counterdirection  = TIMER_COUNTER_UP;
+ 803              		.loc 1 221 5
+ 222:main.c        ****     timer_initpara.period            = period;
+ 804              		.loc 1 222 5
+ 220:main.c        ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+ 805              		.loc 1 220 38 is_stmt 0
+ 806 004c 8544     		li	s1,1
+ 807              		.loc 1 225 5
+ 808 004e 37050040 		li	a0,1073741824
+ 220:main.c        ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+ 809              		.loc 1 220 38
+ 810 0052 26C8     		sw	s1,16(sp)
+ 222:main.c        ****     timer_initpara.period            = period;
+ 811              		.loc 1 222 38
+ 812 0054 231A0100 		sh	zero,20(sp)
+ 223:main.c        ****     timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
+ 813              		.loc 1 223 5 is_stmt 1
+ 224:main.c        ****     timer_init(TIMER1, &timer_initpara);
+ 814              		.loc 1 224 38 is_stmt 0
+ 815 0058 231E0100 		sh	zero,28(sp)
+ 223:main.c        ****     timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
+ 816              		.loc 1 223 38
+ 817 005c 3ECC     		sw	a5,24(sp)
+ 224:main.c        ****     timer_init(TIMER1, &timer_initpara);
+ 818              		.loc 1 224 5 is_stmt 1
+ 819              		.loc 1 225 5
+ 820 005e 97000000 		call	timer_init
+ 820      E7800000 
+ 821              	.LVL90:
+ 226:main.c        **** 
+ 227:main.c        ****     /* initialize TIMER channel output parameter struct */
+ 228:main.c        ****     timer_channel_output_struct_para_init(&timer_ocinitpara);
+ 822              		.loc 1 228 5
+ 823 0066 4800     		addi	a0,sp,4
+ 824 0068 97000000 		call	timer_channel_output_struct_para_init
+ 824      E7800000 
+ 825              	.LVL91:
+ 229:main.c        **** 
+ 230:main.c        ****     /* Set the channel configuration */
+ 231:main.c        ****     timer_ocinitpara.outputstate  = TIMER_CCX_ENABLE;
+ 826              		.loc 1 231 5
+ 232:main.c        ****     timer_ocinitpara.ocpolarity   = TIMER_OC_POLARITY_HIGH;
+ 233:main.c        ****     timer_ocinitpara.ocidlestate  = TIMER_OC_IDLE_STATE_LOW;
+ 234:main.c        ****     timer_channel_output_config(TIMER1, TIMER_CH_0, &timer_ocinitpara);
+ 827              		.loc 1 234 5 is_stmt 0
+ 828 0070 5000     		addi	a2,sp,4
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 22
+
+
+ 829 0072 8145     		li	a1,0
+ 830 0074 37050040 		li	a0,1073741824
+ 231:main.c        ****     timer_ocinitpara.ocpolarity   = TIMER_OC_POLARITY_HIGH;
+ 831              		.loc 1 231 35
+ 832 0078 23129100 		sh	s1,4(sp)
+ 232:main.c        ****     timer_ocinitpara.ocpolarity   = TIMER_OC_POLARITY_HIGH;
+ 833              		.loc 1 232 5 is_stmt 1
+ 232:main.c        ****     timer_ocinitpara.ocpolarity   = TIMER_OC_POLARITY_HIGH;
+ 834              		.loc 1 232 35 is_stmt 0
+ 835 007c 23140100 		sh	zero,8(sp)
+ 233:main.c        ****     timer_channel_output_config(TIMER1, TIMER_CH_0, &timer_ocinitpara);
+ 836              		.loc 1 233 5 is_stmt 1
+ 233:main.c        ****     timer_channel_output_config(TIMER1, TIMER_CH_0, &timer_ocinitpara);
+ 837              		.loc 1 233 35 is_stmt 0
+ 838 0080 23160100 		sh	zero,12(sp)
+ 839              		.loc 1 234 5 is_stmt 1
+ 840 0084 97000000 		call	timer_channel_output_config
+ 840      E7800000 
+ 841              	.LVL92:
+ 235:main.c        ****     
+ 236:main.c        ****     /* CH0 configuration in OC timing mode */
+ 237:main.c        ****     timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_0, SystemCoreClock/4000);
+ 842              		.loc 1 237 5
+ 843 008c 03260400 		lw	a2,%lo(SystemCoreClock)(s0)
+ 844 0090 8567     		li	a5,4096
+ 845 0092 938707FA 		addi	a5,a5,-96
+ 846 0096 3356F602 		divu	a2,a2,a5
+ 847 009a 8145     		li	a1,0
+ 848 009c 37050040 		li	a0,1073741824
+ 849 00a0 97000000 		call	timer_channel_output_pulse_value_config
+ 849      E7800000 
+ 850              	.LVL93:
+ 238:main.c        ****     timer_channel_output_mode_config(TIMER1, TIMER_CH_0, TIMER_OC_MODE_TIMING);
+ 851              		.loc 1 238 5
+ 852 00a8 0146     		li	a2,0
+ 853 00aa 8145     		li	a1,0
+ 854 00ac 37050040 		li	a0,1073741824
+ 855 00b0 97000000 		call	timer_channel_output_mode_config
+ 855      E7800000 
+ 856              	.LVL94:
+ 239:main.c        ****     timer_channel_output_shadow_config(TIMER1, TIMER_CH_0, TIMER_OC_SHADOW_DISABLE);
+ 857              		.loc 1 239 5
+ 858 00b8 0146     		li	a2,0
+ 859 00ba 8145     		li	a1,0
+ 860 00bc 37050040 		li	a0,1073741824
+ 861 00c0 97000000 		call	timer_channel_output_shadow_config
+ 861      E7800000 
+ 862              	.LVL95:
+ 240:main.c        **** 
+ 241:main.c        ****     /* Enable interrupt on the channel */
+ 242:main.c        ****     timer_interrupt_enable(TIMER1, TIMER_INT_CH0);
+ 863              		.loc 1 242 5
+ 864 00c8 8945     		li	a1,2
+ 865 00ca 37050040 		li	a0,1073741824
+ 866 00ce 97000000 		call	timer_interrupt_enable
+ 866      E7800000 
+ 867              	.LVL96:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 23
+
+
+ 243:main.c        ****     /* Make sure interrupt flag is clear */
+ 244:main.c        ****     timer_interrupt_flag_clear(TIMER1, TIMER_INT_CH0);
+ 868              		.loc 1 244 5
+ 869 00d6 8945     		li	a1,2
+ 870 00d8 37050040 		li	a0,1073741824
+ 871 00dc 97000000 		call	timer_interrupt_flag_clear
+ 871      E7800000 
+ 872              	.LVL97:
+ 245:main.c        **** 
+ 246:main.c        ****     /* Start the timer */
+ 247:main.c        ****     timer_enable(TIMER1);
+ 873              		.loc 1 247 5
+ 874 00e4 37050040 		li	a0,1073741824
+ 875 00e8 97000000 		call	timer_enable
+ 875      E7800000 
+ 876              	.LVL98:
+ 248:main.c        **** }
+ 877              		.loc 1 248 1 is_stmt 0
+ 878 00f0 B250     		lw	ra,44(sp)
+ 879              		.cfi_restore 1
+ 880 00f2 2254     		lw	s0,40(sp)
+ 881              		.cfi_restore 8
+ 882 00f4 9254     		lw	s1,36(sp)
+ 883              		.cfi_restore 9
+ 884 00f6 4561     		addi	sp,sp,48
+ 885              	.LCFI10:
+ 886              		.cfi_def_cfa_offset 0
+ 887 00f8 8280     		jr	ra
+ 888              		.cfi_endproc
+ 889              	.LFE14:
+ 891              		.section	.text.int_to_string,"ax",@progbits
+ 892              		.align	1
+ 893              		.globl	int_to_string
+ 895              	int_to_string:
+ 896              	.LFB15:
+ 249:main.c        **** 
+ 250:main.c        **** int int_to_string(char *string, int integer){
+ 897              		.loc 1 250 45 is_stmt 1
+ 898              		.cfi_startproc
+ 899              	.LVL99:
+ 251:main.c        ****     int i = 0;
+ 900              		.loc 1 251 5
+ 252:main.c        ****     int divider = 1000;
+ 901              		.loc 1 252 5
+ 253:main.c        ****     if(integer < 0){
+ 902              		.loc 1 253 5
+ 250:main.c        ****     int i = 0;
+ 903              		.loc 1 250 45 is_stmt 0
+ 904 0000 AA87     		mv	a5,a0
+ 905              		.loc 1 253 7
+ 906 0002 63D30506 		bge	a1,zero,.L29
+ 254:main.c        ****         string[i++] = '-';
+ 907              		.loc 1 254 9 is_stmt 1
+ 908              	.LVL100:
+ 909              		.loc 1 254 21 is_stmt 0
+ 910 0006 1307D002 		li	a4,45
+ 911 000a 2300E500 		sb	a4,0(a0)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 24
+
+
+ 255:main.c        ****         integer = -integer;
+ 912              		.loc 1 255 9 is_stmt 1
+ 913              		.loc 1 255 17 is_stmt 0
+ 914 000e B305B040 		neg	a1,a1
+ 915              	.LVL101:
+ 254:main.c        ****         string[i++] = '-';
+ 916              		.loc 1 254 17
+ 917 0012 0547     		li	a4,1
+ 918              	.LVL102:
+ 919              	.L30:
+ 256:main.c        ****     }else if(integer == 0){
+ 257:main.c        ****         string[i++] = '0';
+ 258:main.c        ****         string[i++] = ';';
+ 259:main.c        ****         string[i] = '\0';
+ 260:main.c        ****         return i;
+ 261:main.c        ****     }
+ 262:main.c        ****     int og_num = integer;
+ 920              		.loc 1 262 5 is_stmt 1
+ 263:main.c        ****     while (integer >= divider * 10) {
+ 921              		.loc 1 263 5
+ 252:main.c        ****     if(integer < 0){
+ 922              		.loc 1 252 9 is_stmt 0
+ 923 0014 9306803E 		li	a3,1000
+ 924              		.loc 1 263 31
+ 925 0018 2945     		li	a0,10
+ 926              	.LVL103:
+ 927              	.L32:
+ 928 001a 3386A602 		mul	a2,a3,a0
+ 929              		.loc 1 263 11
+ 930 001e 63D3C506 		ble	a2,a1,.L37
+ 931 0022 2E85     		mv	a0,a1
+ 932              	.LBB2:
+ 264:main.c        ****         divider *= 10; 
+ 265:main.c        ****     }
+ 266:main.c        **** 
+ 267:main.c        ****     while(divider){
+ 268:main.c        ****         char digit = (integer/divider)+ '0';
+ 269:main.c        ****         if(digit != '0' || og_num > integer){
+ 933              		.loc 1 269 11
+ 934 0024 93080003 		li	a7,48
+ 270:main.c        ****             string[i++] = digit; 
+ 271:main.c        ****         }
+ 272:main.c        ****         
+ 273:main.c        ****         integer %= divider;
+ 274:main.c        ****         divider /= 10;
+ 935              		.loc 1 274 17
+ 936 0028 2948     		li	a6,10
+ 937              	.LVL104:
+ 938              	.L35:
+ 268:main.c        ****         if(digit != '0' || og_num > integer){
+ 939              		.loc 1 268 9 is_stmt 1
+ 268:main.c        ****         if(digit != '0' || og_num > integer){
+ 940              		.loc 1 268 30 is_stmt 0
+ 941 002a 3346D502 		div	a2,a0,a3
+ 268:main.c        ****         if(digit != '0' || og_num > integer){
+ 942              		.loc 1 268 14
+ 943 002e 13060603 		addi	a2,a2,48
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 25
+
+
+ 944 0032 1376F60F 		andi	a2,a2,0xff
+ 945              	.LVL105:
+ 269:main.c        ****             string[i++] = digit; 
+ 946              		.loc 1 269 9 is_stmt 1
+ 269:main.c        ****             string[i++] = digit; 
+ 947              		.loc 1 269 11 is_stmt 0
+ 948 0036 63141601 		bne	a2,a7,.L33
+ 269:main.c        ****             string[i++] = digit; 
+ 949              		.loc 1 269 25 discriminator 1
+ 950 003a 6357B500 		ble	a1,a0,.L34
+ 951              	.L33:
+ 270:main.c        ****             string[i++] = digit; 
+ 952              		.loc 1 270 13 is_stmt 1
+ 953              	.LVL106:
+ 270:main.c        ****             string[i++] = digit; 
+ 954              		.loc 1 270 25 is_stmt 0
+ 955 003e 3383E700 		add	t1,a5,a4
+ 956 0042 2300C300 		sb	a2,0(t1)
+ 270:main.c        ****             string[i++] = digit; 
+ 957              		.loc 1 270 21
+ 958 0046 0507     		addi	a4,a4,1
+ 959              	.LVL107:
+ 960              	.L34:
+ 273:main.c        ****         divider /= 10;
+ 961              		.loc 1 273 9 is_stmt 1
+ 273:main.c        ****         divider /= 10;
+ 962              		.loc 1 273 17 is_stmt 0
+ 963 0048 3365D502 		rem	a0,a0,a3
+ 964              	.LVL108:
+ 965              		.loc 1 274 9 is_stmt 1
+ 966              		.loc 1 274 17 is_stmt 0
+ 967 004c B3C60603 		div	a3,a3,a6
+ 968              	.LVL109:
+ 969              	.LBE2:
+ 267:main.c        ****         char digit = (integer/divider)+ '0';
+ 970              		.loc 1 267 10
+ 971 0050 E9FE     		bne	a3,zero,.L35
+ 275:main.c        ****     }
+ 276:main.c        ****     string[i++] = ';';
+ 972              		.loc 1 276 5 is_stmt 1
+ 973              		.loc 1 276 13 is_stmt 0
+ 974 0052 13051700 		addi	a0,a4,1
+ 975              	.LVL110:
+ 976              		.loc 1 276 17
+ 977 0056 9306B003 		li	a3,59
+ 978              	.LVL111:
+ 979 005a 3E97     		add	a4,a5,a4
+ 980 005c 2300D700 		sb	a3,0(a4)
+ 277:main.c        ****     string[i] = '\0';
+ 981              		.loc 1 277 5 is_stmt 1
+ 982              		.loc 1 277 15 is_stmt 0
+ 983 0060 AA97     		add	a5,a5,a0
+ 984              	.LVL112:
+ 985 0062 23800700 		sb	zero,0(a5)
+ 278:main.c        ****     return i;
+ 986              		.loc 1 278 5 is_stmt 1
+ 279:main.c        **** }
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 26
+
+
+ 987              		.loc 1 279 1 is_stmt 0
+ 988 0066 8280     		ret
+ 989              	.LVL113:
+ 990              	.L29:
+ 256:main.c        ****         string[i++] = '0';
+ 991              		.loc 1 256 11 is_stmt 1
+ 251:main.c        ****     int divider = 1000;
+ 992              		.loc 1 251 9 is_stmt 0
+ 993 0068 0147     		li	a4,0
+ 256:main.c        ****         string[i++] = '0';
+ 994              		.loc 1 256 13
+ 995 006a CDF5     		bne	a1,zero,.L30
+ 257:main.c        ****         string[i++] = ';';
+ 996              		.loc 1 257 9 is_stmt 1
+ 997              	.LVL114:
+ 257:main.c        ****         string[i++] = ';';
+ 998              		.loc 1 257 21 is_stmt 0
+ 999 006c 13070003 		li	a4,48
+ 1000 0070 2300E500 		sb	a4,0(a0)
+ 258:main.c        ****         string[i] = '\0';
+ 1001              		.loc 1 258 9 is_stmt 1
+ 1002              	.LVL115:
+ 258:main.c        ****         string[i] = '\0';
+ 1003              		.loc 1 258 21 is_stmt 0
+ 1004 0074 1307B003 		li	a4,59
+ 1005 0078 A300E500 		sb	a4,1(a0)
+ 259:main.c        ****         return i;
+ 1006              		.loc 1 259 9 is_stmt 1
+ 259:main.c        ****         return i;
+ 1007              		.loc 1 259 19 is_stmt 0
+ 1008 007c 23010500 		sb	zero,2(a0)
+ 260:main.c        ****     }
+ 1009              		.loc 1 260 9 is_stmt 1
+ 260:main.c        ****     }
+ 1010              		.loc 1 260 16 is_stmt 0
+ 1011 0080 0945     		li	a0,2
+ 1012              	.LVL116:
+ 1013 0082 8280     		ret
+ 1014              	.LVL117:
+ 1015              	.L37:
+ 1016 0084 B286     		mv	a3,a2
+ 1017              	.LVL118:
+ 1018 0086 51BF     		j	.L32
+ 1019              		.cfi_endproc
+ 1020              	.LFE15:
+ 1022              		.section	.text.append_int_to_string,"ax",@progbits
+ 1023              		.align	1
+ 1024              		.globl	append_int_to_string
+ 1026              	append_int_to_string:
+ 1027              	.LFB16:
+ 280:main.c        **** 
+ 281:main.c        **** int append_int_to_string(char *string, int integer){
+ 1028              		.loc 1 281 52 is_stmt 1
+ 1029              		.cfi_startproc
+ 1030              	.LVL119:
+ 282:main.c        ****     char temp[20] = {'\0'};
+ 1031              		.loc 1 282 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 27
+
+
+ 281:main.c        ****     char temp[20] = {'\0'};
+ 1032              		.loc 1 281 52 is_stmt 0
+ 1033 0000 7971     		addi	sp,sp,-48
+ 1034              	.LCFI11:
+ 1035              		.cfi_def_cfa_offset 48
+ 1036 0002 22D4     		sw	s0,40(sp)
+ 1037              		.cfi_offset 8, -8
+ 1038 0004 2A84     		mv	s0,a0
+ 283:main.c        ****     int_to_string(temp, integer);
+ 1039              		.loc 1 283 5
+ 1040 0006 6800     		addi	a0,sp,12
+ 1041              	.LVL120:
+ 281:main.c        ****     char temp[20] = {'\0'};
+ 1042              		.loc 1 281 52
+ 1043 0008 06D6     		sw	ra,44(sp)
+ 1044              		.cfi_offset 1, -4
+ 282:main.c        ****     char temp[20] = {'\0'};
+ 1045              		.loc 1 282 10
+ 1046 000a 02C6     		sw	zero,12(sp)
+ 1047 000c 02C8     		sw	zero,16(sp)
+ 1048 000e 02CA     		sw	zero,20(sp)
+ 1049 0010 02CC     		sw	zero,24(sp)
+ 1050 0012 02CE     		sw	zero,28(sp)
+ 1051              		.loc 1 283 5 is_stmt 1
+ 1052 0014 97000000 		call	int_to_string
+ 1052      E7800000 
+ 1053              	.LVL121:
+ 284:main.c        ****     int len = fuseStrings(string, temp);
+ 1054              		.loc 1 284 5
+ 1055              		.loc 1 284 15 is_stmt 0
+ 1056 001c 6C00     		addi	a1,sp,12
+ 1057 001e 2285     		mv	a0,s0
+ 1058 0020 97000000 		call	fuseStrings
+ 1058      E7800000 
+ 1059              	.LVL122:
+ 285:main.c        ****     return len;
+ 1060              		.loc 1 285 5 is_stmt 1
+ 286:main.c        **** }
+ 1061              		.loc 1 286 1 is_stmt 0
+ 1062 0028 B250     		lw	ra,44(sp)
+ 1063              		.cfi_restore 1
+ 1064 002a 2254     		lw	s0,40(sp)
+ 1065              		.cfi_restore 8
+ 1066              	.LVL123:
+ 1067 002c 4561     		addi	sp,sp,48
+ 1068              	.LCFI12:
+ 1069              		.cfi_def_cfa_offset 0
+ 1070 002e 8280     		jr	ra
+ 1071              		.cfi_endproc
+ 1072              	.LFE16:
+ 1074              		.section	.text.append_newLine,"ax",@progbits
+ 1075              		.align	1
+ 1076              		.globl	append_newLine
+ 1078              	append_newLine:
+ 1079              	.LFB17:
+ 287:main.c        **** 
+ 288:main.c        **** void append_newLine(char *string, int length) {
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 28
+
+
+ 1080              		.loc 1 288 47 is_stmt 1
+ 1081              		.cfi_startproc
+ 1082              	.LVL124:
+ 289:main.c        ****     string[length-1] = '\n';
+ 1083              		.loc 1 289 5
+ 1084              		.loc 1 289 22 is_stmt 0
+ 1085 0000 AA95     		add	a1,a0,a1
+ 1086              	.LVL125:
+ 1087 0002 A947     		li	a5,10
+ 1088 0004 A38FF5FE 		sb	a5,-1(a1)
+ 290:main.c        ****     string[length] = '\0'; // Add a null terminator at the new end
+ 1089              		.loc 1 290 5 is_stmt 1
+ 1090              		.loc 1 290 20 is_stmt 0
+ 1091 0008 23800500 		sb	zero,0(a1)
+ 291:main.c        **** }
+ 1092              		.loc 1 291 1
+ 1093 000c 8280     		ret
+ 1094              		.cfi_endproc
+ 1095              	.LFE17:
+ 1097              		.globl	__floatundidf
+ 1098              		.globl	__muldf3
+ 1099              		.globl	__floatunsidf
+ 1100              		.globl	__divdf3
+ 1101              		.globl	__fixdfsi
+ 1102              		.section	.text.millis,"ax",@progbits
+ 1103              		.align	1
+ 1104              		.globl	millis
+ 1106              	millis:
+ 1107              	.LFB18:
+ 292:main.c        **** 
+ 293:main.c        **** int millis(void) {
+ 1108              		.loc 1 293 18 is_stmt 1
+ 1109              		.cfi_startproc
+ 294:main.c        ****     uint64_t mtime = get_timer_value();
+ 1110              		.loc 1 294 5
+ 293:main.c        ****     uint64_t mtime = get_timer_value();
+ 1111              		.loc 1 293 18 is_stmt 0
+ 1112 0000 4111     		addi	sp,sp,-16
+ 1113              	.LCFI13:
+ 1114              		.cfi_def_cfa_offset 16
+ 1115 0002 06C6     		sw	ra,12(sp)
+ 1116 0004 22C4     		sw	s0,8(sp)
+ 1117 0006 26C2     		sw	s1,4(sp)
+ 1118              		.cfi_offset 1, -4
+ 1119              		.cfi_offset 8, -8
+ 1120              		.cfi_offset 9, -12
+ 1121              		.loc 1 294 22
+ 1122 0008 97000000 		call	get_timer_value
+ 1122      E7800000 
+ 1123              	.LVL126:
+ 295:main.c        ****     return ((mtime * 4000.0) / SystemCoreClock); // Adjusted for seconds and milliseconds
+ 1124              		.loc 1 295 5 is_stmt 1
+ 1125              		.loc 1 295 20 is_stmt 0
+ 1126 0010 97000000 		call	__floatundidf
+ 1126      E7800000 
+ 1127              	.LVL127:
+ 1128 0018 B7070000 		lui	a5,%hi(.LANCHOR0+120)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 29
+
+
+ 1129 001c 03A68707 		lw	a2,%lo(.LANCHOR0+120)(a5)
+ 1130 0020 83A6C707 		lw	a3,%lo(.LANCHOR0+124)(a5)
+ 1131 0024 97000000 		call	__muldf3
+ 1131      E7800000 
+ 1132              	.LVL128:
+ 1133              		.loc 1 295 30
+ 1134 002c B7070000 		lui	a5,%hi(SystemCoreClock)
+ 1135              		.loc 1 295 20
+ 1136 0030 2A84     		mv	s0,a0
+ 1137              		.loc 1 295 30
+ 1138 0032 03A50700 		lw	a0,%lo(SystemCoreClock)(a5)
+ 1139              		.loc 1 295 20
+ 1140 0036 AE84     		mv	s1,a1
+ 1141              		.loc 1 295 30
+ 1142 0038 97000000 		call	__floatunsidf
+ 1142      E7800000 
+ 1143              	.LVL129:
+ 1144 0040 2A86     		mv	a2,a0
+ 1145 0042 AE86     		mv	a3,a1
+ 1146 0044 2285     		mv	a0,s0
+ 1147 0046 A685     		mv	a1,s1
+ 1148 0048 97000000 		call	__divdf3
+ 1148      E7800000 
+ 1149              	.LVL130:
+ 1150 0050 97000000 		call	__fixdfsi
+ 1150      E7800000 
+ 1151              	.LVL131:
+ 296:main.c        **** }
+ 1152              		.loc 1 296 1
+ 1153 0058 B240     		lw	ra,12(sp)
+ 1154              		.cfi_restore 1
+ 1155 005a 2244     		lw	s0,8(sp)
+ 1156              		.cfi_restore 8
+ 1157 005c 9244     		lw	s1,4(sp)
+ 1158              		.cfi_restore 9
+ 1159 005e 4101     		addi	sp,sp,16
+ 1160              	.LCFI14:
+ 1161              		.cfi_def_cfa_offset 0
+ 1162 0060 8280     		jr	ra
+ 1163              		.cfi_endproc
+ 1164              	.LFE18:
+ 1166              		.section	.text.init_mpu,"ax",@progbits
+ 1167              		.align	1
+ 1168              		.globl	init_mpu
+ 1170              	init_mpu:
+ 1171              	.LFB19:
+ 297:main.c        **** 
+ 298:main.c        **** void init_mpu(void){
+ 1172              		.loc 1 298 20 is_stmt 1
+ 1173              		.cfi_startproc
+ 299:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 1174              		.loc 1 299 5
+ 298:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 1175              		.loc 1 298 20 is_stmt 0
+ 1176 0000 4111     		addi	sp,sp,-16
+ 1177              	.LCFI15:
+ 1178              		.cfi_def_cfa_offset 16
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 30
+
+
+ 1179              		.loc 1 299 5
+ 1180 0002 13053060 		li	a0,1539
+ 298:main.c        ****     rcu_periph_clock_enable(RCU_GPIOB);
+ 1181              		.loc 1 298 20
+ 1182 0006 06C6     		sw	ra,12(sp)
+ 1183              		.cfi_offset 1, -4
+ 1184              		.loc 1 299 5
+ 1185 0008 97000000 		call	rcu_periph_clock_enable
+ 1185      E7800000 
+ 1186              	.LVL132:
+ 300:main.c        ****     rcu_periph_clock_enable(RCU_I2C0);
+ 1187              		.loc 1 300 5 is_stmt 1
+ 1188 0010 13055071 		li	a0,1813
+ 1189 0014 97000000 		call	rcu_periph_clock_enable
+ 1189      E7800000 
+ 1190              	.LVL133:
+ 301:main.c        ****     gpio_init(GPIOB, GPIO_MODE_AF_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_6 | GPIO_PIN_7); //led?
+ 1191              		.loc 1 301 5
+ 1192 001c 37150140 		li	a0,1073811456
+ 1193 0020 9306000C 		li	a3,192
+ 1194 0024 0D46     		li	a2,3
+ 1195 0026 F145     		li	a1,28
+ 1196 0028 130505C0 		addi	a0,a0,-1024
+ 1197 002c 97000000 		call	gpio_init
+ 1197      E7800000 
+ 1198              	.LVL134:
+ 302:main.c        **** 
+ 303:main.c        ****     mpu6500_install(I2C0);
+ 1199              		.loc 1 303 5
+ 1200 0034 37550040 		li	a0,1073762304
+ 1201 0038 13050540 		addi	a0,a0,1024
+ 1202 003c 97000000 		call	mpu6500_install
+ 1202      E7800000 
+ 1203              	.LVL135:
+ 304:main.c        **** 
+ 305:main.c        ****     delay_1ms(100);   
+ 1204              		.loc 1 305 5
+ 306:main.c        **** }...
+ 1205              		.loc 1 306 1 is_stmt 0
+ 1206 0044 B240     		lw	ra,12(sp)
+ 1207              		.cfi_restore 1
+ 305:main.c        ****     delay_1ms(100);   
+ 1208              		.loc 1 305 5
+ 1209 0046 13054006 		li	a0,100
+ 1210              		.loc 1 306 1
+ 1211 004a 4101     		addi	sp,sp,16
+ 1212              	.LCFI16:
+ 1213              		.cfi_def_cfa_offset 0
+ 305:main.c        ****     delay_1ms(100);   
+ 1214              		.loc 1 305 5
+ 1215 004c 17030000 		tail	delay_1ms
+ 1215      67000300 
+ 1216              	.LVL136:
+ 1217              		.cfi_endproc
+ 1218              	.LFE19:
+ 1220              		.section	.rodata
+ 1221              		.align	3
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 31
+
+
+ 1222              		.set	.LANCHOR0,. + 0
+ 1223              	.LC0:
+ 1224 0000 72656164 		.string	"ready\r"
+ 1224      790D00
+ 1225 0007 00       		.zero	1
+ 1226              	.LC1:
+ 1227 0008 74657374 		.string	"test"
+ 1227      00
+ 1228 000d 000000   		.zero	3
+ 1229              	.LC2:
+ 1230 0010 6D70750D 		.string	"mpu\r"
+ 1230      00
+ 1231 0015 000000   		.zero	3
+ 1232              	.LC3:
+ 1233 0018 6D707532 		.string	"mpu2\r"
+ 1233      0D00
+ 1234 001e 0000     		.zero	2
+ 1235              	.LC4:
+ 1236 0020 54446174 		.string	"TData.CSV"
+ 1236      612E4353 
+ 1236      5600
+ 1237 002a 0000     		.zero	2
+ 1238              	.LC5:
+ 1239 002c 582D6163 		.string	"X-acc;Y-acc;Z-acc\n"
+ 1239      633B592D 
+ 1239      6163633B 
+ 1239      5A2D6163 
+ 1239      630A00
+ 1240 003f 00       		.zero	1
+ 1241              	.LC6:
+ 1242 0040 72756E6E 		.string	"running\r"
+ 1242      696E670D 
+ 1242      00
+ 1243 0049 000000   		.zero	3
+ 1244              	.LC7:
+ 1245 004c 62726561 		.string	"breaking\r"
+ 1245      6B696E67 
+ 1245      0D00
+ 1246 0056 0000     		.zero	2
+ 1247              	.LC8:
+ 1248 0058 66696E69 		.string	"finished in %d (s)\r\n"
+ 1248      73686564 
+ 1248      20696E20 
+ 1248      25642028 
+ 1248      73290D0A 
+ 1249 006d 000000   		.zero	3
+ 1250              	.LC9:
+ 1251 0070 646F6E65 		.string	"done\r"
+ 1251      0D00
+ 1252 0076 0000     		.zero	2
+ 1253              	.LC10:
+ 1254 0078 00000000 		.word	0
+ 1255 007c 0040AF40 		.word	1085227008
+ 1256              		.section	.bss.last_Sample_buffer,"aw",@nobits
+ 1257              		.align	2
+ 1258              		.set	.LANCHOR2,. + 0
+ 1261              	last_Sample_buffer:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 32
+
+
+ 1262 0000 00000000 		.zero	14
+ 1262      00000000 
+ 1262      00000000 
+ 1262      0000
+ 1263              		.section	.sbss.time_elapsed,"aw",@nobits
+ 1264              		.align	2
+ 1265              		.set	.LANCHOR1,. + 0
+ 1268              	time_elapsed:
+ 1269 0000 00000000 		.zero	4
+ 1270              		.section	.sdata.pDatabuffer,"aw"
+ 1271              		.align	2
+ 1274              	pDatabuffer:
+ 1275 0000 00000000 		.word	dataBuffer
+ 1276              		.text
+ 1277              	.Letext0:
+ 1278              		.file 2 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 1279              		.file 3 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 1280              		.file 4 "./../../firmware/GD32VF103_standard_peripheral/gd32vf103.h"
+ 1281              		.file 5 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_rcu.h"
+ 1282              		.file 6 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_timer.h"
+ 1283              		.file 7 "lib/usbcdc/include/drv_usb_regs.h"
+ 1284              		.file 8 "./../../firmware/GD32VF103_standard_peripheral/system_gd32vf103.h"
+ 1285              		.file 9 "lib/usbcdc/include/usb_ch9_std.h"
+ 1286              		.file 10 "lib/usbcdc/include/drv_usb_core.h"
+ 1287              		.file 11 "lib/usbcdc/include/drv_usb_dev.h"
+ 1288              		.file 12 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1289              		.file 13 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1290              		.file 14 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1291              		.file 15 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1292              		.file 16 "lib/usbcdc/include/cdc_acm_core.h"
+ 1293              		.file 17 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1294              		.file 18 "lib/usbcdc/include/usb_serial_if.h"
+ 1295              		.file 19 "lib/fatfs/include/ff.h"
+ 1296              		.file 20 "lib/mpu/include/mpu6500_driver.h"
+ 1297              		.file 21 "lib/dma/include/dma.h"
+ 1298              		.file 22 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_gpio.h"
+ 1299              		.file 23 "lib/mpu/include/gd32v_mpu6500_if.h"
+ 1300              		.file 24 "lib/systick/include/systick.h"
+ 1301              		.file 25 "./../../firmware/RISCV/drivers/n200_func.h"
+ 1302              		.file 26 "lib/queue/include/queue.h"
+ 1303              		.file 27 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_eclic.h"
+ 1304              		.file 28 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+ 1305              		.file 29 "lib/usbcdc/include/usb_delay.h"
+ 1306              		.file 30 "<built-in>"
+ 1307              		.file 31 "lib/fatfs/include/gd32v_tf_card_if.h"
+ 1308              		.file 32 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+                            *COM*:0000000000000016 dataBuffer
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1261   .bss.last_Sample_buffer:0000000000000000 last_Sample_buffer
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1274   .sdata.pDatabuffer:0000000000000000 pDatabuffer
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1268   .sbss.time_elapsed:0000000000000000 time_elapsed
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:18     .text.startup.main:0000000000000000 main
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:22     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:23     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:25     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:26     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:27     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:28     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:29     .text.startup.main:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:31     .text.startup.main:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:45     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:46     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:47     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:48     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:49     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:50     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:51     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:52     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:53     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:54     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:55     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:56     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:58     .text.startup.main:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:61     .text.startup.main:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:66     .text.startup.main:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:67     .text.startup.main:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:70     .text.startup.main:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:72     .text.startup.main:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:77     .text.startup.main:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:639    .text.ledInit:0000000000000000 ledInit
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:80     .text.startup.main:000000000000006a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:83     .text.startup.main:0000000000000072 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:87     .text.startup.main:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:88     .text.startup.main:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:89     .text.startup.main:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:90     .text.startup.main:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:91     .text.startup.main:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:98     .text.startup.main:000000000000008a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:100    .text.startup.main:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:103    .text.startup.main:0000000000000094 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:107    .text.startup.main:00000000000000a0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:108    .text.startup.main:00000000000000a0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:110    .text.startup.main:00000000000000a2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:112    .text.startup.main:00000000000000a4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:123    .text.startup.main:00000000000000c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:128    .text.startup.main:00000000000000d0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:130    .text.startup.main:00000000000000d2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:134    .text.startup.main:00000000000000dc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:138    .text.startup.main:00000000000000e8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1170   .text.init_mpu:0000000000000000 init_mpu
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:143    .text.startup.main:00000000000000f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:146    .text.startup.main:0000000000000100 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 34
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:151    .text.startup.main:0000000000000110 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:155    .text.startup.main:000000000000011c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:157    .text.startup.main:000000000000011e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:159    .text.startup.main:0000000000000120 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:162    .text.startup.main:0000000000000128 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:163    .text.startup.main:0000000000000128 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:170    .text.startup.main:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:171    .text.startup.main:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:172    .text.startup.main:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:173    .text.startup.main:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:174    .text.startup.main:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:180    .text.startup.main:000000000000014c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:182    .text.startup.main:000000000000014e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:183    .text.startup.main:000000000000014e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:185    .text.startup.main:0000000000000152 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:189    .text.startup.main:000000000000015c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:190    .text.startup.main:000000000000015c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:197    .text.startup.main:0000000000000170 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:199    .text.startup.main:0000000000000172 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:202    .text.startup.main:000000000000017a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:203    .text.startup.main:000000000000017a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:209    .text.startup.main:000000000000018a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:754    .text.timer_interrupt_config:0000000000000000 timer_interrupt_config
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:216    .text.startup.main:000000000000019e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:219    .text.startup.main:00000000000001a6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:222    .text.startup.main:00000000000001ae .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:225    .text.startup.main:00000000000001b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:229    .text.startup.main:00000000000001c2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1106   .text.millis:0000000000000000 millis
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:230    .text.startup.main:00000000000001c2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:233    .text.startup.main:00000000000001ca .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:235    .text.startup.main:00000000000001cc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:238    .text.startup.main:00000000000001d2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:240    .text.startup.main:00000000000001d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:242    .text.startup.main:00000000000001d8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:245    .text.startup.main:00000000000001dc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:246    .text.startup.main:00000000000001dc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:248    .text.startup.main:00000000000001de .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:251    .text.startup.main:00000000000001e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:253    .text.startup.main:00000000000001e8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:255    .text.startup.main:00000000000001ec .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:259    .text.startup.main:00000000000001ee .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:264    .text.startup.main:00000000000001fc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:265    .text.startup.main:00000000000001fc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:270    .text.startup.main:0000000000000206 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:274    .text.startup.main:0000000000000212 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:275    .text.startup.main:0000000000000212 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:277    .text.startup.main:0000000000000216 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:282    .text.startup.main:0000000000000222 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:293    .text.startup.main:0000000000000240 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:298    .text.startup.main:000000000000024e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:299    .text.startup.main:000000000000024e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:305    .text.startup.main:000000000000025a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:312    .text.startup.main:0000000000000268 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:317    .text.startup.main:0000000000000276 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:319    .text.startup.main:000000000000027a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:320    .text.startup.main:000000000000027a .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 35
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:323    .text.startup.main:000000000000027e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:326    .text.startup.main:0000000000000280 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:331    .text.startup.main:000000000000028c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:333    .text.startup.main:0000000000000290 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:341    .text.startup.main:00000000000002a6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:346    .text.startup.main:00000000000002b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:350    .text.startup.main:00000000000002c0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:352    .text.startup.main:00000000000002c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:353    .text.startup.main:00000000000002c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:355    .text.startup.main:00000000000002c8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:358    .text.startup.main:00000000000002ce .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:360    .text.startup.main:00000000000002d2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:362    .text.startup.main:00000000000002d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:364    .text.startup.main:00000000000002da .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:366    .text.startup.main:00000000000002de .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:368    .text.startup.main:00000000000002e2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:371    .text.startup.main:00000000000002e6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:374    .text.startup.main:00000000000002ea .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:377    .text.startup.main:00000000000002ee .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:379    .text.startup.main:00000000000002f2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:382    .text.startup.main:00000000000002f6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:386    .text.startup.main:00000000000002f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:388    .text.startup.main:00000000000002f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:395    .text.startup.main:0000000000000306 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:396    .text.startup.main:0000000000000306 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:398    .text.startup.main:000000000000030a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:401    .text.startup.main:000000000000030c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:402    .text.startup.main:000000000000030c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:406    .text.startup.main:0000000000000314 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:407    .text.startup.main:0000000000000314 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:408    .text.startup.main:0000000000000314 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:718    .text.led_on_B0:0000000000000000 led_on_B0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:410    .text.startup.main:0000000000000318 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:413    .text.startup.main:0000000000000320 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:414    .text.startup.main:0000000000000320 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:416    .text.startup.main:0000000000000322 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:420    .text.startup.main:0000000000000324 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:421    .text.startup.main:0000000000000324 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:424    .text.startup.main:000000000000032c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:427    .text.startup.main:0000000000000332 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:434    .text.startup.main:0000000000000344 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:438    .text.startup.main:000000000000034e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:439    .text.startup.main:000000000000034e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:444    .text.startup.main:000000000000035a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:446    .text.startup.main:000000000000035e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:456    .text.startup.main:0000000000000378 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:736    .text.led_off_B0:0000000000000000 led_off_B0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:463    .text.startup.main:0000000000000384 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:466    .text.startup.main:000000000000038c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:467    .text.startup.main:000000000000038c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:469    .text.startup.main:000000000000038e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:474    .text.startup.main:0000000000000392 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:484    .text.startup.main:00000000000003ac .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:488    .text.startup.main:00000000000003b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:489    .text.startup.main:00000000000003b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:491    .text.startup.main:00000000000003bc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:499    .text.TIMER1_IRQHandler:0000000000000000 TIMER1_IRQHandler
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 36
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:502    .text.TIMER1_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:503    .text.TIMER1_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:504    .text.TIMER1_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:505    .text.TIMER1_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:507    .text.TIMER1_IRQHandler:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:509    .text.TIMER1_IRQHandler:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:513    .text.TIMER1_IRQHandler:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:515    .text.TIMER1_IRQHandler:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:516    .text.TIMER1_IRQHandler:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:518    .text.TIMER1_IRQHandler:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:521    .text.TIMER1_IRQHandler:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:522    .text.TIMER1_IRQHandler:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:523    .text.TIMER1_IRQHandler:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:527    .text.TIMER1_IRQHandler:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:530    .text.TIMER1_IRQHandler:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:533    .text.TIMER1_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:534    .text.TIMER1_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:535    .text.TIMER1_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:536    .text.TIMER1_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:539    .text.TIMER1_IRQHandler:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:542    .text.TIMER1_IRQHandler:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:546    .text.TIMER1_IRQHandler:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:547    .text.TIMER1_IRQHandler:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:549    .text.TIMER1_IRQHandler:0000000000000044 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:552    .text.TIMER1_IRQHandler:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:557    .text.TIMER1_IRQHandler:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:559    .text.TIMER1_IRQHandler:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:560    .text.TIMER1_IRQHandler:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:566    .text.TIMER1_IRQHandler:000000000000006a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:568    .text.TIMER1_IRQHandler:000000000000006e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:569    .text.TIMER1_IRQHandler:000000000000006e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:575    .text.TIMER1_IRQHandler:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:577    .text.TIMER1_IRQHandler:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:578    .text.TIMER1_IRQHandler:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:580    .text.TIMER1_IRQHandler:0000000000000084 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1026   .text.append_int_to_string:0000000000000000 append_int_to_string
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:586    .text.TIMER1_IRQHandler:0000000000000092 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:587    .text.TIMER1_IRQHandler:0000000000000092 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:589    .text.TIMER1_IRQHandler:0000000000000096 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:595    .text.TIMER1_IRQHandler:00000000000000a4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:596    .text.TIMER1_IRQHandler:00000000000000a4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:598    .text.TIMER1_IRQHandler:00000000000000a8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:604    .text.TIMER1_IRQHandler:00000000000000b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:605    .text.TIMER1_IRQHandler:00000000000000b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:609    .text.TIMER1_IRQHandler:00000000000000c0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1078   .text.append_newLine:0000000000000000 append_newLine
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:614    .text.TIMER1_IRQHandler:00000000000000cc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:618    .text.TIMER1_IRQHandler:00000000000000d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:624    .text.TIMER1_IRQHandler:00000000000000e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:625    .text.TIMER1_IRQHandler:00000000000000e6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:627    .text.TIMER1_IRQHandler:00000000000000e8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:630    .text.TIMER1_IRQHandler:00000000000000ea .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:632    .text.TIMER1_IRQHandler:00000000000000ec .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:642    .text.ledInit:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:643    .text.ledInit:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:644    .text.ledInit:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:645    .text.ledInit:0000000000000000 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 37
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:647    .text.ledInit:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:649    .text.ledInit:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:651    .text.ledInit:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:652    .text.ledInit:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:654    .text.ledInit:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:657    .text.ledInit:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:658    .text.ledInit:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:659    .text.ledInit:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:661    .text.ledInit:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:663    .text.ledInit:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:664    .text.ledInit:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:669    .text.ledInit:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:671    .text.ledInit:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:673    .text.ledInit:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:675    .text.ledInit:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:682    .text.led_on_B1:0000000000000000 led_on_B1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:685    .text.led_on_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:686    .text.led_on_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:687    .text.led_on_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:693    .text.led_on_B1:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:700    .text.led_off_B1:0000000000000000 led_off_B1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:703    .text.led_off_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:704    .text.led_off_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:705    .text.led_off_B1:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:711    .text.led_off_B1:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:721    .text.led_on_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:722    .text.led_on_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:723    .text.led_on_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:729    .text.led_on_B0:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:739    .text.led_off_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:740    .text.led_off_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:741    .text.led_off_B0:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:747    .text.led_off_B0:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:757    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:758    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:759    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:760    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:761    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:762    .text.timer_interrupt_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:764    .text.timer_interrupt_config:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:766    .text.timer_interrupt_config:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:770    .text.timer_interrupt_config:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:773    .text.timer_interrupt_config:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:774    .text.timer_interrupt_config:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:775    .text.timer_interrupt_config:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:777    .text.timer_interrupt_config:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:780    .text.timer_interrupt_config:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:784    .text.timer_interrupt_config:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:788    .text.timer_interrupt_config:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:792    .text.timer_interrupt_config:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:793    .text.timer_interrupt_config:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:795    .text.timer_interrupt_config:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:798    .text.timer_interrupt_config:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:800    .text.timer_interrupt_config:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:803    .text.timer_interrupt_config:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:804    .text.timer_interrupt_config:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:805    .text.timer_interrupt_config:000000000000004c .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 38
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:806    .text.timer_interrupt_config:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:808    .text.timer_interrupt_config:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:810    .text.timer_interrupt_config:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:812    .text.timer_interrupt_config:0000000000000054 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:814    .text.timer_interrupt_config:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:815    .text.timer_interrupt_config:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:817    .text.timer_interrupt_config:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:819    .text.timer_interrupt_config:000000000000005e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:820    .text.timer_interrupt_config:000000000000005e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:823    .text.timer_interrupt_config:0000000000000066 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:827    .text.timer_interrupt_config:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:828    .text.timer_interrupt_config:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:832    .text.timer_interrupt_config:0000000000000078 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:834    .text.timer_interrupt_config:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:835    .text.timer_interrupt_config:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:837    .text.timer_interrupt_config:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:838    .text.timer_interrupt_config:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:840    .text.timer_interrupt_config:0000000000000084 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:843    .text.timer_interrupt_config:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:852    .text.timer_interrupt_config:00000000000000a8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:858    .text.timer_interrupt_config:00000000000000b8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:864    .text.timer_interrupt_config:00000000000000c8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:869    .text.timer_interrupt_config:00000000000000d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:874    .text.timer_interrupt_config:00000000000000e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:878    .text.timer_interrupt_config:00000000000000f0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:879    .text.timer_interrupt_config:00000000000000f2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:881    .text.timer_interrupt_config:00000000000000f4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:883    .text.timer_interrupt_config:00000000000000f6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:886    .text.timer_interrupt_config:00000000000000f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:888    .text.timer_interrupt_config:00000000000000fa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:895    .text.int_to_string:0000000000000000 int_to_string
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:898    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:900    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:901    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:902    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:903    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:904    .text.int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:906    .text.int_to_string:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:909    .text.int_to_string:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:910    .text.int_to_string:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:913    .text.int_to_string:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:914    .text.int_to_string:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:917    .text.int_to_string:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:921    .text.int_to_string:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:922    .text.int_to_string:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:923    .text.int_to_string:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:925    .text.int_to_string:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:930    .text.int_to_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:934    .text.int_to_string:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:936    .text.int_to_string:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:940    .text.int_to_string:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:941    .text.int_to_string:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:943    .text.int_to_string:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:947    .text.int_to_string:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:948    .text.int_to_string:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:950    .text.int_to_string:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:954    .text.int_to_string:000000000000003e .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 39
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:955    .text.int_to_string:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:958    .text.int_to_string:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:962    .text.int_to_string:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:963    .text.int_to_string:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:966    .text.int_to_string:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:967    .text.int_to_string:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:971    .text.int_to_string:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:973    .text.int_to_string:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:974    .text.int_to_string:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:977    .text.int_to_string:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:982    .text.int_to_string:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:983    .text.int_to_string:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:987    .text.int_to_string:0000000000000066 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:988    .text.int_to_string:0000000000000066 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:992    .text.int_to_string:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:993    .text.int_to_string:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:995    .text.int_to_string:000000000000006a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:998    .text.int_to_string:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:999    .text.int_to_string:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1003   .text.int_to_string:0000000000000074 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1004   .text.int_to_string:0000000000000074 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1007   .text.int_to_string:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1008   .text.int_to_string:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1010   .text.int_to_string:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1011   .text.int_to_string:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1019   .text.int_to_string:0000000000000088 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1029   .text.append_int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1031   .text.append_int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1032   .text.append_int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1033   .text.append_int_to_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1035   .text.append_int_to_string:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1037   .text.append_int_to_string:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1040   .text.append_int_to_string:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1043   .text.append_int_to_string:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1044   .text.append_int_to_string:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1046   .text.append_int_to_string:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1052   .text.append_int_to_string:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1055   .text.append_int_to_string:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1056   .text.append_int_to_string:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1061   .text.append_int_to_string:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1062   .text.append_int_to_string:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1063   .text.append_int_to_string:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1065   .text.append_int_to_string:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1069   .text.append_int_to_string:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1071   .text.append_int_to_string:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1081   .text.append_newLine:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1083   .text.append_newLine:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1084   .text.append_newLine:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1085   .text.append_newLine:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1090   .text.append_newLine:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1091   .text.append_newLine:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1093   .text.append_newLine:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1094   .text.append_newLine:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1109   .text.millis:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1110   .text.millis:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1111   .text.millis:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1112   .text.millis:0000000000000000 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 40
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1114   .text.millis:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1118   .text.millis:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1119   .text.millis:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1120   .text.millis:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1122   .text.millis:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1125   .text.millis:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1126   .text.millis:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1134   .text.millis:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1136   .text.millis:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1138   .text.millis:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1140   .text.millis:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1142   .text.millis:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1153   .text.millis:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1154   .text.millis:000000000000005a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1156   .text.millis:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1158   .text.millis:000000000000005e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1161   .text.millis:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1163   .text.millis:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1173   .text.init_mpu:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1174   .text.init_mpu:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1175   .text.init_mpu:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1176   .text.init_mpu:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1178   .text.init_mpu:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1180   .text.init_mpu:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1182   .text.init_mpu:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1183   .text.init_mpu:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1185   .text.init_mpu:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1188   .text.init_mpu:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1192   .text.init_mpu:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1200   .text.init_mpu:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1205   .text.init_mpu:0000000000000044 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1206   .text.init_mpu:0000000000000044 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1207   .text.init_mpu:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1209   .text.init_mpu:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1211   .text.init_mpu:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1213   .text.init_mpu:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1215   .text.init_mpu:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1217   .text.init_mpu:0000000000000054 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1222   .rodata:0000000000000000 .LANCHOR0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1258   .bss.last_Sample_buffer:0000000000000000 .LANCHOR2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1265   .sbss.time_elapsed:0000000000000000 .LANCHOR1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:495    .text.startup.main:00000000000003bc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:635    .text.TIMER1_IRQHandler:00000000000000ec .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:678    .text.ledInit:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:696    .text.led_on_B1:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:714    .text.led_off_B1:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:732    .text.led_on_B0:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:750    .text.led_off_B0:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:891    .text.timer_interrupt_config:00000000000000fa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1022   .text.int_to_string:0000000000000088 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1074   .text.append_int_to_string:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1102   .text.append_newLine:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1166   .text.millis:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1220   .text.init_mpu:0000000000000054 .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1223   .rodata:0000000000000000 .LC0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1226   .rodata:0000000000000008 .LC1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 41
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1229   .rodata:0000000000000010 .LC2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1232   .rodata:0000000000000018 .LC3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1250   .rodata:0000000000000070 .LC9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:384    .text.startup.main:00000000000002f8 .L3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:393    .text.startup.main:0000000000000306 .L10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:472    .text.startup.main:0000000000000392 .L12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:65     .text.startup.main:0000000000000046 .L2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:418    .text.startup.main:0000000000000324 .L5
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:461    .text.startup.main:0000000000000384 .L6
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:257    .text.startup.main:00000000000001ee .L4
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:324    .text.startup.main:0000000000000280 .L11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:622    .text.TIMER1_IRQHandler:00000000000000e4 .L17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:990    .text.int_to_string:0000000000000068 .L29
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1015   .text.int_to_string:0000000000000084 .L37
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:951    .text.int_to_string:000000000000003e .L33
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:960    .text.int_to_string:0000000000000048 .L34
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:938    .text.int_to_string:000000000000002a .L35
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:919    .text.int_to_string:0000000000000014 .L30
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:927    .text.int_to_string:000000000000001a .L32
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:8245   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10082  .debug_str:0000000000000305 .LASF612
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10620  .debug_str:0000000000000fd1 .LASF613
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10744  .debug_str:000000000000129c .LASF614
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9922   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9952   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10832  .debug_str:000000000000153e .LASF0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10196  .debug_str:0000000000000605 .LASF615
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10678  .debug_str:0000000000001124 .LASF1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11180  .debug_str:0000000000001cb4 .LASF2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10490  .debug_str:0000000000000cda .LASF3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10222  .debug_str:00000000000006a0 .LASF4
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10786  .debug_str:000000000000143a .LASF5
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10954  .debug_str:00000000000017bc .LASF6
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11066  .debug_str:0000000000001a4d .LASF7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10184  .debug_str:00000000000005ca .LASF8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11182  .debug_str:0000000000001cc1 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10824  .debug_str:000000000000151c .LASF10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10966  .debug_str:00000000000017f7 .LASF11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10950  .debug_str:00000000000017aa .LASF12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10452  .debug_str:0000000000000bde .LASF13
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9962   .debug_str:000000000000002f .LASF14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11134  .debug_str:0000000000001bb3 .LASF15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10676  .debug_str:0000000000001119 .LASF16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10128  .debug_str:0000000000000498 .LASF17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10052  .debug_str:000000000000024e .LASF18
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10820  .debug_str:00000000000014fb .LASF19
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10354  .debug_str:00000000000009b3 .LASF20
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10266  .debug_str:00000000000007c0 .LASF21
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11030  .debug_str:0000000000001964 .LASF22
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10538  .debug_str:0000000000000df3 .LASF23
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10322  .debug_str:00000000000008ea .LASF24
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10194  .debug_str:00000000000005f8 .LASF25
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10554  .debug_str:0000000000000e54 .LASF26
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10084  .debug_str:000000000000038d .LASF27
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10996  .debug_str:00000000000018b7 .LASF28
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10182  .debug_str:00000000000005bd .LASF29
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9988   .debug_str:00000000000000d8 .LASF30
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 42
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11008  .debug_str:00000000000018f5 .LASF31
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11048  .debug_str:00000000000019ce .LASF32
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10574  .debug_str:0000000000000ed1 .LASF33
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10580  .debug_str:0000000000000efa .LASF34
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10106  .debug_str:0000000000000426 .LASF35
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10872  .debug_str:0000000000001626 .LASF36
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10136  .debug_str:00000000000004c3 .LASF37
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9990   .debug_str:00000000000000e8 .LASF38
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10406  .debug_str:0000000000000ae6 .LASF39
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10286  .debug_str:000000000000081a .LASF40
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11072  .debug_str:0000000000001a73 .LASF41
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10610  .debug_str:0000000000000f99 .LASF42
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10770  .debug_str:00000000000013bb .LASF43
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10856  .debug_str:00000000000015c1 .LASF44
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10384  .debug_str:0000000000000a57 .LASF45
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10372  .debug_str:0000000000000a03 .LASF46
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10936  .debug_str:000000000000175d .LASF47
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10614  .debug_str:0000000000000fab .LASF48
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10022  .debug_str:00000000000001bf .LASF49
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10800  .debug_str:0000000000001488 .LASF50
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10132  .debug_str:00000000000004b0 .LASF51
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11112  .debug_str:0000000000001b3d .LASF52
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10654  .debug_str:0000000000001097 .LASF53
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10340  .debug_str:000000000000095b .LASF54
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11074  .debug_str:0000000000001a7d .LASF55
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10772  .debug_str:00000000000013c7 .LASF56
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10304  .debug_str:000000000000087b .LASF57
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11044  .debug_str:00000000000019b4 .LASF58
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10984  .debug_str:0000000000001850 .LASF59
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10492  .debug_str:0000000000000ce7 .LASF60
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10454  .debug_str:0000000000000be9 .LASF61
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10352  .debug_str:00000000000009a5 .LASF62
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11094  .debug_str:0000000000001ae1 .LASF63
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10122  .debug_str:0000000000000472 .LASF64
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11186  .debug_str:0000000000001cd2 .LASF65
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10636  .debug_str:0000000000001039 .LASF66
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10694  .debug_str:000000000000118a .LASF67
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10238  .debug_str:00000000000006fe .LASF68
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10126  .debug_str:000000000000048e .LASF70
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10258  .debug_str:0000000000000790 .LASF69
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10904  .debug_str:00000000000016cf .LASF71
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10994  .debug_str:00000000000018ad .LASF72
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10346  .debug_str:000000000000097a .LASF73
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11122  .debug_str:0000000000001b6a .LASF74
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10158  .debug_str:0000000000000530 .LASF75
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10578  .debug_str:0000000000000eef .LASF76
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10482  .debug_str:0000000000000c94 .LASF77
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10588  .debug_str:0000000000000f24 .LASF78
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10476  .debug_str:0000000000000c7a .LASF79
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10240  .debug_str:000000000000070a .LASF80
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11014  .debug_str:0000000000001919 .LASF81
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10844  .debug_str:0000000000001582 .LASF82
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11080  .debug_str:0000000000001a99 .LASF83
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11004  .debug_str:00000000000018e6 .LASF84
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10498  .debug_str:0000000000000d0d .LASF209
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10908  .debug_str:00000000000016e8 .LASF85
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10922  .debug_str:0000000000001725 .LASF86
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 43
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10924  .debug_str:000000000000172e .LASF87
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10680  .debug_str:0000000000001136 .LASF88
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11058  .debug_str:0000000000001a05 .LASF89
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10548  .debug_str:0000000000000e35 .LASF90
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10038  .debug_str:0000000000000206 .LASF91
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10040  .debug_str:0000000000000211 .LASF92
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10042  .debug_str:000000000000021c .LASF93
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10044  .debug_str:0000000000000227 .LASF94
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10046  .debug_str:0000000000000232 .LASF95
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10048  .debug_str:000000000000023d .LASF96
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10746  .debug_str:000000000000130b .LASF97
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10230  .debug_str:00000000000006d8 .LASF98
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10232  .debug_str:00000000000006e1 .LASF99
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10062  .debug_str:00000000000002af .LASF100
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10064  .debug_str:00000000000002ba .LASF101
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10014  .debug_str:0000000000000188 .LASF102
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10016  .debug_str:0000000000000192 .LASF103
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11084  .debug_str:0000000000001ab4 .LASF104
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11086  .debug_str:0000000000001abd .LASF105
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10310  .debug_str:000000000000089f .LASF106
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10312  .debug_str:00000000000008a8 .LASF107
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11028  .debug_str:000000000000195b .LASF108
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9998   .debug_str:0000000000000134 .LASF109
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10242  .debug_str:0000000000000712 .LASF110
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10788  .debug_str:0000000000001449 .LASF111
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10510  .debug_str:0000000000000d63 .LASF112
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10592  .debug_str:0000000000000f3b .LASF113
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10594  .debug_str:0000000000000f45 .LASF114
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10596  .debug_str:0000000000000f4f .LASF115
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10598  .debug_str:0000000000000f59 .LASF116
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10600  .debug_str:0000000000000f63 .LASF117
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10582  .debug_str:0000000000000f06 .LASF118
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10584  .debug_str:0000000000000f0f .LASF119
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10036  .debug_str:00000000000001fb .LASF120
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10228  .debug_str:00000000000006cf .LASF121
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10060  .debug_str:00000000000002a4 .LASF122
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10478  .debug_str:0000000000000c85 .LASF123
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10562  .debug_str:0000000000000e7a .LASF124
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10540  .debug_str:0000000000000e06 .LASF125
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10898  .debug_str:00000000000016b8 .LASF126
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10320  .debug_str:00000000000008dc .LASF127
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10100  .debug_str:00000000000003fa .LASF128
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10670  .debug_str:00000000000010f6 .LASF129
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10544  .debug_str:0000000000000e21 .LASF130
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10650  .debug_str:0000000000001082 .LASF131
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10338  .debug_str:0000000000000950 .LASF132
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11098  .debug_str:0000000000001af9 .LASF133
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9986   .debug_str:00000000000000cc .LASF134
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10124  .debug_str:0000000000000481 .LASF135
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10474  .debug_str:0000000000000c60 .LASF136
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10778  .debug_str:000000000000140c .LASF137
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10274  .debug_str:00000000000007f1 .LASF138
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10590  .debug_str:0000000000000f32 .LASF139
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10398  .debug_str:0000000000000aaa .LASF140
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10970  .debug_str:0000000000001811 .LASF141
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10420  .debug_str:0000000000000b26 .LASF142
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11142  .debug_str:0000000000001be7 .LASF143
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 44
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10858  .debug_str:00000000000015cd .LASF144
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11156  .debug_str:0000000000001c38 .LASF145
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11154  .debug_str:0000000000001c30 .LASF146
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10952  .debug_str:00000000000017b5 .LASF147
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11148  .debug_str:0000000000001c0d .LASF148
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11106  .debug_str:0000000000001b1e .LASF149
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10404  .debug_str:0000000000000adb .LASF150
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10292  .debug_str:000000000000083c .LASF151
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10442  .debug_str:0000000000000bae .LASF152
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11146  .debug_str:0000000000001c05 .LASF153
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9972   .debug_str:0000000000000085 .LASF154
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11136  .debug_str:0000000000001bbe .LASF155
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10674  .debug_str:0000000000001114 .LASF156
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10234  .debug_str:00000000000006ea .LASF157
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10792  .debug_str:000000000000145a .LASF158
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11090  .debug_str:0000000000001acf .LASF159
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10942  .debug_str:0000000000001784 .LASF160
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11132  .debug_str:0000000000001ba9 .LASF161
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11168  .debug_str:0000000000001c7d .LASF162
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10468  .debug_str:0000000000000c3d .LASF163
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10394  .debug_str:0000000000000a96 .LASF164
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11116  .debug_str:0000000000001b4d .LASF165
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10962  .debug_str:00000000000017e9 .LASF166
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10870  .debug_str:000000000000161f .LASF167
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10190  .debug_str:00000000000005e8 .LASF168
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10706  .debug_str:00000000000011ed .LASF169
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10276  .debug_str:00000000000007f8 .LASF170
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10284  .debug_str:0000000000000815 .LASF171
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10850  .debug_str:00000000000015ac .LASF172
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10050  .debug_str:0000000000000248 .LASF173
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10308  .debug_str:0000000000000894 .LASF174
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10542  .debug_str:0000000000000e17 .LASF175
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10344  .debug_str:0000000000000970 .LASF176
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11172  .debug_str:0000000000001c8b .LASF177
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10024  .debug_str:00000000000001c9 .LASF178
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10376  .debug_str:0000000000000a27 .LASF179
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10378  .debug_str:0000000000000a32 .LASF180
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11100  .debug_str:0000000000001b05 .LASF181
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10288  .debug_str:0000000000000827 .LASF182
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10152  .debug_str:0000000000000510 .LASF183
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9982   .debug_str:00000000000000bb .LASF184
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10866  .debug_str:000000000000160a .LASF185
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10154  .debug_str:0000000000000518 .LASF186
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10796  .debug_str:000000000000146c .LASF187
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10446  .debug_str:0000000000000bc1 .LASF188
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11178  .debug_str:0000000000001ca9 .LASF189
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11024  .debug_str:000000000000194a .LASF190
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11032  .debug_str:0000000000001977 .LASF191
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10300  .debug_str:0000000000000869 .LASF192
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10010  .debug_str:0000000000000174 .LASF193
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10206  .debug_str:000000000000064a .LASF194
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10264  .debug_str:00000000000007b4 .LASF195
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10766  .debug_str:00000000000013a1 .LASF196
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10532  .debug_str:0000000000000dd7 .LASF197
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10220  .debug_str:0000000000000698 .LASF198
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10400  .debug_str:0000000000000ab1 .LASF199
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10628  .debug_str:0000000000001003 .LASF200
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 45
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11012  .debug_str:000000000000190d .LASF201
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10172  .debug_str:000000000000056a .LASF202
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10412  .debug_str:0000000000000b02 .LASF211
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10162  .debug_str:0000000000000545 .LASF203
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10976  .debug_str:000000000000182e .LASF204
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10964  .debug_str:00000000000017f2 .LASF205
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10518  .debug_str:0000000000000d90 .LASF206
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10110  .debug_str:0000000000000439 .LASF207
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10804  .debug_str:000000000000149a .LASF208
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10960  .debug_str:00000000000017df .LASF210
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10426  .debug_str:0000000000000b46 .LASF212
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10260  .debug_str:000000000000079e .LASF213
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10732  .debug_str:000000000000126e .LASF214
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10278  .debug_str:00000000000007ff .LASF215
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10836  .debug_str:0000000000001563 .LASF216
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10428  .debug_str:0000000000000b4f .LASF217
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10552  .debug_str:0000000000000e4c .LASF218
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10748  .debug_str:0000000000001315 .LASF219
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10828  .debug_str:000000000000152e .LASF220
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10458  .debug_str:0000000000000c07 .LASF221
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10368  .debug_str:00000000000009ee .LASF222
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10874  .debug_str:0000000000001632 .LASF223
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10302  .debug_str:0000000000000874 .LASF224
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10098  .debug_str:00000000000003f3 .LASF225
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10968  .debug_str:0000000000001804 .LASF226
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10004  .debug_str:000000000000014f .LASF227
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10148  .debug_str:00000000000004f7 .LASF228
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10486  .debug_str:0000000000000cbc .LASF229
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10888  .debug_str:000000000000167e .LASF230
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10876  .debug_str:0000000000001640 .LASF231
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10254  .debug_str:000000000000076d .LASF232
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10644  .debug_str:0000000000001068 .LASF233
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9954   .debug_str:0000000000000000 .LASF234
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10488  .debug_str:0000000000000ccc .LASF235
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10484  .debug_str:0000000000000ca6 .LASF236
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10616  .debug_str:0000000000000fbb .LASF237
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10328  .debug_str:000000000000090e .LASF238
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10784  .debug_str:000000000000142d .LASF239
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10686  .debug_str:000000000000115c .LASF240
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10698  .debug_str:00000000000011b5 .LASF241
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10726  .debug_str:000000000000124c .LASF242
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10564  .debug_str:0000000000000e86 .LASF243
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11096  .debug_str:0000000000001aef .LASF244
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10526  .debug_str:0000000000000db3 .LASF245
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10250  .debug_str:0000000000000756 .LASF246
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10986  .debug_str:0000000000001863 .LASF247
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9958   .debug_str:0000000000000015 .LASF248
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10506  .debug_str:0000000000000d46 .LASF249
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10692  .debug_str:000000000000117a .LASF250
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10946  .debug_str:0000000000001792 .LASF251
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10224  .debug_str:00000000000006ae .LASF252
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10914  .debug_str:0000000000001700 .LASF253
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9964   .debug_str:000000000000003a .LASF254
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11108  .debug_str:0000000000001b29 .LASF255
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9974   .debug_str:000000000000008f .LASF256
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10624  .debug_str:0000000000000fe5 .LASF257
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10170  .debug_str:0000000000000560 .LASF258
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 46
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10470  .debug_str:0000000000000c44 .LASF259
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11118  .debug_str:0000000000001b55 .LASF260
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10534  .debug_str:0000000000000de0 .LASF261
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10992  .debug_str:00000000000018a4 .LASF262
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10186  .debug_str:00000000000005d6 .LASF263
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10080  .debug_str:00000000000002f7 .LASF264
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10708  .debug_str:00000000000011f6 .LASF265
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11016  .debug_str:0000000000001921 .LASF266
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11034  .debug_str:000000000000197f .LASF267
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10768  .debug_str:00000000000013ac .LASF268
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10818  .debug_str:00000000000014f1 .LASF269
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10902  .debug_str:00000000000016c6 .LASF270
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10030  .debug_str:00000000000001e0 .LASF271
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10980  .debug_str:000000000000183d .LASF272
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10146  .debug_str:00000000000004ef .LASF273
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10790  .debug_str:0000000000001451 .LASF274
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9980   .debug_str:00000000000000b3 .LASF275
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10606  .debug_str:0000000000000f7c .LASF276
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10982  .debug_str:0000000000001846 .LASF277
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11082  .debug_str:0000000000001aa2 .LASF278
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10388  .debug_str:0000000000000a6b .LASF279
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10272  .debug_str:00000000000007ea .LASF280
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10622  .debug_str:0000000000000fd8 .LASF281
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10740  .debug_str:000000000000128b .LASF282
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10568  .debug_str:0000000000000e9e .LASF283
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9956   .debug_str:0000000000000009 .LASF284
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10978  .debug_str:0000000000001835 .LASF285
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10262  .debug_str:00000000000007ac .LASF286
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11088  .debug_str:0000000000001ac6 .LASF287
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10318  .debug_str:00000000000008d2 .LASF288
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10500  .debug_str:0000000000000d1d .LASF289
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10076  .debug_str:00000000000002e9 .LASF290
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10688  .debug_str:000000000000116b .LASF291
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11102  .debug_str:0000000000001b0d .LASF292
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10298  .debug_str:000000000000085e .LASF293
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10068  .debug_str:00000000000002cb .LASF294
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10432  .debug_str:0000000000000b5f .LASF295
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11184  .debug_str:0000000000001cca .LASF296
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11130  .debug_str:0000000000001b98 .LASF297
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10930  .debug_str:0000000000001747 .LASF298
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10918  .debug_str:0000000000001710 .LASF299
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10838  .debug_str:000000000000156a .LASF300
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10212  .debug_str:0000000000000677 .LASF301
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10948  .debug_str:00000000000017a5 .LASF302
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10392  .debug_str:0000000000000a8f .LASF303
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10134  .debug_str:00000000000004ba .LASF304
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10120  .debug_str:000000000000046a .LASF305
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10296  .debug_str:0000000000000855 .LASF306
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10326  .debug_str:00000000000008fb .LASF307
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10710  .debug_str:00000000000011fe .LASF308
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10906  .debug_str:00000000000016d9 .LASF309
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10438  .debug_str:0000000000000b7a .LASF310
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10070  .debug_str:00000000000002d4 .LASF311
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10662  .debug_str:00000000000010c9 .LASF312
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10684  .debug_str:0000000000001151 .LASF313
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10834  .debug_str:0000000000001555 .LASF314
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10884  .debug_str:0000000000001665 .LASF315
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 47
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10896  .debug_str:00000000000016ad .LASF316
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10916  .debug_str:000000000000170b .LASF317
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10652  .debug_str:000000000000108f .LASF318
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10712  .debug_str:0000000000001212 .LASF319
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11020  .debug_str:0000000000001935 .LASF320
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10956  .debug_str:00000000000017c7 .LASF321
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10932  .debug_str:000000000000174c .LASF322
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11110  .debug_str:0000000000001b36 .LASF323
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10810  .debug_str:00000000000014ce .LASF324
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9970   .debug_str:000000000000007c .LASF325
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10142  .debug_str:00000000000004e3 .LASF326
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10812  .debug_str:00000000000014d6 .LASF327
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10750  .debug_str:0000000000001326 .LASF328
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9978   .debug_str:00000000000000ab .LASF329
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10912  .debug_str:00000000000016f5 .LASF330
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11078  .debug_str:0000000000001a91 .LASF331
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10514  .debug_str:0000000000000d79 .LASF332
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10894  .debug_str:00000000000016a4 .LASF333
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10536  .debug_str:0000000000000deb .LASF334
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10940  .debug_str:000000000000177e .LASF335
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10546  .debug_str:0000000000000e2d .LASF336
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10648  .debug_str:000000000000107c .LASF337
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10422  .debug_str:0000000000000b2e .LASF338
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10028  .debug_str:00000000000001db .LASF339
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10034  .debug_str:00000000000001f2 .LASF340
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11174  .debug_str:0000000000001c93 .LASF341
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11126  .debug_str:0000000000001b86 .LASF342
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10450  .debug_str:0000000000000bd4 .LASF343
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10208  .debug_str:0000000000000652 .LASF344
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11026  .debug_str:0000000000001951 .LASF345
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10776  .debug_str:0000000000001402 .LASF346
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10782  .debug_str:0000000000001423 .LASF347
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11160  .debug_str:0000000000001c4c .LASF348
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10138  .debug_str:00000000000004d0 .LASF349
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10072  .debug_str:00000000000002db .LASF350
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10848  .debug_str:00000000000015a0 .LASF351
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11018  .debug_str:000000000000192c .LASF352
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11054  .debug_str:00000000000019f0 .LASF353
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10738  .debug_str:0000000000001283 .LASF354
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10314  .debug_str:00000000000008b1 .LASF355
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10332  .debug_str:000000000000092d .LASF356
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11050  .debug_str:00000000000019e2 .LASF357
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10892  .debug_str:000000000000169e .LASF358
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10168  .debug_str:000000000000055a .LASF359
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11128  .debug_str:0000000000001b90 .LASF360
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10734  .debug_str:0000000000001277 .LASF361
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10144  .debug_str:00000000000004e9 .LASF362
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11040  .debug_str:00000000000019a6 .LASF363
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10416  .debug_str:0000000000000b16 .LASF364
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9992   .debug_str:00000000000000f5 .LASF365
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10000  .debug_str:000000000000013c .LASF366
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10802  .debug_str:0000000000001494 .LASF367
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10336  .debug_str:0000000000000949 .LASF368
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10716  .debug_str:0000000000001222 .LASF369
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10032  .debug_str:00000000000001ec .LASF370
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10864  .debug_str:0000000000001601 .LASF371
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10444  .debug_str:0000000000000bb9 .LASF372
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 48
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10944  .debug_str:000000000000178c .LASF373
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10074  .debug_str:00000000000002e3 .LASF374
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10724  .debug_str:0000000000001243 .LASF375
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10496  .debug_str:0000000000000d05 .LASF376
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10090  .debug_str:00000000000003ad .LASF377
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10522  .debug_str:0000000000000da0 .LASF378
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10358  .debug_str:00000000000009d0 .LASF379
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10854  .debug_str:00000000000015b9 .LASF380
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10720  .debug_str:000000000000122d .LASF381
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11042  .debug_str:00000000000019af .LASF382
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10756  .debug_str:0000000000001341 .LASF383
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11162  .debug_str:0000000000001c57 .LASF384
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11076  .debug_str:0000000000001a89 .LASF385
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10494  .debug_str:0000000000000cfa .LASF386
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10556  .debug_str:0000000000000e62 .LASF387
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11092  .debug_str:0000000000001ad9 .LASF388
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10166  .debug_str:0000000000000550 .LASF389
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10480  .debug_str:0000000000000c8f .LASF390
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10640  .debug_str:0000000000001058 .LASF391
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10008  .debug_str:000000000000016c .LASF392
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10448  .debug_str:0000000000000bcc .LASF393
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10714  .debug_str:000000000000121d .LASF394
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10558  .debug_str:0000000000000e6c .LASF395
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10436  .debug_str:0000000000000b70 .LASF396
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10612  .debug_str:0000000000000fa3 .LASF397
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9984   .debug_str:00000000000000c7 .LASF398
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10324  .debug_str:00000000000008f6 .LASF399
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10900  .debug_str:00000000000016bf .LASF400
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10646  .debug_str:0000000000001076 .LASF401
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10604  .debug_str:0000000000000f75 .LASF402
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10642  .debug_str:0000000000001062 .LASF403
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10852  .debug_str:00000000000015b1 .LASF404
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10794  .debug_str:0000000000001466 .LASF405
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10086  .debug_str:000000000000039b .LASF406
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11114  .debug_str:0000000000001b48 .LASF407
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10236  .debug_str:00000000000006f1 .LASF408
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10882  .debug_str:0000000000001658 .LASF409
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10006  .debug_str:000000000000015f .LASF410
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10200  .debug_str:000000000000061d .LASF411
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10626  .debug_str:0000000000000ff4 .LASF412
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10728  .debug_str:000000000000125b .LASF413
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10920  .debug_str:0000000000001720 .LASF414
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10990  .debug_str:0000000000001897 .LASF415
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10822  .debug_str:000000000000150e .LASF416
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10722  .debug_str:0000000000001235 .LASF417
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10814  .debug_str:00000000000014dd .LASF418
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10530  .debug_str:0000000000000dcb .LASF419
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11176  .debug_str:0000000000001c9c .LASF420
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10156  .debug_str:0000000000000522 .LASF421
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10886  .debug_str:000000000000166f .LASF422
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11138  .debug_str:0000000000001bc5 .LASF423
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10700  .debug_str:00000000000011c9 .LASF424
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10664  .debug_str:00000000000010d2 .LASF425
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10840  .debug_str:0000000000001572 .LASF426
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11060  .debug_str:0000000000001a0e .LASF427
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10618  .debug_str:0000000000000fc8 .LASF428
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10026  .debug_str:00000000000001d3 .LASF429
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 49
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9976   .debug_str:00000000000000a0 .LASF616
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10160  .debug_str:0000000000000539 .LASF430
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10760  .debug_str:000000000000136f .LASF431
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10294  .debug_str:0000000000000842 .LASF432
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11166  .debug_str:0000000000001c76 .LASF433
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11062  .debug_str:0000000000001a15 .LASF434
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10248  .debug_str:0000000000000747 .LASF435
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10268  .debug_str:00000000000007d3 .LASF436
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10054  .debug_str:0000000000000261 .LASF437
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10758  .debug_str:000000000000134c .LASF438
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11068  .debug_str:0000000000001a56 .LASF439
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10348  .debug_str:0000000000000985 .LASF440
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10246  .debug_str:0000000000000722 .LASF441
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10180  .debug_str:00000000000005a6 .LASF442
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11036  .debug_str:0000000000001989 .LASF443
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10210  .debug_str:000000000000065b .LASF444
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10456  .debug_str:0000000000000bf6 .LASF445
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10094  .debug_str:00000000000003c9 .LASF446
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10018  .debug_str:000000000000019c .LASF447
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10316  .debug_str:00000000000008b6 .LASF448
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10658  .debug_str:00000000000010a9 .LASF449
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9968   .debug_str:0000000000000063 .LASF450
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9996   .debug_str:000000000000010c .LASF451
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11056  .debug_str:00000000000019f8 .LASF452
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11064  .debug_str:0000000000001a3b .LASF453
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10178  .debug_str:000000000000058d .LASF454
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10002  .debug_str:0000000000000143 .LASF455
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10520  .debug_str:0000000000000d96 .LASF456
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10632  .debug_str:000000000000101c .LASF457
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10058  .debug_str:0000000000000295 .LASF458
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10464  .debug_str:0000000000000c23 .LASF459
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10382  .debug_str:0000000000000a4b .LASF460
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10370  .debug_str:00000000000009fe .LASF461
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10130  .debug_str:00000000000004ab .LASF462
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10736  .debug_str:000000000000127e .LASF463
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10216  .debug_str:000000000000068c .LASF464
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10360  .debug_str:00000000000009d7 .LASF465
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10280  .debug_str:0000000000000806 .LASF466
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10164  .debug_str:000000000000054b .LASF467
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10742  .debug_str:0000000000001295 .LASF468
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11164  .debug_str:0000000000001c70 .LASF469
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11038  .debug_str:000000000000199d .LASF470
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10816  .debug_str:00000000000014e7 .LASF471
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10926  .debug_str:0000000000001737 .LASF472
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10114  .debug_str:000000000000044a .LASF473
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11152  .debug_str:0000000000001c26 .LASF474
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10342  .debug_str:0000000000000967 .LASF475
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10066  .debug_str:00000000000002c5 .LASF476
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10878  .debug_str:000000000000164a .LASF477
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10528  .debug_str:0000000000000dc3 .LASF478
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10270  .debug_str:00000000000007e2 .LASF479
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10826  .debug_str:0000000000001525 .LASF480
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9960   .debug_str:0000000000000027 .LASF481
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11006  .debug_str:00000000000018ef .LASF482
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10516  .debug_str:0000000000000d8b .LASF483
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10560  .debug_str:0000000000000e75 .LASF484
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10910  .debug_str:00000000000016ee .LASF485
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 50
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10998  .debug_str:00000000000018c6 .LASF486
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10244  .debug_str:000000000000071a .LASF487
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10704  .debug_str:00000000000011e8 .LASF488
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10718  .debug_str:0000000000001228 .LASF489
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10218  .debug_str:0000000000000692 .LASF490
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10140  .debug_str:00000000000004de .LASF491
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10252  .debug_str:0000000000000764 .LASF492
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10958  .debug_str:00000000000017d7 .LASF493
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11104  .debug_str:0000000000001b18 .LASF494
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11070  .debug_str:0000000000001a67 .LASF495
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10214  .debug_str:0000000000000681 .LASF496
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10290  .debug_str:000000000000082f .LASF497
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10780  .debug_str:0000000000001418 .LASF498
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10188  .debug_str:00000000000005dd .LASF499
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10570  .debug_str:0000000000000ea6 .LASF500
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10356  .debug_str:00000000000009c6 .LASF501
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11124  .debug_str:0000000000001b7d .LASF502
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10608  .debug_str:0000000000000f87 .LASF503
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10198  .debug_str:000000000000060a .LASF504
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10504  .debug_str:0000000000000d35 .LASF505
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10762  .debug_str:0000000000001382 .LASF506
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11140  .debug_str:0000000000001bd6 .LASF507
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10764  .debug_str:0000000000001391 .LASF508
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10012  .debug_str:000000000000017d .LASF509
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10576  .debug_str:0000000000000ee5 .LASF510
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10682  .debug_str:000000000000113e .LASF511
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10334  .debug_str:0000000000000932 .LASF512
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10092  .debug_str:00000000000003b4 .LASF513
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10408  .debug_str:0000000000000af3 .LASF514
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10660  .debug_str:00000000000010c3 .LASF515
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10102  .debug_str:000000000000040c .LASF516
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10362  .debug_str:00000000000009df .LASF517
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10364  .debug_str:00000000000009e4 .LASF518
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10366  .debug_str:00000000000009e9 .LASF519
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11150  .debug_str:0000000000001c21 .LASF520
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10880  .debug_str:0000000000001652 .LASF521
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10460  .debug_str:0000000000000c17 .LASF522
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10462  .debug_str:0000000000000c1d .LASF523
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10690  .debug_str:0000000000001174 .LASF524
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10430  .debug_str:0000000000000b57 .LASF525
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10730  .debug_str:0000000000001266 .LASF526
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11002  .debug_str:00000000000018d9 .LASF527
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10396  .debug_str:0000000000000a9f .LASF528
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10424  .debug_str:0000000000000b33 .LASF529
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10088  .debug_str:00000000000003a1 .LASF530
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10202  .debug_str:000000000000062c .LASF531
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10150  .debug_str:0000000000000507 .LASF532
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1171   .text.init_mpu:0000000000000000 .LFB19
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1218   .text.init_mpu:0000000000000054 .LFE19
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9436   .debug_loc:0000000000000000 .LLST21
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1186   .text.init_mpu:0000000000000010 .LVL132
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1190   .text.init_mpu:000000000000001c .LVL133
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1198   .text.init_mpu:0000000000000034 .LVL134
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1203   .text.init_mpu:0000000000000044 .LVL135
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1216   .text.init_mpu:0000000000000054 .LVL136
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10112  .debug_str:0000000000000443 .LASF536
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1107   .text.millis:0000000000000000 .LFB18
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 51
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1164   .text.millis:0000000000000062 .LFE18
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9454   .debug_loc:000000000000002c .LLST19
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10056  .debug_str:000000000000028f .LASF539
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9472   .debug_loc:0000000000000058 .LLST20
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1123   .text.millis:0000000000000010 .LVL126
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10116  .debug_str:0000000000000454 .LASF533
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1079   .text.append_newLine:0000000000000000 .LFB17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1095   .text.append_newLine:000000000000000e .LFE17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10672  .debug_str:000000000000110d .LASF534
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10842  .debug_str:000000000000157b .LASF535
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9484   .debug_loc:0000000000000070 .LLST18
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10846  .debug_str:000000000000158b .LASF537
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1027   .text.append_int_to_string:0000000000000000 .LFB16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1072   .text.append_int_to_string:0000000000000030 .LFE16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9498   .debug_loc:0000000000000091 .LLST15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9516   .debug_loc:00000000000000bd .LLST16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10418  .debug_str:0000000000000b1e .LASF538
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9534   .debug_loc:00000000000000e9 .LLST17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1053   .text.append_int_to_string:000000000000001c .LVL121
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1059   .text.append_int_to_string:0000000000000028 .LVL122
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10330  .debug_str:000000000000091f .LASF540
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:896    .text.int_to_string:0000000000000000 .LFB15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1020   .text.int_to_string:0000000000000088 .LFE15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9548   .debug_loc:000000000000010a .LLST9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9574   .debug_loc:000000000000014c .LLST10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9593   .debug_loc:0000000000000180 .LLST11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10602  .debug_str:0000000000000f6d .LASF541
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9643   .debug_loc:00000000000001fd .LLST12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10108  .debug_str:0000000000000432 .LASF542
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9666   .debug_loc:0000000000000237 .LLST13
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:932    .text.int_to_string:0000000000000024 .LBB2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:969    .text.int_to_string:0000000000000050 .LBE2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10434  .debug_str:0000000000000b6a .LASF543
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9677   .debug_loc:0000000000000255 .LLST14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10096  .debug_str:00000000000003dc .LASF546
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:755    .text.timer_interrupt_config:0000000000000000 .LFB14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:889    .text.timer_interrupt_config:00000000000000fa .LFE14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9684   .debug_loc:0000000000000268 .LLST7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10630  .debug_str:000000000000100b .LASF544
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10508  .debug_str:0000000000000d54 .LASF545
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9702   .debug_loc:0000000000000294 .LLST8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:778    .text.timer_interrupt_config:0000000000000018 .LVL85
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:782    .text.timer_interrupt_config:0000000000000024 .LVL86
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:786    .text.timer_interrupt_config:0000000000000030 .LVL87
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:790    .text.timer_interrupt_config:000000000000003a .LVL88
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:821    .text.timer_interrupt_config:0000000000000066 .LVL90
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:825    .text.timer_interrupt_config:0000000000000070 .LVL91
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:841    .text.timer_interrupt_config:000000000000008c .LVL92
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:850    .text.timer_interrupt_config:00000000000000a8 .LVL93
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:856    .text.timer_interrupt_config:00000000000000b8 .LVL94
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:862    .text.timer_interrupt_config:00000000000000c8 .LVL95
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:867    .text.timer_interrupt_config:00000000000000d6 .LVL96
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:872    .text.timer_interrupt_config:00000000000000e4 .LVL97
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:876    .text.timer_interrupt_config:00000000000000f0 .LVL98
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10566  .debug_str:0000000000000e93 .LASF547
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:737    .text.led_off_B0:0000000000000000 .LFB13
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:748    .text.led_off_B0:0000000000000014 .LFE13
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 52
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:746    .text.led_off_B0:0000000000000014 .LVL84
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10414  .debug_str:0000000000000b0c .LASF548
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:719    .text.led_on_B0:0000000000000000 .LFB12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:730    .text.led_on_B0:0000000000000014 .LFE12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:728    .text.led_on_B0:0000000000000014 .LVL83
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11000  .debug_str:00000000000018ce .LASF549
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:701    .text.led_off_B1:0000000000000000 .LFB11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:712    .text.led_off_B1:0000000000000014 .LFE11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:710    .text.led_off_B1:0000000000000014 .LVL82
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10638  .debug_str:000000000000104e .LASF550
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:683    .text.led_on_B1:0000000000000000 .LFB10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:694    .text.led_on_B1:0000000000000014 .LFE10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:692    .text.led_on_B1:0000000000000014 .LVL81
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10830  .debug_str:0000000000001536 .LASF551
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:640    .text.ledInit:0000000000000000 .LFB9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:676    .text.ledInit:000000000000002a .LFE9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9709   .debug_loc:00000000000002a7 .LLST6
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:655    .text.ledInit:0000000000000010 .LVL79
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:674    .text.ledInit:000000000000002a .LVL80
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10938  .debug_str:000000000000176c .LASF552
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:500    .text.TIMER1_IRQHandler:0000000000000000 .LFB8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:633    .text.TIMER1_IRQHandler:00000000000000ec .LFE8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9727   .debug_loc:00000000000002d3 .LLST5
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10020  .debug_str:00000000000001b6 .LASF553
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10104  .debug_str:0000000000000419 .LASF556
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:519    .text.TIMER1_IRQHandler:0000000000000016 .LVL66
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:537    .text.TIMER1_IRQHandler:0000000000000032 .LVL67
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:544    .text.TIMER1_IRQHandler:0000000000000042 .LVL68
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:584    .text.TIMER1_IRQHandler:0000000000000092 .LVL72
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:593    .text.TIMER1_IRQHandler:00000000000000a4 .LVL73
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:602    .text.TIMER1_IRQHandler:00000000000000b6 .LVL74
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:607    .text.TIMER1_IRQHandler:00000000000000c0 .LVL75
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:612    .text.TIMER1_IRQHandler:00000000000000cc .LVL76
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:616    .text.TIMER1_IRQHandler:00000000000000d6 .LVL77
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:621    .text.TIMER1_IRQHandler:00000000000000e4 .LVL78
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10192  .debug_str:00000000000005f3 .LASF554
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:19     .text.startup.main:0000000000000000 .LFB7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:492    .text.startup.main:00000000000003bc .LFE7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9745   .debug_loc:0000000000000300 .LLST0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10666  .debug_str:00000000000010e3 .LASF555
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10472  .debug_str:0000000000000c50 .LASF557
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10868  .debug_str:0000000000001612 .LASF558
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10586  .debug_str:0000000000000f18 .LASF559
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10752  .debug_str:000000000000132e .LASF560
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9778   .debug_loc:0000000000000354 .LLST1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10306  .debug_str:000000000000088e .LASF561
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9808   .debug_loc:00000000000003a1 .LLST2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11120  .debug_str:0000000000001b5f .LASF562
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9842   .debug_loc:00000000000003f9 .LLST3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11010  .debug_str:0000000000001904 .LASF563
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9872   .debug_loc:0000000000000431 .LLST4
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:59     .text.startup.main:000000000000003c .LVL1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:63     .text.startup.main:0000000000000046 .LVL2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:68     .text.startup.main:000000000000004e .LVL3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:75     .text.startup.main:0000000000000062 .LVL4
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:78     .text.startup.main:000000000000006a .LVL5
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:81     .text.startup.main:0000000000000072 .LVL6
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 53
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:85     .text.startup.main:000000000000007c .LVL7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:101    .text.startup.main:0000000000000094 .LVL8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:105    .text.startup.main:00000000000000a0 .LVL9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:121    .text.startup.main:00000000000000c4 .LVL10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:132    .text.startup.main:00000000000000dc .LVL11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:136    .text.startup.main:00000000000000e8 .LVL12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:141    .text.startup.main:00000000000000f8 .LVL13
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:144    .text.startup.main:0000000000000100 .LVL14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:149    .text.startup.main:0000000000000110 .LVL15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:153    .text.startup.main:000000000000011c .LVL16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:160    .text.startup.main:0000000000000128 .LVL17
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:168    .text.startup.main:000000000000013c .LVL18
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:178    .text.startup.main:000000000000014c .LVL19
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:187    .text.startup.main:000000000000015c .LVL20
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:195    .text.startup.main:0000000000000170 .LVL21
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:200    .text.startup.main:000000000000017a .LVL22
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:207    .text.startup.main:000000000000018a .LVL23
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:214    .text.startup.main:000000000000019e .LVL24
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:217    .text.startup.main:00000000000001a6 .LVL25
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:220    .text.startup.main:00000000000001ae .LVL26
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:223    .text.startup.main:00000000000001b6 .LVL27
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:227    .text.startup.main:00000000000001c2 .LVL28
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:231    .text.startup.main:00000000000001ca .LVL29
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:266    .text.startup.main:0000000000000204 .LVL32
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:272    .text.startup.main:0000000000000212 .LVL34
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:291    .text.startup.main:0000000000000240 .LVL37
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:296    .text.startup.main:000000000000024e .LVL38
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:329    .text.startup.main:000000000000028c .LVL40
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:339    .text.startup.main:00000000000002a6 .LVL41
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:344    .text.startup.main:00000000000002b6 .LVL42
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:348    .text.startup.main:00000000000002c0 .LVL43
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:390    .text.startup.main:0000000000000304 .LVL47
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:411    .text.startup.main:0000000000000320 .LVL51
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:422    .text.startup.main:000000000000032c .LVL53
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:432    .text.startup.main:0000000000000344 .LVL54
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:436    .text.startup.main:000000000000034e .LVL55
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:442    .text.startup.main:000000000000035a .LVL56
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:448    .text.startup.main:0000000000000368 .LVL57
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:454    .text.startup.main:0000000000000378 .LVL58
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:458    .text.startup.main:0000000000000382 .LVL59
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:464    .text.startup.main:000000000000038c .LVL61
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:476    .text.startup.main:000000000000039c .LVL63
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:482    .text.startup.main:00000000000003ac .LVL64
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:486    .text.startup.main:00000000000003b6 .LVL65
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11144  .debug_str:0000000000001bed .LASF564
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10928  .debug_str:000000000000173d .LASF565
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10502  .debug_str:0000000000000d25 .LASF566
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10934  .debug_str:0000000000001753 .LASF567
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10702  .debug_str:00000000000011d8 .LASF568
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10524  .debug_str:0000000000000da7 .LASF569
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10204  .debug_str:0000000000000639 .LASF570
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10754  .debug_str:0000000000001334 .LASF571
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10890  .debug_str:0000000000001687 .LASF572
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10466  .debug_str:0000000000000c32 .LASF573
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10440  .debug_str:0000000000000b88 .LASF574
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9966   .debug_str:0000000000000047 .LASF575
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10774  .debug_str:00000000000013da .LASF576
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 54
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10402  .debug_str:0000000000000aba .LASF577
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10988  .debug_str:0000000000001874 .LASF578
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10806  .debug_str:00000000000014a8 .LASF579
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10572  .debug_str:0000000000000eb6 .LASF580
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10668  .debug_str:00000000000010e9 .LASF581
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10512  .debug_str:0000000000000d6a .LASF582
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10974  .debug_str:0000000000001827 .LASF590
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10174  .debug_str:0000000000000574 .LASF592
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10256  .debug_str:0000000000000777 .LASF583
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10798  .debug_str:0000000000001477 .LASF584
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11046  .debug_str:00000000000019c7 .LASF585
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10972  .debug_str:0000000000001818 .LASF586
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10374  .debug_str:0000000000000a12 .LASF587
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10226  .debug_str:00000000000006c1 .LASF588
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10860  .debug_str:00000000000015d4 .LASF589
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10078  .debug_str:00000000000002f2 .LASF591
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10808  .debug_str:00000000000014bf .LASF593
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10656  .debug_str:00000000000010a2 .LASF594
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11158  .debug_str:0000000000001c40 .LASF595
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11022  .debug_str:0000000000001942 .LASF596
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10282  .debug_str:000000000000080e .LASF597
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10118  .debug_str:0000000000000463 .LASF598
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10550  .debug_str:0000000000000e3f .LASF599
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11052  .debug_str:00000000000019e9 .LASF600
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10634  .debug_str:0000000000001028 .LASF601
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:9994   .debug_str:00000000000000fb .LASF602
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10696  .debug_str:0000000000001197 .LASF603
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10410  .debug_str:0000000000000afb .LASF604
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10862  .debug_str:00000000000015e9 .LASF605
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10390  .debug_str:0000000000000a7c .LASF606
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10386  .debug_str:0000000000000a63 .LASF607
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:11170  .debug_str:0000000000001c84 .LASF608
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10380  .debug_str:0000000000000a3d .LASF609
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10350  .debug_str:0000000000000996 .LASF610
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:10176  .debug_str:0000000000000585 .LASF611
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1177   .text.init_mpu:0000000000000002 .LCFI15
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1212   .text.init_mpu:000000000000004c .LCFI16
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1113   .text.millis:0000000000000002 .LCFI13
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1160   .text.millis:0000000000000060 .LCFI14
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1127   .text.millis:0000000000000018 .LVL127
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1082   .text.append_newLine:0000000000000000 .LVL124
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1086   .text.append_newLine:0000000000000002 .LVL125
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1034   .text.append_int_to_string:0000000000000002 .LCFI11
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1068   .text.append_int_to_string:000000000000002e .LCFI12
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1030   .text.append_int_to_string:0000000000000000 .LVL119
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1041   .text.append_int_to_string:0000000000000008 .LVL120
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1066   .text.append_int_to_string:000000000000002c .LVL123
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:899    .text.int_to_string:0000000000000000 .LVL99
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:926    .text.int_to_string:000000000000001a .LVL103
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:984    .text.int_to_string:0000000000000062 .LVL112
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:989    .text.int_to_string:0000000000000068 .LVL113
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1012   .text.int_to_string:0000000000000082 .LVL116
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:915    .text.int_to_string:0000000000000012 .LVL101
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:937    .text.int_to_string:000000000000002a .LVL104
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:975    .text.int_to_string:0000000000000056 .LVL110
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:908    .text.int_to_string:0000000000000006 .LVL100
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:918    .text.int_to_string:0000000000000014 .LVL102
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 55
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:953    .text.int_to_string:000000000000003e .LVL106
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:959    .text.int_to_string:0000000000000048 .LVL107
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:997    .text.int_to_string:000000000000006c .LVL114
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1002   .text.int_to_string:0000000000000074 .LVL115
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1014   .text.int_to_string:0000000000000084 .LVL117
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:978    .text.int_to_string:000000000000005a .LVL111
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1017   .text.int_to_string:0000000000000086 .LVL118
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:945    .text.int_to_string:0000000000000036 .LVL105
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:763    .text.timer_interrupt_config:0000000000000002 .LCFI9
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:885    .text.timer_interrupt_config:00000000000000f8 .LCFI10
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:801    .text.timer_interrupt_config:000000000000004c .LVL89
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:646    .text.ledInit:0000000000000002 .LCFI7
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:670    .text.ledInit:0000000000000022 .LCFI8
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:506    .text.TIMER1_IRQHandler:0000000000000002 .LCFI5
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:629    .text.TIMER1_IRQHandler:00000000000000ea .LCFI6
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:30     .text.startup.main:0000000000000004 .LCFI0
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:44     .text.startup.main:0000000000000034 .LCFI1
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:351    .text.startup.main:00000000000002c4 .LCFI2
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:381    .text.startup.main:00000000000002f6 .LCFI3
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:385    .text.startup.main:00000000000002f8 .LCFI4
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:256    .text.startup.main:00000000000001ee .LVL31
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:309    .text.startup.main:0000000000000266 .LVL39
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:392    .text.startup.main:0000000000000306 .LVL48
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:405    .text.startup.main:0000000000000314 .LVL50
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:417    .text.startup.main:0000000000000324 .LVL52
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:460    .text.startup.main:0000000000000384 .LVL60
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:471    .text.startup.main:0000000000000392 .LVL62
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:375    .text.startup.main:00000000000002ea .LVL46
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:243    .text.startup.main:00000000000001dc .LVL30
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:369    .text.startup.main:00000000000002e2 .LVL44
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:268    .text.startup.main:0000000000000206 .LVL33
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:279    .text.startup.main:000000000000021e .LVL35
+C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s:1310   .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+__udivdi3
+configure_usb_serial
+usb_delay_1ms
+usb_serial_available
+puts
+init_q
+set_fattime
+delay_1ms
+f_mount
+f_sync
+rcu_periph_clock_enable
+memset
+f_open
+clear_queues
+memcpy
+enqueue_string
+config_clic_irqs
+eclic_global_interrupt_enable
+printf
+timer_interrupt_disable
+empty_string_queue
+f_close
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccTMvnxl.s 			page 56
+
+
+fflush
+queue_str_len
+dequeue_string
+strlen
+f_write
+__fixsfsi
+timer_interrupt_flag_get
+mpu6500_getAccel
+timer_interrupt_flag_clear
+gpio_init
+gpio_bit_write
+eclic_irq_enable
+timer_deinit
+timer_struct_para_init
+SystemCoreClock
+timer_init
+timer_channel_output_struct_para_init
+timer_channel_output_config
+timer_channel_output_pulse_value_config
+timer_channel_output_mode_config
+timer_channel_output_shadow_config
+timer_interrupt_enable
+timer_enable
+fuseStrings
+__floatundidf
+__muldf3
+__floatunsidf
+__divdf3
+__fixdfsi
+get_timer_value
+mpu6500_install

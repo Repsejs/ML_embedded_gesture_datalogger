@@ -1,0 +1,35 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s 			page 1
+
+
+   1              		.file	"ffsystem.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              	.Letext0:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ffsystem.c
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:68     .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:134    .debug_str:00000000000000bc .LASF10
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:142    .debug_str:0000000000000172 .LASF11
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:124    .debug_str:000000000000001f .LASF12
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:118    .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:126    .debug_str:000000000000008e .LASF0
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:136    .debug_str:0000000000000144 .LASF1
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:130    .debug_str:00000000000000ad .LASF2
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:128    .debug_str:000000000000009a .LASF3
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:138    .debug_str:0000000000000152 .LASF4
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:122    .debug_str:000000000000000d .LASF5
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:144    .debug_str:000000000000018b .LASF6
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:140    .debug_str:000000000000015b .LASF7
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:120    .debug_str:0000000000000000 .LASF8
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:132    .debug_str:00000000000000b7 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\ccWmthtT.s:11     .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS

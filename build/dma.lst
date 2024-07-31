@@ -1,0 +1,882 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 1
+
+
+   1              		.file	"dma.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              		.section	.text.timer_config,"ax",@progbits
+  10              		.align	1
+  11              		.globl	timer_config
+  13              	timer_config:
+  14              	.LFB2:
+  15              		.file 1 "lib/dma/src/dma.c"
+   1:lib/dma/src/dma.c **** #include "gd32vf103.h"
+   2:lib/dma/src/dma.c **** #include "systick.h"
+   3:lib/dma/src/dma.c **** #include "dma.h"
+   4:lib/dma/src/dma.c **** 
+   5:lib/dma/src/dma.c **** #define FILTERSIZE 100
+   6:lib/dma/src/dma.c **** #define I2C0_DATA_ADDRESS 0x40005410
+   7:lib/dma/src/dma.c **** 
+   8:lib/dma/src/dma.c **** int timer_config(uint32_t sample_rate){
+  16              		.loc 1 8 39
+  17              		.cfi_startproc
+  18              	.LVL0:
+   9:lib/dma/src/dma.c **** 	// Max 2000hz 108
+  10:lib/dma/src/dma.c ****     timer_oc_parameter_struct timer_ocintpara;
+  19              		.loc 1 10 5
+  11:lib/dma/src/dma.c ****     timer_parameter_struct timer_initpara;
+  20              		.loc 1 11 5
+  12:lib/dma/src/dma.c **** 
+  13:lib/dma/src/dma.c ****     /* deinit a timer */
+  14:lib/dma/src/dma.c ****     timer_deinit(TIMER1);
+  21              		.loc 1 14 5
+   8:lib/dma/src/dma.c **** 	// Max 2000hz 108
+  22              		.loc 1 8 39 is_stmt 0
+  23 0000 7971     		addi	sp,sp,-48
+  24              	.LCFI0:
+  25              		.cfi_def_cfa_offset 48
+  26 0002 22D4     		sw	s0,40(sp)
+  27              		.cfi_offset 8, -8
+  28 0004 2A84     		mv	s0,a0
+  29              		.loc 1 14 5
+  30 0006 37050040 		li	a0,1073741824
+  31              	.LVL1:
+   8:lib/dma/src/dma.c **** 	// Max 2000hz 108
+  32              		.loc 1 8 39
+  33 000a 06D6     		sw	ra,44(sp)
+  34              		.cfi_offset 1, -4
+  35              		.loc 1 14 5
+  36 000c 97000000 		call	timer_deinit
+  36      E7800000 
+  37              	.LVL2:
+  15:lib/dma/src/dma.c ****     /* initialize TIMER init parameter struct */
+  16:lib/dma/src/dma.c ****     timer_struct_para_init(&timer_initpara);
+  38              		.loc 1 16 5 is_stmt 1
+  39 0014 0808     		addi	a0,sp,16
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 2
+
+
+  40 0016 97000000 		call	timer_struct_para_init
+  40      E7800000 
+  41              	.LVL3:
+  17:lib/dma/src/dma.c ****     /* TIMER1 configuration */
+  18:lib/dma/src/dma.c ****     timer_initpara.prescaler         = 5399; //  108 000 000
+  42              		.loc 1 18 5
+  19:lib/dma/src/dma.c ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+  43              		.loc 1 19 5
+  20:lib/dma/src/dma.c ****     timer_initpara.counterdirection  = TIMER_COUNTER_UP;
+  44              		.loc 1 20 5
+  18:lib/dma/src/dma.c ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+  45              		.loc 1 18 38 is_stmt 0
+  46 001e 8567     		li	a5,4096
+  47 0020 93877751 		addi	a5,a5,1303
+  21:lib/dma/src/dma.c ****     timer_initpara.period            = sample_rate - 1;
+  22:lib/dma/src/dma.c ****     timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
+  23:lib/dma/src/dma.c ****     timer_initpara.repetitioncounter = 0;
+  24:lib/dma/src/dma.c ****     timer_init(TIMER1,&timer_initpara);
+  48              		.loc 1 24 5
+  49 0024 0C08     		addi	a1,sp,16
+  21:lib/dma/src/dma.c ****     timer_initpara.period            = sample_rate - 1;
+  50              		.loc 1 21 52
+  51 0026 7D14     		addi	s0,s0,-1
+  52              	.LVL4:
+  53              		.loc 1 24 5
+  54 0028 37050040 		li	a0,1073741824
+  18:lib/dma/src/dma.c ****     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
+  55              		.loc 1 18 38
+  56 002c 3EC8     		sw	a5,16(sp)
+  21:lib/dma/src/dma.c ****     timer_initpara.period            = sample_rate - 1;
+  57              		.loc 1 21 38
+  58 002e 22CC     		sw	s0,24(sp)
+  20:lib/dma/src/dma.c ****     timer_initpara.period            = sample_rate - 1;
+  59              		.loc 1 20 38
+  60 0030 231A0100 		sh	zero,20(sp)
+  21:lib/dma/src/dma.c ****     timer_initpara.period            = sample_rate - 1;
+  61              		.loc 1 21 5 is_stmt 1
+  22:lib/dma/src/dma.c ****     timer_initpara.repetitioncounter = 0;
+  62              		.loc 1 22 5
+  22:lib/dma/src/dma.c ****     timer_initpara.repetitioncounter = 0;
+  63              		.loc 1 22 38 is_stmt 0
+  64 0034 231E0100 		sh	zero,28(sp)
+  23:lib/dma/src/dma.c ****     timer_init(TIMER1,&timer_initpara);
+  65              		.loc 1 23 5 is_stmt 1
+  23:lib/dma/src/dma.c ****     timer_init(TIMER1,&timer_initpara);
+  66              		.loc 1 23 38 is_stmt 0
+  67 0038 230F0100 		sb	zero,30(sp)
+  68              		.loc 1 24 5 is_stmt 1
+  69 003c 97000000 		call	timer_init
+  69      E7800000 
+  70              	.LVL5:
+  25:lib/dma/src/dma.c **** 
+  26:lib/dma/src/dma.c ****     /* CH0 configuration in PWM mode1 */
+  27:lib/dma/src/dma.c ****     timer_channel_output_struct_para_init(&timer_ocintpara);
+  71              		.loc 1 27 5
+  72 0044 4800     		addi	a0,sp,4
+  73 0046 97000000 		call	timer_channel_output_struct_para_init
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 3
+
+
+  73      E7800000 
+  74              	.LVL6:
+  28:lib/dma/src/dma.c ****     timer_ocintpara.ocpolarity  = TIMER_OC_POLARITY_HIGH;
+  75              		.loc 1 28 5
+  29:lib/dma/src/dma.c ****     timer_ocintpara.outputstate = TIMER_CCX_ENABLE;
+  76              		.loc 1 29 33 is_stmt 0
+  77 004e 8547     		li	a5,1
+  30:lib/dma/src/dma.c ****     timer_channel_output_config(TIMER1, TIMER_CH_1, &timer_ocintpara);
+  78              		.loc 1 30 5
+  79 0050 5000     		addi	a2,sp,4
+  80 0052 8545     		li	a1,1
+  81 0054 37050040 		li	a0,1073741824
+  29:lib/dma/src/dma.c ****     timer_ocintpara.outputstate = TIMER_CCX_ENABLE;
+  82              		.loc 1 29 33
+  83 0058 2312F100 		sh	a5,4(sp)
+  28:lib/dma/src/dma.c ****     timer_ocintpara.ocpolarity  = TIMER_OC_POLARITY_HIGH;
+  84              		.loc 1 28 33
+  85 005c 23140100 		sh	zero,8(sp)
+  29:lib/dma/src/dma.c ****     timer_ocintpara.outputstate = TIMER_CCX_ENABLE;
+  86              		.loc 1 29 5 is_stmt 1
+  87              		.loc 1 30 5
+  88 0060 97000000 		call	timer_channel_output_config
+  88      E7800000 
+  89              	.LVL7:
+  31:lib/dma/src/dma.c **** 
+  32:lib/dma/src/dma.c ****     timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_1, 1);
+  90              		.loc 1 32 5
+  91 0068 0546     		li	a2,1
+  92 006a 8545     		li	a1,1
+  93 006c 37050040 		li	a0,1073741824
+  94 0070 97000000 		call	timer_channel_output_pulse_value_config
+  94      E7800000 
+  95              	.LVL8:
+  33:lib/dma/src/dma.c ****     timer_channel_output_mode_config(TIMER1, TIMER_CH_1, TIMER_OC_MODE_PWM1);
+  96              		.loc 1 33 5
+  97 0078 13060007 		li	a2,112
+  98 007c 8545     		li	a1,1
+  99 007e 37050040 		li	a0,1073741824
+ 100 0082 97000000 		call	timer_channel_output_mode_config
+ 100      E7800000 
+ 101              	.LVL9:
+  34:lib/dma/src/dma.c ****     timer_channel_output_shadow_config(TIMER1, TIMER_CH_1, TIMER_OC_SHADOW_DISABLE);
+ 102              		.loc 1 34 5
+ 103 008a 0146     		li	a2,0
+ 104 008c 8545     		li	a1,1
+ 105 008e 37050040 		li	a0,1073741824
+ 106 0092 97000000 		call	timer_channel_output_shadow_config
+ 106      E7800000 
+ 107              	.LVL10:
+  35:lib/dma/src/dma.c **** 
+  36:lib/dma/src/dma.c **** 	timer_auto_reload_shadow_enable(TIMER1);
+ 108              		.loc 1 36 2
+ 109 009a 37050040 		li	a0,1073741824
+ 110 009e 97000000 		call	timer_auto_reload_shadow_enable
+ 110      E7800000 
+ 111              	.LVL11:
+  37:lib/dma/src/dma.c **** }
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 4
+
+
+ 112              		.loc 1 37 1 is_stmt 0
+ 113 00a6 B250     		lw	ra,44(sp)
+ 114              		.cfi_restore 1
+ 115 00a8 2254     		lw	s0,40(sp)
+ 116              		.cfi_restore 8
+ 117              	.LVL12:
+ 118 00aa 4561     		addi	sp,sp,48
+ 119              	.LCFI1:
+ 120              		.cfi_def_cfa_offset 0
+ 121 00ac 8280     		jr	ra
+ 122              		.cfi_endproc
+ 123              	.LFE2:
+ 125              		.section	.text.dma_config,"ax",@progbits
+ 126              		.align	1
+ 127              		.globl	dma_config
+ 129              	dma_config:
+ 130              	.LFB3:
+  38:lib/dma/src/dma.c **** 
+  39:lib/dma/src/dma.c **** void dma_config(void){
+ 131              		.loc 1 39 22 is_stmt 1
+ 132              		.cfi_startproc
+  40:lib/dma/src/dma.c ****     /* DMA_channel configuration */
+  41:lib/dma/src/dma.c ****     /* initialize DMA mode */
+  42:lib/dma/src/dma.c ****     dma_parameter_struct dma_init_struct;
+ 133              		.loc 1 42 5
+  43:lib/dma/src/dma.c ****     dma_deinit(DMA0, DMA_CH6);
+ 134              		.loc 1 43 5
+  39:lib/dma/src/dma.c ****     /* DMA_channel configuration */
+ 135              		.loc 1 39 22 is_stmt 0
+ 136 0000 7971     		addi	sp,sp,-48
+ 137              	.LCFI2:
+ 138              		.cfi_def_cfa_offset 48
+ 139              		.loc 1 43 5
+ 140 0002 9945     		li	a1,6
+ 141 0004 37050240 		li	a0,1073872896
+  39:lib/dma/src/dma.c ****     /* DMA_channel configuration */
+ 142              		.loc 1 39 22
+ 143 0008 06D6     		sw	ra,44(sp)
+ 144              		.cfi_offset 1, -4
+ 145              		.loc 1 43 5
+ 146 000a 97000000 		call	dma_deinit
+ 146      E7800000 
+ 147              	.LVL13:
+  44:lib/dma/src/dma.c ****     dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
+ 148              		.loc 1 44 5 is_stmt 1
+  45:lib/dma/src/dma.c ****     dma_init_struct.memory_addr = (uint32_t)&dataBuffer;
+ 149              		.loc 1 45 5
+ 150              		.loc 1 45 33 is_stmt 0
+ 151 0012 B7070000 		lui	a5,%hi(dataBuffer)
+ 152 0016 93870700 		addi	a5,a5,%lo(dataBuffer)
+ 153 001a 3EC6     		sw	a5,12(sp)
+  46:lib/dma/src/dma.c ****     dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
+ 154              		.loc 1 46 5 is_stmt 1
+  47:lib/dma/src/dma.c ****     dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+ 155              		.loc 1 47 5
+  48:lib/dma/src/dma.c ****     dma_init_struct.number = 14;  //fourteen memory adresses for all datapoints 0x3B-0x48
+ 156              		.loc 1 48 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 5
+
+
+  49:lib/dma/src/dma.c ****     dma_init_struct.periph_addr = (uint32_t)I2C0_DATA_ADDRESS; //DMA0 adress
+ 157              		.loc 1 49 5
+ 158              		.loc 1 49 33 is_stmt 0
+ 159 001c B7570040 		li	a5,1073762304
+ 160 0020 93870741 		addi	a5,a5,1040
+ 161 0024 3EC2     		sw	a5,4(sp)
+  50:lib/dma/src/dma.c ****     dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
+ 162              		.loc 1 50 5 is_stmt 1
+  51:lib/dma/src/dma.c ****     dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+ 163              		.loc 1 51 5
+  48:lib/dma/src/dma.c ****     dma_init_struct.periph_addr = (uint32_t)I2C0_DATA_ADDRESS; //DMA0 adress
+ 164              		.loc 1 48 28 is_stmt 0
+ 165 0026 B947     		li	a5,14
+ 166 0028 3ECA     		sw	a5,20(sp)
+  52:lib/dma/src/dma.c ****     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
+ 167              		.loc 1 52 30
+ 168 002a 8D67     		li	a5,12288
+  53:lib/dma/src/dma.c ****     dma_init(DMA0, DMA_CH6, &dma_init_struct);
+ 169              		.loc 1 53 5
+ 170 002c 5000     		addi	a2,sp,4
+  52:lib/dma/src/dma.c ****     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
+ 171              		.loc 1 52 30
+ 172 002e 3ECC     		sw	a5,24(sp)
+ 173              		.loc 1 53 5
+ 174 0030 9945     		li	a1,6
+  50:lib/dma/src/dma.c ****     dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+ 175              		.loc 1 50 32
+ 176 0032 93070010 		li	a5,256
+ 177              		.loc 1 53 5
+ 178 0036 37050240 		li	a0,1073872896
+  50:lib/dma/src/dma.c ****     dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+ 179              		.loc 1 50 32
+ 180 003a 231EF100 		sh	a5,28(sp)
+  51:lib/dma/src/dma.c ****     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
+ 181              		.loc 1 51 34
+ 182 003e 02C4     		sw	zero,8(sp)
+  52:lib/dma/src/dma.c ****     dma_init(DMA0, DMA_CH6, &dma_init_struct);
+ 183              		.loc 1 52 5 is_stmt 1
+  47:lib/dma/src/dma.c ****     dma_init_struct.number = 14;  //fourteen memory adresses for all datapoints 0x3B-0x48
+ 184              		.loc 1 47 34 is_stmt 0
+ 185 0040 02C8     		sw	zero,16(sp)
+  44:lib/dma/src/dma.c ****     dma_init_struct.memory_addr = (uint32_t)&dataBuffer;
+ 186              		.loc 1 44 31
+ 187 0042 230F0100 		sb	zero,30(sp)
+ 188              		.loc 1 53 5 is_stmt 1
+ 189 0046 97000000 		call	dma_init
+ 189      E7800000 
+ 190              	.LVL14:
+  54:lib/dma/src/dma.c ****     /* configure DMA mode */
+  55:lib/dma/src/dma.c ****     dma_circulation_disable(DMA0, DMA_CH6);
+ 191              		.loc 1 55 5
+ 192 004e 9945     		li	a1,6
+ 193 0050 37050240 		li	a0,1073872896
+ 194 0054 97000000 		call	dma_circulation_disable
+ 194      E7800000 
+ 195              	.LVL15:
+  56:lib/dma/src/dma.c **** 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 6
+
+
+  57:lib/dma/src/dma.c ****     dma_interrupt_enable(DMA0, DMA_CH6, DMA_FLAG_FTF);
+ 196              		.loc 1 57 5
+ 197 005c 0946     		li	a2,2
+ 198 005e 9945     		li	a1,6
+ 199 0060 37050240 		li	a0,1073872896
+ 200 0064 97000000 		call	dma_interrupt_enable
+ 200      E7800000 
+ 201              	.LVL16:
+  58:lib/dma/src/dma.c ****     /* enable DMA channel5 */
+  59:lib/dma/src/dma.c ****     dma_channel_enable(DMA0, DMA_CH6);
+ 202              		.loc 1 59 5
+ 203 006c 9945     		li	a1,6
+ 204 006e 37050240 		li	a0,1073872896
+ 205 0072 97000000 		call	dma_channel_enable
+ 205      E7800000 
+ 206              	.LVL17:
+  60:lib/dma/src/dma.c **** }
+ 207              		.loc 1 60 1 is_stmt 0
+ 208 007a B250     		lw	ra,44(sp)
+ 209              		.cfi_restore 1
+ 210 007c 4561     		addi	sp,sp,48
+ 211              	.LCFI3:
+ 212              		.cfi_def_cfa_offset 0
+ 213 007e 8280     		jr	ra
+ 214              		.cfi_endproc
+ 215              	.LFE3:
+ 217              		.section	.text.config_clic_irqs,"ax",@progbits
+ 218              		.align	1
+ 219              		.globl	config_clic_irqs
+ 221              	config_clic_irqs:
+ 222              	.LFB4:
+  61:lib/dma/src/dma.c **** 
+  62:lib/dma/src/dma.c **** void config_clic_irqs (void){
+ 223              		.loc 1 62 29 is_stmt 1
+ 224              		.cfi_startproc
+  63:lib/dma/src/dma.c **** 
+  64:lib/dma/src/dma.c ****     eclic_global_interrupt_enable();
+ 225              		.loc 1 64 5
+  62:lib/dma/src/dma.c **** 
+ 226              		.loc 1 62 29 is_stmt 0
+ 227 0000 4111     		addi	sp,sp,-16
+ 228              	.LCFI4:
+ 229              		.cfi_def_cfa_offset 16
+ 230 0002 06C6     		sw	ra,12(sp)
+ 231              		.cfi_offset 1, -4
+ 232              		.loc 1 64 5
+ 233 0004 97000000 		call	eclic_global_interrupt_enable
+ 233      E7800000 
+ 234              	.LVL18:
+  65:lib/dma/src/dma.c ****     eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL3_PRIO1);
+ 235              		.loc 1 65 5 is_stmt 1
+ 236 000c 0D45     		li	a0,3
+ 237 000e 97000000 		call	eclic_priority_group_set
+ 237      E7800000 
+ 238              	.LVL19:
+  66:lib/dma/src/dma.c ****     eclic_irq_enable(DMA0_Channel6_IRQn, 1, 1);
+ 239              		.loc 1 66 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 7
+
+
+  67:lib/dma/src/dma.c **** 
+  68:lib/dma/src/dma.c **** }
+ 240              		.loc 1 68 1 is_stmt 0
+ 241 0016 B240     		lw	ra,12(sp)
+ 242              		.cfi_restore 1
+  66:lib/dma/src/dma.c ****     eclic_irq_enable(DMA0_Channel6_IRQn, 1, 1);
+ 243              		.loc 1 66 5
+ 244 0018 0546     		li	a2,1
+ 245              		.loc 1 68 1
+  66:lib/dma/src/dma.c ****     eclic_irq_enable(DMA0_Channel6_IRQn, 1, 1);
+ 246              		.loc 1 66 5
+ 247 001a 8545     		li	a1,1
+ 248 001c 13054002 		li	a0,36
+ 249              		.loc 1 68 1
+ 250 0020 4101     		addi	sp,sp,16
+ 251              	.LCFI5:
+ 252              		.cfi_def_cfa_offset 0
+  66:lib/dma/src/dma.c ****     eclic_irq_enable(DMA0_Channel6_IRQn, 1, 1);
+ 253              		.loc 1 66 5
+ 254 0022 17030000 		tail	eclic_irq_enable
+ 254      67000300 
+ 255              	.LVL20:
+ 256              		.cfi_endproc
+ 257              	.LFE4:
+ 259              		.section	.text.DMA0_Channel6_IRQHandler,"ax",@progbits
+ 260              		.align	1
+ 261              		.globl	DMA0_Channel6_IRQHandler
+ 263              	DMA0_Channel6_IRQHandler:
+ 264              	.LFB5:
+  69:lib/dma/src/dma.c **** 
+  70:lib/dma/src/dma.c **** //uint8_t* pDataBuffer;
+  71:lib/dma/src/dma.c **** 
+  72:lib/dma/src/dma.c **** void DMA0_Channel6_IRQHandler(void){
+ 265              		.loc 1 72 36 is_stmt 1
+ 266              		.cfi_startproc
+  73:lib/dma/src/dma.c ****     i2c_stop_on_bus(I2C0);
+ 267              		.loc 1 73 5
+ 268 0000 37550040 		li	a0,1073762304
+  72:lib/dma/src/dma.c ****     i2c_stop_on_bus(I2C0);
+ 269              		.loc 1 72 36 is_stmt 0
+ 270 0004 4111     		addi	sp,sp,-16
+ 271              	.LCFI6:
+ 272              		.cfi_def_cfa_offset 16
+ 273              		.loc 1 73 5
+ 274 0006 13050540 		addi	a0,a0,1024
+  72:lib/dma/src/dma.c ****     i2c_stop_on_bus(I2C0);
+ 275              		.loc 1 72 36
+ 276 000a 06C6     		sw	ra,12(sp)
+ 277              		.cfi_offset 1, -4
+ 278              		.loc 1 73 5
+ 279 000c 97000000 		call	i2c_stop_on_bus
+ 279      E7800000 
+ 280              	.LVL21:
+  74:lib/dma/src/dma.c **** 
+  75:lib/dma/src/dma.c **** 	if(dma_interrupt_flag_get(DMA0, DMA_CH6, DMA_INT_FLAG_FTF)){ 
+ 281              		.loc 1 75 2 is_stmt 1
+ 282              		.loc 1 75 5 is_stmt 0
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 8
+
+
+ 283 0014 0946     		li	a2,2
+ 284 0016 9945     		li	a1,6
+ 285 0018 37050240 		li	a0,1073872896
+ 286 001c 97000000 		call	dma_interrupt_flag_get
+ 286      E7800000 
+ 287              	.LVL22:
+ 288              		.loc 1 75 4
+ 289 0024 19C9     		beq	a0,zero,.L7
+  76:lib/dma/src/dma.c **** 		dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);  
+ 290              		.loc 1 76 3 is_stmt 1
+  77:lib/dma/src/dma.c ****     }
+  78:lib/dma/src/dma.c **** 
+  79:lib/dma/src/dma.c **** }
+ 291              		.loc 1 79 1 is_stmt 0
+ 292 0026 B240     		lw	ra,12(sp)
+ 293              		.cfi_remember_state
+ 294              		.cfi_restore 1
+  76:lib/dma/src/dma.c **** 		dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);  
+ 295              		.loc 1 76 3
+ 296 0028 0546     		li	a2,1
+ 297              		.loc 1 79 1
+  76:lib/dma/src/dma.c **** 		dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);  
+ 298              		.loc 1 76 3
+ 299 002a 9945     		li	a1,6
+ 300 002c 37050240 		li	a0,1073872896
+ 301              		.loc 1 79 1
+ 302 0030 4101     		addi	sp,sp,16
+ 303              	.LCFI7:
+ 304              		.cfi_def_cfa_offset 0
+  76:lib/dma/src/dma.c **** 		dma_interrupt_flag_clear(DMA0, DMA_CH6, DMA_INT_FLAG_G);  
+ 305              		.loc 1 76 3
+ 306 0032 17030000 		tail	dma_interrupt_flag_clear
+ 306      67000300 
+ 307              	.LVL23:
+ 308              	.L7:
+ 309              	.LCFI8:
+ 310              		.cfi_restore_state
+ 311              		.loc 1 79 1
+ 312 003a B240     		lw	ra,12(sp)
+ 313              		.cfi_restore 1
+ 314 003c 4101     		addi	sp,sp,16
+ 315              	.LCFI9:
+ 316              		.cfi_def_cfa_offset 0
+ 317 003e 8280     		jr	ra
+ 318              		.cfi_endproc
+ 319              	.LFE5:
+ 321              		.comm	dataBuffer,22,4
+ 322              		.text
+ 323              	.Letext0:
+ 324              		.file 2 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 325              		.file 3 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 326              		.file 4 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_dma.h"
+ 327              		.file 5 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_timer.h"
+ 328              		.file 6 "lib/dma/include/dma.h"
+ 329              		.file 7 "./../../firmware/GD32VF103_standard_peripheral/system_gd32vf103.h"
+ 330              		.file 8 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_i2c.h"
+ 331              		.file 9 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_eclic.h"
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 9
+
+
+ 332              		.file 10 "./../../firmware/GD32VF103_standard_peripheral/gd32vf103.h"
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 dma.c
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:13     .text.timer_config:0000000000000000 timer_config
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:17     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:19     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:20     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:21     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:22     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:23     .text.timer_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:25     .text.timer_config:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:27     .text.timer_config:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:30     .text.timer_config:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:33     .text.timer_config:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:34     .text.timer_config:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:36     .text.timer_config:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:39     .text.timer_config:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:43     .text.timer_config:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:44     .text.timer_config:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:45     .text.timer_config:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:46     .text.timer_config:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:49     .text.timer_config:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:51     .text.timer_config:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:54     .text.timer_config:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:56     .text.timer_config:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:58     .text.timer_config:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:60     .text.timer_config:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:62     .text.timer_config:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:63     .text.timer_config:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:64     .text.timer_config:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:66     .text.timer_config:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:67     .text.timer_config:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:69     .text.timer_config:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:72     .text.timer_config:0000000000000044 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:76     .text.timer_config:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:77     .text.timer_config:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:79     .text.timer_config:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:83     .text.timer_config:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:85     .text.timer_config:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:87     .text.timer_config:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:88     .text.timer_config:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:91     .text.timer_config:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:97     .text.timer_config:0000000000000078 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:103    .text.timer_config:000000000000008a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:109    .text.timer_config:000000000000009a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:113    .text.timer_config:00000000000000a6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:114    .text.timer_config:00000000000000a8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:116    .text.timer_config:00000000000000aa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:120    .text.timer_config:00000000000000ac .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:122    .text.timer_config:00000000000000ae .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:129    .text.dma_config:0000000000000000 dma_config
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:132    .text.dma_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:133    .text.dma_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:134    .text.dma_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:135    .text.dma_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:136    .text.dma_config:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:138    .text.dma_config:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:140    .text.dma_config:0000000000000002 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 11
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:143    .text.dma_config:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:144    .text.dma_config:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:146    .text.dma_config:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:149    .text.dma_config:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:150    .text.dma_config:0000000000000012 .L0 
+                            *COM*:0000000000000016 dataBuffer
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:151    .text.dma_config:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:155    .text.dma_config:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:156    .text.dma_config:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:157    .text.dma_config:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:158    .text.dma_config:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:159    .text.dma_config:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:163    .text.dma_config:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:164    .text.dma_config:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:165    .text.dma_config:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:168    .text.dma_config:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:170    .text.dma_config:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:172    .text.dma_config:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:174    .text.dma_config:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:176    .text.dma_config:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:178    .text.dma_config:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:180    .text.dma_config:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:182    .text.dma_config:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:184    .text.dma_config:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:185    .text.dma_config:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:187    .text.dma_config:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:189    .text.dma_config:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:192    .text.dma_config:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:197    .text.dma_config:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:203    .text.dma_config:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:208    .text.dma_config:000000000000007a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:209    .text.dma_config:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:212    .text.dma_config:000000000000007e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:214    .text.dma_config:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:221    .text.config_clic_irqs:0000000000000000 config_clic_irqs
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:224    .text.config_clic_irqs:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:225    .text.config_clic_irqs:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:226    .text.config_clic_irqs:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:227    .text.config_clic_irqs:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:229    .text.config_clic_irqs:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:231    .text.config_clic_irqs:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:233    .text.config_clic_irqs:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:236    .text.config_clic_irqs:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:240    .text.config_clic_irqs:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:241    .text.config_clic_irqs:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:242    .text.config_clic_irqs:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:244    .text.config_clic_irqs:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:246    .text.config_clic_irqs:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:247    .text.config_clic_irqs:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:250    .text.config_clic_irqs:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:252    .text.config_clic_irqs:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:254    .text.config_clic_irqs:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:256    .text.config_clic_irqs:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:263    .text.DMA0_Channel6_IRQHandler:0000000000000000 DMA0_Channel6_IRQHandler
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:266    .text.DMA0_Channel6_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:267    .text.DMA0_Channel6_IRQHandler:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:268    .text.DMA0_Channel6_IRQHandler:0000000000000000 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 12
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:270    .text.DMA0_Channel6_IRQHandler:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:272    .text.DMA0_Channel6_IRQHandler:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:274    .text.DMA0_Channel6_IRQHandler:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:276    .text.DMA0_Channel6_IRQHandler:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:277    .text.DMA0_Channel6_IRQHandler:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:279    .text.DMA0_Channel6_IRQHandler:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:282    .text.DMA0_Channel6_IRQHandler:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:283    .text.DMA0_Channel6_IRQHandler:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:289    .text.DMA0_Channel6_IRQHandler:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:291    .text.DMA0_Channel6_IRQHandler:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:292    .text.DMA0_Channel6_IRQHandler:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:293    .text.DMA0_Channel6_IRQHandler:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:294    .text.DMA0_Channel6_IRQHandler:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:296    .text.DMA0_Channel6_IRQHandler:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:298    .text.DMA0_Channel6_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:299    .text.DMA0_Channel6_IRQHandler:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:302    .text.DMA0_Channel6_IRQHandler:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:304    .text.DMA0_Channel6_IRQHandler:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:306    .text.DMA0_Channel6_IRQHandler:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:310    .text.DMA0_Channel6_IRQHandler:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:312    .text.DMA0_Channel6_IRQHandler:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:313    .text.DMA0_Channel6_IRQHandler:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:316    .text.DMA0_Channel6_IRQHandler:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:318    .text.DMA0_Channel6_IRQHandler:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:125    .text.timer_config:00000000000000ae .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:217    .text.dma_config:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:259    .text.config_clic_irqs:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:322    .text.DMA0_Channel6_IRQHandler:0000000000000040 .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:308    .text.DMA0_Channel6_IRQHandler:000000000000003a .L7
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:1615   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2384   .debug_str:00000000000005e6 .LASF154
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2444   .debug_str:0000000000000822 .LASF155
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2248   .debug_str:00000000000001ff .LASF156
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2162   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2174   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2378   .debug_str:00000000000005c1 .LASF157
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2380   .debug_str:00000000000005c6 .LASF0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2396   .debug_str:00000000000006aa .LASF1
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2328   .debug_str:0000000000000497 .LASF2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2412   .debug_str:0000000000000722 .LASF3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2356   .debug_str:0000000000000531 .LASF4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2484   .debug_str:0000000000000966 .LASF5
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2218   .debug_str:0000000000000128 .LASF6
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2494   .debug_str:00000000000009ae .LASF7
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2386   .debug_str:000000000000066e .LASF8
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2254   .debug_str:0000000000000287 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2326   .debug_str:000000000000048a .LASF10
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2206   .debug_str:00000000000000da .LASF11
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2422   .debug_str:0000000000000770 .LASF12
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2276   .debug_str:00000000000002fd .LASF13
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2482   .debug_str:000000000000095b .LASF14
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2332   .debug_str:00000000000004b0 .LASF15
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2474   .debug_str:0000000000000923 .LASF16
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2286   .debug_str:0000000000000346 .LASF17
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2198   .debug_str:00000000000000a4 .LASF18
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2406   .debug_str:00000000000006f0 .LASF19
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 13
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2246   .debug_str:00000000000001ec .LASF20
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2468   .debug_str:00000000000008fe .LASF21
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2318   .debug_str:000000000000043d .LASF22
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2194   .debug_str:000000000000008b .LASF23
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2258   .debug_str:000000000000029c .LASF24
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2278   .debug_str:0000000000000308 .LASF25
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2188   .debug_str:000000000000005d .LASF26
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2442   .debug_str:0000000000000813 .LASF27
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2434   .debug_str:00000000000007c7 .LASF28
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2464   .debug_str:00000000000008e4 .LASF29
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2358   .debug_str:0000000000000540 .LASF30
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2490   .debug_str:0000000000000989 .LASF31
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2184   .debug_str:0000000000000030 .LASF32
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2202   .debug_str:00000000000000c3 .LASF33
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2416   .debug_str:000000000000073d .LASF34
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2266   .debug_str:00000000000002d5 .LASF35
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2448   .debug_str:0000000000000849 .LASF36
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2306   .debug_str:00000000000003bf .LASF37
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2370   .debug_str:0000000000000592 .LASF38
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2426   .debug_str:0000000000000782 .LASF39
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2362   .debug_str:0000000000000559 .LASF40
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2234   .debug_str:000000000000018b .LASF41
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2212   .debug_str:0000000000000104 .LASF42
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2394   .debug_str:000000000000069e .LASF43
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2256   .debug_str:0000000000000290 .LASF44
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2388   .debug_str:0000000000000677 .LASF45
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2390   .debug_str:0000000000000686 .LASF46
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2440   .debug_str:0000000000000803 .LASF47
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2230   .debug_str:0000000000000176 .LASF48
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2472   .debug_str:0000000000000917 .LASF49
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2462   .debug_str:00000000000008da .LASF50
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2316   .debug_str:0000000000000432 .LASF51
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2214   .debug_str:0000000000000110 .LASF52
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2330   .debug_str:00000000000004a4 .LASF53
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2222   .debug_str:000000000000013f .LASF54
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2436   .debug_str:00000000000007d4 .LASF55
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2280   .debug_str:0000000000000316 .LASF56
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2192   .debug_str:0000000000000078 .LASF57
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2364   .debug_str:0000000000000563 .LASF58
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2240   .debug_str:00000000000001a8 .LASF59
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2372   .debug_str:000000000000059f .LASF60
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2382   .debug_str:00000000000005d8 .LASF61
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2252   .debug_str:0000000000000279 .LASF62
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2334   .debug_str:00000000000004bb .LASF63
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2304   .debug_str:00000000000003b4 .LASF64
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2446   .debug_str:0000000000000834 .LASF65
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2196   .debug_str:0000000000000097 .LASF66
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2300   .debug_str:0000000000000398 .LASF67
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2466   .debug_str:00000000000008f4 .LASF69
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2450   .debug_str:0000000000000856 .LASF68
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2322   .debug_str:0000000000000471 .LASF70
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2208   .debug_str:00000000000000e5 .LASF71
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2250   .debug_str:000000000000026e .LASF72
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2480   .debug_str:0000000000000948 .LASF73
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2392   .debug_str:0000000000000695 .LASF74
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2452   .debug_str:0000000000000864 .LASF75
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2432   .debug_str:00000000000007b5 .LASF76
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 14
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2310   .debug_str:00000000000003f2 .LASF77
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2242   .debug_str:00000000000001bb .LASF78
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2294   .debug_str:000000000000036b .LASF79
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2236   .debug_str:0000000000000195 .LASF80
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2376   .debug_str:00000000000005b8 .LASF81
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2224   .debug_str:000000000000014b .LASF82
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2178   .debug_str:000000000000000a .LASF126
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2338   .debug_str:00000000000004e1 .LASF83
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2340   .debug_str:00000000000004e9 .LASF84
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2342   .debug_str:00000000000004f1 .LASF85
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2344   .debug_str:00000000000004f9 .LASF86
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2346   .debug_str:0000000000000501 .LASF87
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2348   .debug_str:0000000000000509 .LASF88
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2350   .debug_str:0000000000000511 .LASF89
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2456   .debug_str:0000000000000888 .LASF90
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2414   .debug_str:0000000000000730 .LASF91
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2284   .debug_str:000000000000033a .LASF92
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2296   .debug_str:0000000000000373 .LASF93
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2424   .debug_str:000000000000077b .LASF94
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2400   .debug_str:00000000000006da .LASF95
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2180   .debug_str:000000000000001a .LASF96
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2204   .debug_str:00000000000000cf .LASF97
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2176   .debug_str:0000000000000000 .LASF98
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2210   .debug_str:00000000000000ef .LASF99
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2360   .debug_str:000000000000054f .LASF100
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2262   .debug_str:00000000000002b2 .LASF101
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2366   .debug_str:0000000000000576 .LASF102
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2476   .debug_str:0000000000000936 .LASF103
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2220   .debug_str:0000000000000131 .LASF104
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2314   .debug_str:0000000000000420 .LASF105
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2264   .debug_str:00000000000002be .LASF106
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2408   .debug_str:0000000000000703 .LASF107
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2228   .debug_str:0000000000000169 .LASF108
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2232   .debug_str:0000000000000180 .LASF109
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2486   .debug_str:0000000000000971 .LASF110
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2488   .debug_str:000000000000097d .LASF111
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2430   .debug_str:00000000000007a8 .LASF112
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2244   .debug_str:00000000000001d2 .LASF113
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2374   .debug_str:00000000000005ac .LASF114
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2268   .debug_str:00000000000002e1 .LASF115
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2270   .debug_str:00000000000002e6 .LASF116
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2272   .debug_str:00000000000002eb .LASF117
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2402   .debug_str:00000000000006e3 .LASF118
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2288   .debug_str:0000000000000359 .LASF119
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2290   .debug_str:000000000000035f .LASF120
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2292   .debug_str:0000000000000365 .LASF121
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2470   .debug_str:0000000000000911 .LASF122
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2354   .debug_str:0000000000000529 .LASF123
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2404   .debug_str:00000000000006e8 .LASF124
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2216   .debug_str:000000000000011b .LASF125
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2238   .debug_str:000000000000019d .LASF127
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2454   .debug_str:000000000000086f .LASF128
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:264    .text.DMA0_Channel6_IRQHandler:0000000000000000 .LFB5
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:319    .text.DMA0_Channel6_IRQHandler:0000000000000040 .LFE5
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2037   .debug_loc:0000000000000000 .LLST4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:280    .text.DMA0_Channel6_IRQHandler:0000000000000014 .LVL21
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:287    .text.DMA0_Channel6_IRQHandler:0000000000000024 .LVL22
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 15
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:307    .text.DMA0_Channel6_IRQHandler:000000000000003a .LVL23
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2282   .debug_str:0000000000000329 .LASF129
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:222    .text.config_clic_irqs:0000000000000000 .LFB4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:257    .text.config_clic_irqs:000000000000002a .LFE4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2065   .debug_loc:0000000000000044 .LLST3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:234    .text.config_clic_irqs:000000000000000c .LVL18
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:238    .text.config_clic_irqs:0000000000000016 .LVL19
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:255    .text.config_clic_irqs:000000000000002a .LVL20
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2368   .debug_str:0000000000000587 .LASF130
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:130    .text.dma_config:0000000000000000 .LFB3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:215    .text.dma_config:0000000000000080 .LFE3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2083   .debug_loc:0000000000000070 .LLST2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2302   .debug_str:00000000000003a4 .LASF131
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:147    .text.dma_config:0000000000000012 .LVL13
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:190    .text.dma_config:000000000000004e .LVL14
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:195    .text.dma_config:000000000000005c .LVL15
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:201    .text.dma_config:000000000000006c .LVL16
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:206    .text.dma_config:000000000000007a .LVL17
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2190   .debug_str:000000000000006b .LASF158
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:14     .text.timer_config:0000000000000000 .LFB2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:123    .text.timer_config:00000000000000ae .LFE2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2101   .debug_loc:000000000000009c .LLST0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2200   .debug_str:00000000000000b7 .LASF159
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2119   .debug_loc:00000000000000c8 .LLST1
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2352   .debug_str:0000000000000519 .LASF132
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2324   .debug_str:000000000000047b .LASF133
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:37     .text.timer_config:0000000000000014 .LVL2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:41     .text.timer_config:000000000000001e .LVL3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:70     .text.timer_config:0000000000000044 .LVL5
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:74     .text.timer_config:000000000000004e .LVL6
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:89     .text.timer_config:0000000000000068 .LVL7
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:95     .text.timer_config:0000000000000078 .LVL8
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:101    .text.timer_config:000000000000008a .LVL9
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:107    .text.timer_config:000000000000009a .LVL10
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:111    .text.timer_config:00000000000000a6 .LVL11
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2418   .debug_str:0000000000000749 .LASF134
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2420   .debug_str:0000000000000759 .LASF135
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2428   .debug_str:000000000000078f .LASF136
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2458   .debug_str:0000000000000894 .LASF137
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2186   .debug_str:0000000000000044 .LASF138
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2492   .debug_str:000000000000099d .LASF139
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2182   .debug_str:0000000000000025 .LASF140
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2260   .debug_str:00000000000002a9 .LASF141
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2298   .debug_str:0000000000000380 .LASF142
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2226   .debug_str:0000000000000154 .LASF143
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2410   .debug_str:000000000000070f .LASF144
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2274   .debug_str:00000000000002f0 .LASF145
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2336   .debug_str:00000000000004ca .LASF146
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2478   .debug_str:000000000000093d .LASF147
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2308   .debug_str:00000000000003cc .LASF148
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2438   .debug_str:00000000000007e7 .LASF149
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2460   .debug_str:00000000000008b2 .LASF150
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2320   .debug_str:0000000000000450 .LASF151
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2398   .debug_str:00000000000006b7 .LASF152
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:2312   .debug_str:0000000000000400 .LASF153
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:271    .text.DMA0_Channel6_IRQHandler:0000000000000006 .LCFI6
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:303    .text.DMA0_Channel6_IRQHandler:0000000000000032 .LCFI7
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s 			page 16
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:309    .text.DMA0_Channel6_IRQHandler:000000000000003a .LCFI8
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:315    .text.DMA0_Channel6_IRQHandler:000000000000003e .LCFI9
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:228    .text.config_clic_irqs:0000000000000002 .LCFI4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:251    .text.config_clic_irqs:0000000000000022 .LCFI5
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:137    .text.dma_config:0000000000000002 .LCFI2
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:211    .text.dma_config:000000000000007e .LCFI3
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:24     .text.timer_config:0000000000000002 .LCFI0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:119    .text.timer_config:00000000000000ac .LCFI1
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:18     .text.timer_config:0000000000000000 .LVL0
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:31     .text.timer_config:000000000000000a .LVL1
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:52     .text.timer_config:0000000000000028 .LVL4
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:117    .text.timer_config:00000000000000aa .LVL12
+C:\Users\Jesper\AppData\Local\Temp\ccC1o9dC.s:334    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+timer_deinit
+timer_struct_para_init
+timer_init
+timer_channel_output_struct_para_init
+timer_channel_output_config
+timer_channel_output_pulse_value_config
+timer_channel_output_mode_config
+timer_channel_output_shadow_config
+timer_auto_reload_shadow_enable
+dma_deinit
+dma_init
+dma_circulation_disable
+dma_interrupt_enable
+dma_channel_enable
+eclic_global_interrupt_enable
+eclic_priority_group_set
+eclic_irq_enable
+i2c_stop_on_bus
+dma_interrupt_flag_get
+dma_interrupt_flag_clear

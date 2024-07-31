@@ -1,0 +1,2050 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 1
+
+
+   1              		.file	"gd32v_mpu6500_if.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              		.globl	__floatundidf
+  10              		.globl	__floatunsidf
+  11              		.globl	__divdf3
+  12              		.globl	__floatsidf
+  13              		.globl	__muldf3
+  14              		.globl	__ltdf2
+  15              		.section	.text.mpu_delay,"ax",@progbits
+  16              		.align	1
+  17              		.globl	mpu_delay
+  19              	mpu_delay:
+  20              	.LFB8:
+  21              		.file 1 "lib/mpu/src/gd32v_mpu6500_if.c"
+   1:lib/mpu/src/gd32v_mpu6500_if.c **** #include "gd32v_mpu6500_if.h"
+   2:lib/mpu/src/gd32v_mpu6500_if.c **** #include "mpu6500_driver.h"
+   3:lib/mpu/src/gd32v_mpu6500_if.c **** #include "gd32vf103.h"
+   4:lib/mpu/src/gd32v_mpu6500_if.c **** #include "dma.h"
+   5:lib/mpu/src/gd32v_mpu6500_if.c **** 
+   6:lib/mpu/src/gd32v_mpu6500_if.c **** uint32_t i2c_port;
+   7:lib/mpu/src/gd32v_mpu6500_if.c **** 
+   8:lib/mpu/src/gd32v_mpu6500_if.c **** void mpu6500_install(uint32_t port){
+   9:lib/mpu/src/gd32v_mpu6500_if.c **** 	i2c_port = port;
+  10:lib/mpu/src/gd32v_mpu6500_if.c **** 	//i2c_master_init(i2c_port);
+  11:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_init_400k(i2c_port);
+  12:lib/mpu/src/gd32v_mpu6500_if.c **** 	mpu6500_init(&i2c_master_read_register, &i2c_master_write_register, &mpu_delay, (void*)&i2c_port);
+  13:lib/mpu/src/gd32v_mpu6500_if.c **** }
+  14:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  15:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init(uint32_t port){
+  16:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 100000,I2C_DTCY_2 );
+  17:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+  18:lib/mpu/src/gd32v_mpu6500_if.c **** }
+  19:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  20:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init_400k(uint32_t port){
+  21:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 400000, I2C_DTCY_16_9);
+  22:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+  23:lib/mpu/src/gd32v_mpu6500_if.c **** }
+  24:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  25:lib/mpu/src/gd32v_mpu6500_if.c **** void mpu_delay(int millis){
+  22              		.loc 1 25 27
+  23              		.cfi_startproc
+  24              	.LVL0:
+  26:lib/mpu/src/gd32v_mpu6500_if.c ****     uint64_t start_mtime, delta_mtime;
+  25              		.loc 1 26 5
+  27:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  28:lib/mpu/src/gd32v_mpu6500_if.c **** 	// Don't start measuruing until we see an mtime tick
+  29:lib/mpu/src/gd32v_mpu6500_if.c **** 	uint64_t tmp = get_timer_value();
+  26              		.loc 1 29 2
+  25:lib/mpu/src/gd32v_mpu6500_if.c ****     uint64_t start_mtime, delta_mtime;
+  27              		.loc 1 25 27 is_stmt 0
+  28 0000 7971     		addi	sp,sp,-48
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 2
+
+
+  29              	.LCFI0:
+  30              		.cfi_def_cfa_offset 48
+  31 0002 4AD0     		sw	s2,32(sp)
+  32 0004 4ECE     		sw	s3,28(sp)
+  33 0006 5AC8     		sw	s6,16(sp)
+  34 0008 06D6     		sw	ra,44(sp)
+  35 000a 22D4     		sw	s0,40(sp)
+  36 000c 26D2     		sw	s1,36(sp)
+  37 000e 52CC     		sw	s4,24(sp)
+  38 0010 56CA     		sw	s5,20(sp)
+  39 0012 5EC6     		sw	s7,12(sp)
+  40 0014 62C4     		sw	s8,8(sp)
+  41 0016 66C2     		sw	s9,4(sp)
+  42              		.cfi_offset 18, -16
+  43              		.cfi_offset 19, -20
+  44              		.cfi_offset 22, -32
+  45              		.cfi_offset 1, -4
+  46              		.cfi_offset 8, -8
+  47              		.cfi_offset 9, -12
+  48              		.cfi_offset 20, -24
+  49              		.cfi_offset 21, -28
+  50              		.cfi_offset 23, -36
+  51              		.cfi_offset 24, -40
+  52              		.cfi_offset 25, -44
+  25:lib/mpu/src/gd32v_mpu6500_if.c ****     uint64_t start_mtime, delta_mtime;
+  53              		.loc 1 25 27
+  54 0018 2A8B     		mv	s6,a0
+  55              		.loc 1 29 17
+  56 001a 97000000 		call	get_timer_value
+  56      E7800000 
+  57              	.LVL1:
+  58 0022 AA89     		mv	s3,a0
+  59 0024 2E89     		mv	s2,a1
+  60              	.LVL2:
+  61              	.L2:
+  30:lib/mpu/src/gd32v_mpu6500_if.c **** 	do {
+  62              		.loc 1 30 2 is_stmt 1 discriminator 1
+  31:lib/mpu/src/gd32v_mpu6500_if.c **** 	start_mtime = get_timer_value();
+  63              		.loc 1 31 2 discriminator 1
+  64              		.loc 1 31 16 is_stmt 0 discriminator 1
+  65 0026 97000000 		call	get_timer_value
+  65      E7800000 
+  66              	.LVL3:
+  67 002e AA84     		mv	s1,a0
+  68 0030 2E84     		mv	s0,a1
+  69              	.LVL4:
+  32:lib/mpu/src/gd32v_mpu6500_if.c **** 	} while (start_mtime == tmp);
+  70              		.loc 1 32 2 discriminator 1
+  71 0032 6394A900 		bne	s3,a0,.L3
+  72 0036 E308B9FE 		beq	s2,a1,.L2
+  73              	.L3:
+  33:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  34:lib/mpu/src/gd32v_mpu6500_if.c **** 	do {
+  35:lib/mpu/src/gd32v_mpu6500_if.c **** 	delta_mtime = get_timer_value() - start_mtime;
+  36:lib/mpu/src/gd32v_mpu6500_if.c **** 	}while(delta_mtime <(SystemCoreClock/4000.0 * millis ));
+  74              		.loc 1 36 38 discriminator 1
+  75 003a B7070000 		lui	a5,%hi(.LC0)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 3
+
+
+  76 003e 03A90700 		lw	s2,%lo(.LC0)(a5)
+  77              	.LVL5:
+  78 0042 83A94700 		lw	s3,%lo(.LC0+4)(a5)
+  79 0046 B70B0000 		lui	s7,%hi(SystemCoreClock)
+  80              	.L4:
+  34:lib/mpu/src/gd32v_mpu6500_if.c **** 	delta_mtime = get_timer_value() - start_mtime;
+  81              		.loc 1 34 2 is_stmt 1 discriminator 1
+  35:lib/mpu/src/gd32v_mpu6500_if.c **** 	}while(delta_mtime <(SystemCoreClock/4000.0 * millis ));
+  82              		.loc 1 35 2 discriminator 1
+  35:lib/mpu/src/gd32v_mpu6500_if.c **** 	}while(delta_mtime <(SystemCoreClock/4000.0 * millis ));
+  83              		.loc 1 35 16 is_stmt 0 discriminator 1
+  84 004a 97000000 		call	get_timer_value
+  84      E7800000 
+  85              	.LVL6:
+  86 0052 AA87     		mv	a5,a0
+  35:lib/mpu/src/gd32v_mpu6500_if.c **** 	}while(delta_mtime <(SystemCoreClock/4000.0 * millis ));
+  87              		.loc 1 35 14 discriminator 1
+  88 0054 058D     		sub	a0,a0,s1
+  89              	.LVL7:
+  90 0056 B3B7A700 		sgtu	a5,a0,a5
+  91              	.LVL8:
+  92 005a 818D     		sub	a1,a1,s0
+  93              		.loc 1 36 21 discriminator 1
+  94 005c 9D8D     		sub	a1,a1,a5
+  95 005e 97000000 		call	__floatundidf
+  95      E7800000 
+  96              	.LVL9:
+  97 0066 2A8A     		mv	s4,a0
+  98              		.loc 1 36 38 discriminator 1
+  99 0068 03A50B00 		lw	a0,%lo(SystemCoreClock)(s7)
+ 100              		.loc 1 36 21 discriminator 1
+ 101 006c AE8A     		mv	s5,a1
+ 102              		.loc 1 36 38 discriminator 1
+ 103 006e 97000000 		call	__floatunsidf
+ 103      E7800000 
+ 104              	.LVL10:
+ 105 0076 4A86     		mv	a2,s2
+ 106 0078 CE86     		mv	a3,s3
+ 107 007a 97000000 		call	__divdf3
+ 107      E7800000 
+ 108              	.LVL11:
+ 109 0082 2A8C     		mv	s8,a0
+ 110              		.loc 1 36 46 discriminator 1
+ 111 0084 5A85     		mv	a0,s6
+ 112              		.loc 1 36 38 discriminator 1
+ 113 0086 AE8C     		mv	s9,a1
+ 114              		.loc 1 36 46 discriminator 1
+ 115 0088 97000000 		call	__floatsidf
+ 115      E7800000 
+ 116              	.LVL12:
+ 117 0090 2A86     		mv	a2,a0
+ 118 0092 AE86     		mv	a3,a1
+ 119 0094 6285     		mv	a0,s8
+ 120 0096 E685     		mv	a1,s9
+ 121 0098 97000000 		call	__muldf3
+ 121      E7800000 
+ 122              	.LVL13:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 4
+
+
+ 123              		.loc 1 36 2 discriminator 1
+ 124 00a0 2A86     		mv	a2,a0
+ 125 00a2 AE86     		mv	a3,a1
+ 126 00a4 5285     		mv	a0,s4
+ 127 00a6 D685     		mv	a1,s5
+ 128 00a8 97000000 		call	__ltdf2
+ 128      E7800000 
+ 129              	.LVL14:
+ 130 00b0 E34D05F8 		blt	a0,zero,.L4
+  37:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 131              		.loc 1 37 1
+ 132 00b4 B250     		lw	ra,44(sp)
+ 133              		.cfi_restore 1
+ 134 00b6 2254     		lw	s0,40(sp)
+ 135              		.cfi_restore 8
+ 136              	.LVL15:
+ 137 00b8 9254     		lw	s1,36(sp)
+ 138              		.cfi_restore 9
+ 139 00ba 0259     		lw	s2,32(sp)
+ 140              		.cfi_restore 18
+ 141 00bc F249     		lw	s3,28(sp)
+ 142              		.cfi_restore 19
+ 143 00be 624A     		lw	s4,24(sp)
+ 144              		.cfi_restore 20
+ 145 00c0 D24A     		lw	s5,20(sp)
+ 146              		.cfi_restore 21
+ 147 00c2 424B     		lw	s6,16(sp)
+ 148              		.cfi_restore 22
+ 149              	.LVL16:
+ 150 00c4 B24B     		lw	s7,12(sp)
+ 151              		.cfi_restore 23
+ 152 00c6 224C     		lw	s8,8(sp)
+ 153              		.cfi_restore 24
+ 154 00c8 924C     		lw	s9,4(sp)
+ 155              		.cfi_restore 25
+ 156 00ca 4561     		addi	sp,sp,48
+ 157              	.LCFI1:
+ 158              		.cfi_def_cfa_offset 0
+ 159 00cc 8280     		jr	ra
+ 160              		.cfi_endproc
+ 161              	.LFE8:
+ 163              		.section	.text.i2c_master_read_register,"ax",@progbits
+ 164              		.align	1
+ 165              		.globl	i2c_master_read_register
+ 167              	i2c_master_read_register:
+ 168              	.LFB9:
+  38:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  39:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_read_register(void* handle, uint8_t addr, uint8_t reg, uint8_t size, uint8_t *data)
+ 169              		.loc 1 39 100 is_stmt 1
+ 170              		.cfi_startproc
+ 171              	.LVL17:
+  40:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 172              		.loc 1 40 5
+  39:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 173              		.loc 1 39 100 is_stmt 0
+ 174 0000 0111     		addi	sp,sp,-32
+ 175              	.LCFI2:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 5
+
+
+ 176              		.cfi_def_cfa_offset 32
+ 177 0002 22CC     		sw	s0,24(sp)
+ 178              		.cfi_offset 8, -8
+ 179              		.loc 1 40 20
+ 180 0004 0041     		lw	s0,0(a0)
+ 181              	.LVL18:
+  41:lib/mpu/src/gd32v_mpu6500_if.c ****     
+  42:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a NACK for the next data byte which will be received into the shift register */
+  43:lib/mpu/src/gd32v_mpu6500_if.c **** 	//i2c_ackpos_config(port, I2C_ACKPOS_NEXT);
+  44:lib/mpu/src/gd32v_mpu6500_if.c ****     //while(i2c_flag_get(port, I2C_FLAG_I2CBSY));
+  45:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  46:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a start condition to I2C bus */
+  47:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 182              		.loc 1 47 5 is_stmt 1
+  39:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 183              		.loc 1 39 100 is_stmt 0
+ 184 0006 26CA     		sw	s1,20(sp)
+ 185 0008 4AC8     		sw	s2,16(sp)
+ 186              		.loc 1 47 5
+ 187 000a 2285     		mv	a0,s0
+ 188              	.LVL19:
+  39:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 189              		.loc 1 39 100
+ 190 000c 4EC6     		sw	s3,12(sp)
+ 191 000e 52C4     		sw	s4,8(sp)
+ 192 0010 06CE     		sw	ra,28(sp)
+ 193              		.cfi_offset 9, -12
+ 194              		.cfi_offset 18, -16
+ 195              		.cfi_offset 19, -20
+ 196              		.cfi_offset 20, -24
+ 197              		.cfi_offset 1, -4
+  39:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 198              		.loc 1 39 100
+ 199 0012 AE84     		mv	s1,a1
+ 200 0014 328A     		mv	s4,a2
+ 201 0016 3689     		mv	s2,a3
+ 202 0018 BA89     		mv	s3,a4
+ 203              		.loc 1 47 5
+ 204 001a 97000000 		call	i2c_start_on_bus
+ 204      E7800000 
+ 205              	.LVL20:
+  48:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 206              		.loc 1 48 5 is_stmt 1
+ 207              	.L8:
+ 208              		.loc 1 48 48 discriminator 1
+ 209              		.loc 1 48 12 is_stmt 0 discriminator 1
+ 210 0022 93050050 		li	a1,1280
+ 211 0026 2285     		mv	a0,s0
+ 212 0028 97000000 		call	i2c_flag_get
+ 212      E7800000 
+ 213              	.LVL21:
+ 214              		.loc 1 48 10 discriminator 1
+ 215 0030 6DD9     		beq	a0,zero,.L8
+  49:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  50:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send slave address to I2C bus */
+  51:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+ 216              		.loc 1 51 5 is_stmt 1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 6
+
+
+ 217              		.loc 1 51 38 is_stmt 0
+ 218 0032 8604     		slli	s1,s1,1
+ 219              		.loc 1 51 5
+ 220 0034 7956     		li	a2,-2
+ 221 0036 A685     		mv	a1,s1
+ 222 0038 2285     		mv	a0,s0
+ 223 003a 97000000 		call	i2c_master_addressing
+ 223      E7800000 
+ 224              	.LVL22:
+  52:lib/mpu/src/gd32v_mpu6500_if.c ****     /* disable ACK before clearing ADDSEND bit */
+  53:lib/mpu/src/gd32v_mpu6500_if.c ****     //i2c_ack_config(port, I2C_ACK_DISABLE);
+  54:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 225              		.loc 1 54 5 is_stmt 1
+ 226              	.L9:
+ 227              		.loc 1 54 49 discriminator 1
+ 228              		.loc 1 54 12 is_stmt 0 discriminator 1
+ 229 0042 93051050 		li	a1,1281
+ 230 0046 2285     		mv	a0,s0
+ 231 0048 97000000 		call	i2c_flag_get
+ 231      E7800000 
+ 232              	.LVL23:
+ 233              		.loc 1 54 10 discriminator 1
+ 234 0050 6DD9     		beq	a0,zero,.L9
+  55:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 235              		.loc 1 55 5 is_stmt 1
+ 236 0052 93051050 		li	a1,1281
+ 237 0056 2285     		mv	a0,s0
+ 238 0058 97000000 		call	i2c_flag_clear
+ 238      E7800000 
+ 239              	.LVL24:
+  56:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 240              		.loc 1 56 5
+ 241              	.L10:
+ 242              		.loc 1 56 45 discriminator 1
+ 243              		.loc 1 56 12 is_stmt 0 discriminator 1
+ 244 0060 93057050 		li	a1,1287
+ 245 0064 2285     		mv	a0,s0
+ 246 0066 97000000 		call	i2c_flag_get
+ 246      E7800000 
+ 247              	.LVL25:
+ 248              		.loc 1 56 10 discriminator 1
+ 249 006e 6DD9     		beq	a0,zero,.L10
+  57:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  58:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  59:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_data_transmit(port, reg);
+ 250              		.loc 1 59 5 is_stmt 1
+ 251 0070 D285     		mv	a1,s4
+ 252 0072 2285     		mv	a0,s0
+ 253 0074 97000000 		call	i2c_data_transmit
+ 253      E7800000 
+ 254              	.LVL26:
+  60:lib/mpu/src/gd32v_mpu6500_if.c ****     /* wait until the TBE bit is set */
+  61:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 255              		.loc 1 61 5
+ 256              	.L11:
+ 257              		.loc 1 61 45 discriminator 1
+ 258              		.loc 1 61 12 is_stmt 0 discriminator 1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 7
+
+
+ 259 007c 93057050 		li	a1,1287
+ 260 0080 2285     		mv	a0,s0
+ 261 0082 97000000 		call	i2c_flag_get
+ 261      E7800000 
+ 262              	.LVL27:
+ 263              		.loc 1 61 10 discriminator 1
+ 264 008a 6DD9     		beq	a0,zero,.L11
+  62:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  63:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 265              		.loc 1 63 5 is_stmt 1
+ 266 008c 2285     		mv	a0,s0
+ 267 008e 97000000 		call	i2c_start_on_bus
+ 267      E7800000 
+ 268              	.LVL28:
+  64:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 269              		.loc 1 64 5
+ 270              	.L12:
+ 271              		.loc 1 64 51 discriminator 1
+ 272              		.loc 1 64 14 is_stmt 0 discriminator 1
+ 273 0096 93050050 		li	a1,1280
+ 274 009a 2285     		mv	a0,s0
+ 275 009c 97000000 		call	i2c_flag_get
+ 275      E7800000 
+ 276              	.LVL29:
+ 277              		.loc 1 64 10 discriminator 1
+ 278 00a4 6DD9     		beq	a0,zero,.L12
+  65:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  66:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_RECEIVER);
+ 279              		.loc 1 66 5 is_stmt 1
+ 280 00a6 0546     		li	a2,1
+ 281 00a8 A685     		mv	a1,s1
+ 282 00aa 2285     		mv	a0,s0
+ 283 00ac 97000000 		call	i2c_master_addressing
+ 283      E7800000 
+ 284              	.LVL30:
+  67:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 285              		.loc 1 67 5
+ 286              	.L13:
+ 287              		.loc 1 67 52 discriminator 1
+ 288              		.loc 1 67 14 is_stmt 0 discriminator 1
+ 289 00b4 93051050 		li	a1,1281
+ 290 00b8 2285     		mv	a0,s0
+ 291 00ba 97000000 		call	i2c_flag_get
+ 291      E7800000 
+ 292              	.LVL31:
+ 293              		.loc 1 67 10 discriminator 1
+ 294 00c2 6DD9     		beq	a0,zero,.L13
+  68:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 295              		.loc 1 68 5 is_stmt 1
+ 296 00c4 93051050 		li	a1,1281
+ 297 00c8 2285     		mv	a0,s0
+ 298 00ca 97000000 		call	i2c_flag_clear
+ 298      E7800000 
+ 299              	.LVL32:
+  69:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  70:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_ack_config(port, I2C_ACK_ENABLE);
+ 300              		.loc 1 70 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 8
+
+
+ 301 00d2 8545     		li	a1,1
+ 302 00d4 2285     		mv	a0,s0
+ 303 00d6 97000000 		call	i2c_ack_config
+ 303      E7800000 
+ 304              	.LVL33:
+  71:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  72:lib/mpu/src/gd32v_mpu6500_if.c ****     for(int i = 0; i < size; i++) {
+ 305              		.loc 1 72 5
+ 306              	.LBB2:
+ 307              		.loc 1 72 9
+ 308              		.loc 1 72 13 is_stmt 0
+ 309 00de 8144     		li	s1,0
+  73:lib/mpu/src/gd32v_mpu6500_if.c ****         if(i == size - 1) {
+ 310              		.loc 1 73 22
+ 311 00e0 130AF9FF 		addi	s4,s2,-1
+ 312              	.LVL34:
+ 313              	.L14:
+  72:lib/mpu/src/gd32v_mpu6500_if.c ****         if(i == size - 1) {
+ 314              		.loc 1 72 5 discriminator 1
+ 315 00e4 63C32403 		bgt	s2,s1,.L17
+ 316              	.LBE2:
+  74:lib/mpu/src/gd32v_mpu6500_if.c ****             i2c_ack_config(port, I2C_ACK_DISABLE);
+  75:lib/mpu/src/gd32v_mpu6500_if.c ****         }
+  76:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_RBNE));
+  77:lib/mpu/src/gd32v_mpu6500_if.c ****         *data++ = i2c_data_receive(port);
+  78:lib/mpu/src/gd32v_mpu6500_if.c ****     }
+  79:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  80:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_stop_on_bus(port);
+ 317              		.loc 1 80 5 is_stmt 1
+ 318 00e8 2285     		mv	a0,s0
+ 319 00ea 97000000 		call	i2c_stop_on_bus
+ 319      E7800000 
+ 320              	.LVL35:
+  81:lib/mpu/src/gd32v_mpu6500_if.c ****     while( I2C_CTL0(port) & I2C_CTL0_STOP );
+ 321              		.loc 1 81 5
+ 322              	.L18:
+ 323              		.loc 1 81 44 discriminator 1
+ 324              		.loc 1 81 12 is_stmt 0 discriminator 1
+ 325 00f2 1C40     		lw	a5,0(s0)
+ 326              		.loc 1 81 27 discriminator 1
+ 327 00f4 93F70720 		andi	a5,a5,512
+ 328              		.loc 1 81 10 discriminator 1
+ 329 00f8 EDFF     		bne	a5,zero,.L18
+  82:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 330              		.loc 1 82 1
+ 331 00fa F240     		lw	ra,28(sp)
+ 332              		.cfi_remember_state
+ 333              		.cfi_restore 1
+ 334 00fc 6244     		lw	s0,24(sp)
+ 335              		.cfi_restore 8
+ 336              	.LVL36:
+ 337 00fe D244     		lw	s1,20(sp)
+ 338              		.cfi_restore 9
+ 339              	.LVL37:
+ 340 0100 4249     		lw	s2,16(sp)
+ 341              		.cfi_restore 18
+ 342 0102 B249     		lw	s3,12(sp)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 9
+
+
+ 343              		.cfi_restore 19
+ 344 0104 224A     		lw	s4,8(sp)
+ 345              		.cfi_restore 20
+ 346 0106 0561     		addi	sp,sp,32
+ 347              	.LCFI3:
+ 348              		.cfi_def_cfa_offset 0
+ 349 0108 8280     		jr	ra
+ 350              	.LVL38:
+ 351              	.L17:
+ 352              	.LCFI4:
+ 353              		.cfi_restore_state
+ 354              	.LBB3:
+  73:lib/mpu/src/gd32v_mpu6500_if.c ****             i2c_ack_config(port, I2C_ACK_DISABLE);
+ 355              		.loc 1 73 9 is_stmt 1
+  73:lib/mpu/src/gd32v_mpu6500_if.c ****             i2c_ack_config(port, I2C_ACK_DISABLE);
+ 356              		.loc 1 73 11 is_stmt 0
+ 357 010a 63189A00 		bne	s4,s1,.L16
+  74:lib/mpu/src/gd32v_mpu6500_if.c ****         }
+ 358              		.loc 1 74 13 is_stmt 1
+ 359 010e 8145     		li	a1,0
+ 360 0110 2285     		mv	a0,s0
+ 361 0112 97000000 		call	i2c_ack_config
+ 361      E7800000 
+ 362              	.LVL39:
+ 363              	.L16:
+  76:lib/mpu/src/gd32v_mpu6500_if.c ****         *data++ = i2c_data_receive(port);
+ 364              		.loc 1 76 50 discriminator 1
+  76:lib/mpu/src/gd32v_mpu6500_if.c ****         *data++ = i2c_data_receive(port);
+ 365              		.loc 1 76 16 is_stmt 0 discriminator 1
+ 366 011a 93056050 		li	a1,1286
+ 367 011e 2285     		mv	a0,s0
+ 368 0120 97000000 		call	i2c_flag_get
+ 368      E7800000 
+ 369              	.LVL40:
+  76:lib/mpu/src/gd32v_mpu6500_if.c ****         *data++ = i2c_data_receive(port);
+ 370              		.loc 1 76 14 discriminator 1
+ 371 0128 6DD9     		beq	a0,zero,.L16
+  77:lib/mpu/src/gd32v_mpu6500_if.c ****     }
+ 372              		.loc 1 77 9 is_stmt 1 discriminator 2
+ 373              	.LVL41:
+  77:lib/mpu/src/gd32v_mpu6500_if.c ****     }
+ 374              		.loc 1 77 19 is_stmt 0 discriminator 2
+ 375 012a 2285     		mv	a0,s0
+ 376 012c 97000000 		call	i2c_data_receive
+ 376      E7800000 
+ 377              	.LVL42:
+  77:lib/mpu/src/gd32v_mpu6500_if.c ****     }
+ 378              		.loc 1 77 17 discriminator 2
+ 379 0134 B3879900 		add	a5,s3,s1
+ 380 0138 2380A700 		sb	a0,0(a5)
+  72:lib/mpu/src/gd32v_mpu6500_if.c ****         if(i == size - 1) {
+ 381              		.loc 1 72 31 discriminator 2
+ 382 013c 8504     		addi	s1,s1,1
+ 383              	.LVL43:
+ 384 013e 5DB7     		j	.L14
+ 385              	.LBE3:
+ 386              		.cfi_endproc
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 10
+
+
+ 387              	.LFE9:
+ 389              		.section	.text.i2c_master_write_register,"ax",@progbits
+ 390              		.align	1
+ 391              		.globl	i2c_master_write_register
+ 393              	i2c_master_write_register:
+ 394              	.LFB11:
+  83:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  84:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_dma_master_read_register(uint32_t handle, uint8_t addr, uint8_t reg){
+  85:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = handle;
+  86:lib/mpu/src/gd32v_mpu6500_if.c ****     
+  87:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a NACK for the next data byte which will be received into the shift register */
+  88:lib/mpu/src/gd32v_mpu6500_if.c **** 	//i2c_ackpos_config(port, I2C_ACKPOS_NEXT);
+  89:lib/mpu/src/gd32v_mpu6500_if.c ****     //while(i2c_flag_get(port, I2C_FLAG_I2CBSY));
+  90:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  91:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a start condition to I2C bus */
+  92:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+  93:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+  94:lib/mpu/src/gd32v_mpu6500_if.c **** 
+  95:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send slave address to I2C bus */
+  96:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+  97:lib/mpu/src/gd32v_mpu6500_if.c ****     /* disable ACK before clearing ADDSEND bit */
+  98:lib/mpu/src/gd32v_mpu6500_if.c ****     //i2c_ack_config(port, I2C_ACK_DISABLE);
+  99:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 100:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 101:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 102:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 103:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_data_transmit(port, reg);
+ 104:lib/mpu/src/gd32v_mpu6500_if.c ****     /* wait until the TBE bit is set */
+ 105:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 106:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 107:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 108:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 109:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 110:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_RECEIVER);
+ 111:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 112:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 113:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 114:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_ack_config(port, I2C_ACK_ENABLE);
+ 115:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_dma_enable(port, I2C_DMA_ON);
+ 116:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_dma_last_transfer_config(port, I2C_DMALST_ON);
+ 117:lib/mpu/src/gd32v_mpu6500_if.c ****     dma_config();
+ 118:lib/mpu/src/gd32v_mpu6500_if.c ****     
+ 119:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 120:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 121:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_write_register(void* handle, uint8_t addr, uint8_t reg, uint8_t size, uint8_t *data
+ 395              		.loc 1 121 101 is_stmt 1
+ 396              		.cfi_startproc
+ 397              	.LVL44:
+ 122:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 398              		.loc 1 122 5
+ 121:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 399              		.loc 1 121 101 is_stmt 0
+ 400 0000 0111     		addi	sp,sp,-32
+ 401              	.LCFI5:
+ 402              		.cfi_def_cfa_offset 32
+ 403 0002 22CC     		sw	s0,24(sp)
+ 404              		.cfi_offset 8, -8
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 11
+
+
+ 405              		.loc 1 122 20
+ 406 0004 0041     		lw	s0,0(a0)
+ 407              	.LVL45:
+ 123:lib/mpu/src/gd32v_mpu6500_if.c ****     
+ 124:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a NACK for the next data byte which will be received into the shift register */
+ 125:lib/mpu/src/gd32v_mpu6500_if.c **** 	//i2c_ackpos_config(port, I2C_ACKPOS_NEXT);
+ 126:lib/mpu/src/gd32v_mpu6500_if.c ****     while(i2c_flag_get(port, I2C_FLAG_I2CBSY));
+ 408              		.loc 1 126 5 is_stmt 1
+ 121:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 409              		.loc 1 121 101 is_stmt 0
+ 410 0006 26CA     		sw	s1,20(sp)
+ 411 0008 4AC8     		sw	s2,16(sp)
+ 412 000a 4EC6     		sw	s3,12(sp)
+ 413 000c 52C4     		sw	s4,8(sp)
+ 414 000e 06CE     		sw	ra,28(sp)
+ 415              		.cfi_offset 9, -12
+ 416              		.cfi_offset 18, -16
+ 417              		.cfi_offset 19, -20
+ 418              		.cfi_offset 20, -24
+ 419              		.cfi_offset 1, -4
+ 121:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = *((uint32_t*)handle);
+ 420              		.loc 1 121 101
+ 421 0010 2E8A     		mv	s4,a1
+ 422 0012 B284     		mv	s1,a2
+ 423 0014 3689     		mv	s2,a3
+ 424 0016 BA89     		mv	s3,a4
+ 425              	.LVL46:
+ 426              	.L36:
+ 427              		.loc 1 126 47 is_stmt 1 discriminator 1
+ 428              		.loc 1 126 11 is_stmt 0 discriminator 1
+ 429 0018 93051060 		li	a1,1537
+ 430 001c 2285     		mv	a0,s0
+ 431 001e 97000000 		call	i2c_flag_get
+ 431      E7800000 
+ 432              	.LVL47:
+ 433              		.loc 1 126 10 discriminator 1
+ 434 0026 6DF9     		bne	a0,zero,.L36
+ 127:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 128:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send a start condition to I2C bus */
+ 129:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 435              		.loc 1 129 5 is_stmt 1
+ 436 0028 2285     		mv	a0,s0
+ 437 002a 97000000 		call	i2c_start_on_bus
+ 437      E7800000 
+ 438              	.LVL48:
+ 130:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 439              		.loc 1 130 5
+ 440              	.L37:
+ 441              		.loc 1 130 48 discriminator 1
+ 442              		.loc 1 130 12 is_stmt 0 discriminator 1
+ 443 0032 93050050 		li	a1,1280
+ 444 0036 2285     		mv	a0,s0
+ 445 0038 97000000 		call	i2c_flag_get
+ 445      E7800000 
+ 446              	.LVL49:
+ 447              		.loc 1 130 10 discriminator 1
+ 448 0040 6DD9     		beq	a0,zero,.L37
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 12
+
+
+ 131:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 132:lib/mpu/src/gd32v_mpu6500_if.c ****     /* send slave address to I2C bus */
+ 133:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+ 449              		.loc 1 133 5 is_stmt 1
+ 450 0042 7956     		li	a2,-2
+ 451 0044 93151A00 		slli	a1,s4,1
+ 452 0048 2285     		mv	a0,s0
+ 453 004a 97000000 		call	i2c_master_addressing
+ 453      E7800000 
+ 454              	.LVL50:
+ 134:lib/mpu/src/gd32v_mpu6500_if.c ****     /* disable ACK before clearing ADDSEND bit */
+ 135:lib/mpu/src/gd32v_mpu6500_if.c ****     //i2c_ack_config(port, I2C_ACK_DISABLE);
+ 136:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 455              		.loc 1 136 5
+ 456              	.L38:
+ 457              		.loc 1 136 49 discriminator 1
+ 458              		.loc 1 136 12 is_stmt 0 discriminator 1
+ 459 0052 93051050 		li	a1,1281
+ 460 0056 2285     		mv	a0,s0
+ 461 0058 97000000 		call	i2c_flag_get
+ 461      E7800000 
+ 462              	.LVL51:
+ 463              		.loc 1 136 10 discriminator 1
+ 464 0060 6DD9     		beq	a0,zero,.L38
+ 137:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 465              		.loc 1 137 5 is_stmt 1
+ 466 0062 93051050 		li	a1,1281
+ 467 0066 2285     		mv	a0,s0
+ 468 0068 97000000 		call	i2c_flag_clear
+ 468      E7800000 
+ 469              	.LVL52:
+ 138:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 470              		.loc 1 138 5
+ 471              	.L39:
+ 472              		.loc 1 138 45 discriminator 1
+ 473              		.loc 1 138 12 is_stmt 0 discriminator 1
+ 474 0070 93057050 		li	a1,1287
+ 475 0074 2285     		mv	a0,s0
+ 476 0076 97000000 		call	i2c_flag_get
+ 476      E7800000 
+ 477              	.LVL53:
+ 478              		.loc 1 138 10 discriminator 1
+ 479 007e 6DD9     		beq	a0,zero,.L39
+ 139:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 140:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_data_transmit(port, reg);
+ 480              		.loc 1 140 5 is_stmt 1
+ 481 0080 A685     		mv	a1,s1
+ 482 0082 2285     		mv	a0,s0
+ 483 0084 97000000 		call	i2c_data_transmit
+ 483      E7800000 
+ 484              	.LVL54:
+ 141:lib/mpu/src/gd32v_mpu6500_if.c ****         /* wait until the TBE bit is set */
+ 142:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 485              		.loc 1 142 5
+ 486              	.L40:
+ 487              		.loc 1 142 45 discriminator 1
+ 488              		.loc 1 142 12 is_stmt 0 discriminator 1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 13
+
+
+ 489 008c 93057050 		li	a1,1287
+ 490 0090 2285     		mv	a0,s0
+ 491 0092 97000000 		call	i2c_flag_get
+ 491      E7800000 
+ 492              	.LVL55:
+ 493              		.loc 1 142 10 discriminator 1
+ 494 009a 6DD9     		beq	a0,zero,.L40
+ 495              	.LBB4:
+ 143:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 144:lib/mpu/src/gd32v_mpu6500_if.c ****     for(int i = 0; i < size; i++){
+ 496              		.loc 1 144 13
+ 497 009c 8144     		li	s1,0
+ 498              	.LVL56:
+ 499              	.L41:
+ 500              		.loc 1 144 5 discriminator 1
+ 501 009e 63C32403 		bgt	s2,s1,.L43
+ 502              	.LBE4:
+ 145:lib/mpu/src/gd32v_mpu6500_if.c ****         i2c_data_transmit(port, *data++);
+ 146:lib/mpu/src/gd32v_mpu6500_if.c ****         /* wait until the TBE bit is set */
+ 147:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 148:lib/mpu/src/gd32v_mpu6500_if.c ****     }
+ 149:lib/mpu/src/gd32v_mpu6500_if.c **** 
+ 150:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_stop_on_bus(port);
+ 503              		.loc 1 150 5 is_stmt 1
+ 504 00a2 2285     		mv	a0,s0
+ 505 00a4 97000000 		call	i2c_stop_on_bus
+ 505      E7800000 
+ 506              	.LVL57:
+ 151:lib/mpu/src/gd32v_mpu6500_if.c ****     while( I2C_CTL0(port) & I2C_CTL0_STOP );
+ 507              		.loc 1 151 5
+ 508              	.L44:
+ 509              		.loc 1 151 44 discriminator 1
+ 510              		.loc 1 151 12 is_stmt 0 discriminator 1
+ 511 00ac 1C40     		lw	a5,0(s0)
+ 512              		.loc 1 151 27 discriminator 1
+ 513 00ae 93F70720 		andi	a5,a5,512
+ 514              		.loc 1 151 10 discriminator 1
+ 515 00b2 EDFF     		bne	a5,zero,.L44
+ 152:lib/mpu/src/gd32v_mpu6500_if.c **** }...
+ 516              		.loc 1 152 1
+ 517 00b4 F240     		lw	ra,28(sp)
+ 518              		.cfi_remember_state
+ 519              		.cfi_restore 1
+ 520 00b6 6244     		lw	s0,24(sp)
+ 521              		.cfi_restore 8
+ 522              	.LVL58:
+ 523 00b8 D244     		lw	s1,20(sp)
+ 524              		.cfi_restore 9
+ 525              	.LVL59:
+ 526 00ba 4249     		lw	s2,16(sp)
+ 527              		.cfi_restore 18
+ 528 00bc B249     		lw	s3,12(sp)
+ 529              		.cfi_restore 19
+ 530 00be 224A     		lw	s4,8(sp)
+ 531              		.cfi_restore 20
+ 532 00c0 0561     		addi	sp,sp,32
+ 533              	.LCFI6:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 14
+
+
+ 534              		.cfi_def_cfa_offset 0
+ 535 00c2 8280     		jr	ra
+ 536              	.LVL60:
+ 537              	.L43:
+ 538              	.LCFI7:
+ 539              		.cfi_restore_state
+ 540              	.LBB5:
+ 145:lib/mpu/src/gd32v_mpu6500_if.c ****         i2c_data_transmit(port, *data++);
+ 541              		.loc 1 145 9 is_stmt 1
+ 542 00c4 B3879900 		add	a5,s3,s1
+ 543 00c8 83C50700 		lbu	a1,0(a5)
+ 544 00cc 2285     		mv	a0,s0
+ 545 00ce 97000000 		call	i2c_data_transmit
+ 545      E7800000 
+ 546              	.LVL61:
+ 147:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 547              		.loc 1 147 9
+ 548              	.L42:
+ 147:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 549              		.loc 1 147 49 discriminator 1
+ 147:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 550              		.loc 1 147 16 is_stmt 0 discriminator 1
+ 551 00d6 93057050 		li	a1,1287
+ 552 00da 2285     		mv	a0,s0
+ 553 00dc 97000000 		call	i2c_flag_get
+ 553      E7800000 
+ 554              	.LVL62:
+ 147:lib/mpu/src/gd32v_mpu6500_if.c ****         while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 555              		.loc 1 147 14 discriminator 1
+ 556 00e4 6DD9     		beq	a0,zero,.L42
+ 144:lib/mpu/src/gd32v_mpu6500_if.c ****     for(int i = 0; i < size; i++){
+ 557              		.loc 1 144 31 discriminator 2
+ 558 00e6 8504     		addi	s1,s1,1
+ 559              	.LVL63:
+ 560 00e8 5DBF     		j	.L41
+ 561              	.LBE5:
+ 562              		.cfi_endproc
+ 563              	.LFE11:
+ 565              		.section	.text.i2c_master_init,"ax",@progbits
+ 566              		.align	1
+ 567              		.globl	i2c_master_init
+ 569              	i2c_master_init:
+ 570              	.LFB6:
+  15:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init(uint32_t port){
+ 571              		.loc 1 15 36 is_stmt 1
+ 572              		.cfi_startproc
+ 573              	.LVL64:
+  16:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 100000,I2C_DTCY_2 );
+ 574              		.loc 1 16 5
+ 575 0000 E165     		li	a1,98304
+  15:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init(uint32_t port){
+ 576              		.loc 1 15 36 is_stmt 0
+ 577 0002 4111     		addi	sp,sp,-16
+ 578              	.LCFI8:
+ 579              		.cfi_def_cfa_offset 16
+  16:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 100000,I2C_DTCY_2 );
+ 580              		.loc 1 16 5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 15
+
+
+ 581 0004 0146     		li	a2,0
+ 582 0006 9385056A 		addi	a1,a1,1696
+  15:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init(uint32_t port){
+ 583              		.loc 1 15 36
+ 584 000a 22C4     		sw	s0,8(sp)
+ 585 000c 06C6     		sw	ra,12(sp)
+ 586              		.cfi_offset 8, -8
+ 587              		.cfi_offset 1, -4
+  15:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init(uint32_t port){
+ 588              		.loc 1 15 36
+ 589 000e 2A84     		mv	s0,a0
+  16:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 100000,I2C_DTCY_2 );
+ 590              		.loc 1 16 5
+ 591 0010 97000000 		call	i2c_clock_config
+ 591      E7800000 
+ 592              	.LVL65:
+  17:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+ 593              		.loc 1 17 5 is_stmt 1
+ 594 0018 2285     		mv	a0,s0
+  18:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 595              		.loc 1 18 1 is_stmt 0
+ 596 001a 2244     		lw	s0,8(sp)
+ 597              		.cfi_restore 8
+ 598              	.LVL66:
+ 599 001c B240     		lw	ra,12(sp)
+ 600              		.cfi_restore 1
+ 601 001e 4101     		addi	sp,sp,16
+ 602              	.LCFI9:
+ 603              		.cfi_def_cfa_offset 0
+  17:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+ 604              		.loc 1 17 5
+ 605 0020 17030000 		tail	i2c_enable
+ 605      67000300 
+ 606              	.LVL67:
+ 607              		.cfi_endproc
+ 608              	.LFE6:
+ 610              		.section	.text.i2c_master_init_400k,"ax",@progbits
+ 611              		.align	1
+ 612              		.globl	i2c_master_init_400k
+ 614              	i2c_master_init_400k:
+ 615              	.LFB7:
+  20:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init_400k(uint32_t port){
+ 616              		.loc 1 20 41 is_stmt 1
+ 617              		.cfi_startproc
+ 618              	.LVL68:
+  21:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 400000, I2C_DTCY_16_9);
+ 619              		.loc 1 21 5
+ 620 0000 B7250600 		li	a1,401408
+  20:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init_400k(uint32_t port){
+ 621              		.loc 1 20 41 is_stmt 0
+ 622 0004 4111     		addi	sp,sp,-16
+ 623              	.LCFI10:
+ 624              		.cfi_def_cfa_offset 16
+  21:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 400000, I2C_DTCY_16_9);
+ 625              		.loc 1 21 5
+ 626 0006 1166     		li	a2,16384
+ 627 0008 938505A8 		addi	a1,a1,-1408
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 16
+
+
+  20:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init_400k(uint32_t port){
+ 628              		.loc 1 20 41
+ 629 000c 22C4     		sw	s0,8(sp)
+ 630 000e 06C6     		sw	ra,12(sp)
+ 631              		.cfi_offset 8, -8
+ 632              		.cfi_offset 1, -4
+  20:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_master_init_400k(uint32_t port){
+ 633              		.loc 1 20 41
+ 634 0010 2A84     		mv	s0,a0
+  21:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_clock_config(port, 400000, I2C_DTCY_16_9);
+ 635              		.loc 1 21 5
+ 636 0012 97000000 		call	i2c_clock_config
+ 636      E7800000 
+ 637              	.LVL69:
+  22:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+ 638              		.loc 1 22 5 is_stmt 1
+ 639 001a 2285     		mv	a0,s0
+  23:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 640              		.loc 1 23 1 is_stmt 0
+ 641 001c 2244     		lw	s0,8(sp)
+ 642              		.cfi_restore 8
+ 643              	.LVL70:
+ 644 001e B240     		lw	ra,12(sp)
+ 645              		.cfi_restore 1
+ 646 0020 4101     		addi	sp,sp,16
+ 647              	.LCFI11:
+ 648              		.cfi_def_cfa_offset 0
+  22:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_enable(port);
+ 649              		.loc 1 22 5
+ 650 0022 17030000 		tail	i2c_enable
+ 650      67000300 
+ 651              	.LVL71:
+ 652              		.cfi_endproc
+ 653              	.LFE7:
+ 655              		.section	.text.mpu6500_install,"ax",@progbits
+ 656              		.align	1
+ 657              		.globl	mpu6500_install
+ 659              	mpu6500_install:
+ 660              	.LFB5:
+   8:lib/mpu/src/gd32v_mpu6500_if.c **** void mpu6500_install(uint32_t port){
+ 661              		.loc 1 8 36 is_stmt 1
+ 662              		.cfi_startproc
+ 663              	.LVL72:
+   9:lib/mpu/src/gd32v_mpu6500_if.c **** 	i2c_port = port;
+ 664              		.loc 1 9 2
+   8:lib/mpu/src/gd32v_mpu6500_if.c **** void mpu6500_install(uint32_t port){
+ 665              		.loc 1 8 36 is_stmt 0
+ 666 0000 4111     		addi	sp,sp,-16
+ 667              	.LCFI12:
+ 668              		.cfi_def_cfa_offset 16
+ 669 0002 22C4     		sw	s0,8(sp)
+ 670              		.cfi_offset 8, -8
+   9:lib/mpu/src/gd32v_mpu6500_if.c **** 	i2c_port = port;
+ 671              		.loc 1 9 11
+ 672 0004 37040000 		lui	s0,%hi(i2c_port)
+   8:lib/mpu/src/gd32v_mpu6500_if.c **** void mpu6500_install(uint32_t port){
+ 673              		.loc 1 8 36
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 17
+
+
+ 674 0008 06C6     		sw	ra,12(sp)
+ 675              		.cfi_offset 1, -4
+   9:lib/mpu/src/gd32v_mpu6500_if.c **** 	i2c_port = port;
+ 676              		.loc 1 9 11
+ 677 000a 2320A400 		sw	a0,%lo(i2c_port)(s0)
+  11:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_init_400k(i2c_port);
+ 678              		.loc 1 11 5 is_stmt 1
+ 679 000e 97000000 		call	i2c_master_init_400k
+ 679      E7800000 
+ 680              	.LVL73:
+  12:lib/mpu/src/gd32v_mpu6500_if.c **** 	mpu6500_init(&i2c_master_read_register, &i2c_master_write_register, &mpu_delay, (void*)&i2c_port);
+ 681              		.loc 1 12 2
+ 682 0016 93060400 		addi	a3,s0,%lo(i2c_port)
+  13:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 683              		.loc 1 13 1 is_stmt 0
+ 684 001a 2244     		lw	s0,8(sp)
+ 685              		.cfi_restore 8
+ 686 001c B240     		lw	ra,12(sp)
+ 687              		.cfi_restore 1
+  12:lib/mpu/src/gd32v_mpu6500_if.c **** 	mpu6500_init(&i2c_master_read_register, &i2c_master_write_register, &mpu_delay, (void*)&i2c_port);
+ 688              		.loc 1 12 2
+ 689 001e 37060000 		lui	a2,%hi(mpu_delay)
+ 690 0022 B7050000 		lui	a1,%hi(i2c_master_write_register)
+ 691 0026 37050000 		lui	a0,%hi(i2c_master_read_register)
+  13:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 692              		.loc 1 13 1
+  12:lib/mpu/src/gd32v_mpu6500_if.c **** 	mpu6500_init(&i2c_master_read_register, &i2c_master_write_register, &mpu_delay, (void*)&i2c_port);
+ 693              		.loc 1 12 2
+ 694 002a 13060600 		addi	a2,a2,%lo(mpu_delay)
+ 695 002e 93850500 		addi	a1,a1,%lo(i2c_master_write_register)
+ 696 0032 13050500 		addi	a0,a0,%lo(i2c_master_read_register)
+  13:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 697              		.loc 1 13 1
+ 698 0036 4101     		addi	sp,sp,16
+ 699              	.LCFI13:
+ 700              		.cfi_def_cfa_offset 0
+  12:lib/mpu/src/gd32v_mpu6500_if.c **** 	mpu6500_init(&i2c_master_read_register, &i2c_master_write_register, &mpu_delay, (void*)&i2c_port);
+ 701              		.loc 1 12 2
+ 702 0038 17030000 		tail	mpu6500_init
+ 702      67000300 
+ 703              	.LVL74:
+ 704              		.cfi_endproc
+ 705              	.LFE5:
+ 707              		.section	.text.i2c_dma_master_read_register,"ax",@progbits
+ 708              		.align	1
+ 709              		.globl	i2c_dma_master_read_register
+ 711              	i2c_dma_master_read_register:
+ 712              	.LFB10:
+  84:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_dma_master_read_register(uint32_t handle, uint8_t addr, uint8_t reg){
+ 713              		.loc 1 84 78 is_stmt 1
+ 714              		.cfi_startproc
+ 715              	.LVL75:
+  85:lib/mpu/src/gd32v_mpu6500_if.c ****     int32_t port = handle;
+ 716              		.loc 1 85 5
+  84:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_dma_master_read_register(uint32_t handle, uint8_t addr, uint8_t reg){
+ 717              		.loc 1 84 78 is_stmt 0
+ 718 0000 4111     		addi	sp,sp,-16
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 18
+
+
+ 719              	.LCFI14:
+ 720              		.cfi_def_cfa_offset 16
+ 721 0002 22C4     		sw	s0,8(sp)
+ 722 0004 26C2     		sw	s1,4(sp)
+ 723 0006 4AC0     		sw	s2,0(sp)
+ 724 0008 06C6     		sw	ra,12(sp)
+ 725              		.cfi_offset 8, -8
+ 726              		.cfi_offset 9, -12
+ 727              		.cfi_offset 18, -16
+ 728              		.cfi_offset 1, -4
+  84:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_dma_master_read_register(uint32_t handle, uint8_t addr, uint8_t reg){
+ 729              		.loc 1 84 78
+ 730 000a 2A84     		mv	s0,a0
+ 731              	.LVL76:
+  92:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 732              		.loc 1 92 5 is_stmt 1
+  84:lib/mpu/src/gd32v_mpu6500_if.c **** void i2c_dma_master_read_register(uint32_t handle, uint8_t addr, uint8_t reg){
+ 733              		.loc 1 84 78 is_stmt 0
+ 734 000c AE84     		mv	s1,a1
+ 735 000e 3289     		mv	s2,a2
+  92:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 736              		.loc 1 92 5
+ 737 0010 97000000 		call	i2c_start_on_bus
+ 737      E7800000 
+ 738              	.LVL77:
+  93:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 739              		.loc 1 93 5 is_stmt 1
+ 740              	.L65:
+  93:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 741              		.loc 1 93 48 discriminator 1
+  93:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 742              		.loc 1 93 12 is_stmt 0 discriminator 1
+ 743 0018 93050050 		li	a1,1280
+ 744 001c 2285     		mv	a0,s0
+ 745 001e 97000000 		call	i2c_flag_get
+ 745      E7800000 
+ 746              	.LVL78:
+  93:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_SBSEND));
+ 747              		.loc 1 93 10 discriminator 1
+ 748 0026 6DD9     		beq	a0,zero,.L65
+  96:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+ 749              		.loc 1 96 5 is_stmt 1
+  96:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+ 750              		.loc 1 96 38 is_stmt 0
+ 751 0028 8604     		slli	s1,s1,1
+  96:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_TRANSMITTER);
+ 752              		.loc 1 96 5
+ 753 002a 7956     		li	a2,-2
+ 754 002c A685     		mv	a1,s1
+ 755 002e 2285     		mv	a0,s0
+ 756 0030 97000000 		call	i2c_master_addressing
+ 756      E7800000 
+ 757              	.LVL79:
+  99:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 758              		.loc 1 99 5 is_stmt 1
+ 759              	.L66:
+  99:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 19
+
+
+ 760              		.loc 1 99 49 discriminator 1
+  99:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 761              		.loc 1 99 12 is_stmt 0 discriminator 1
+ 762 0038 93051050 		li	a1,1281
+ 763 003c 2285     		mv	a0,s0
+ 764 003e 97000000 		call	i2c_flag_get
+ 764      E7800000 
+ 765              	.LVL80:
+  99:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_ADDSEND));
+ 766              		.loc 1 99 10 discriminator 1
+ 767 0046 6DD9     		beq	a0,zero,.L66
+ 100:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 768              		.loc 1 100 5 is_stmt 1
+ 769 0048 93051050 		li	a1,1281
+ 770 004c 2285     		mv	a0,s0
+ 771 004e 97000000 		call	i2c_flag_clear
+ 771      E7800000 
+ 772              	.LVL81:
+ 101:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 773              		.loc 1 101 5
+ 774              	.L67:
+ 101:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 775              		.loc 1 101 45 discriminator 1
+ 101:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 776              		.loc 1 101 12 is_stmt 0 discriminator 1
+ 777 0056 93057050 		li	a1,1287
+ 778 005a 2285     		mv	a0,s0
+ 779 005c 97000000 		call	i2c_flag_get
+ 779      E7800000 
+ 780              	.LVL82:
+ 101:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 781              		.loc 1 101 10 discriminator 1
+ 782 0064 6DD9     		beq	a0,zero,.L67
+ 103:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_data_transmit(port, reg);
+ 783              		.loc 1 103 5 is_stmt 1
+ 784 0066 CA85     		mv	a1,s2
+ 785 0068 2285     		mv	a0,s0
+ 786 006a 97000000 		call	i2c_data_transmit
+ 786      E7800000 
+ 787              	.LVL83:
+ 105:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 788              		.loc 1 105 5
+ 789              	.L68:
+ 105:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 790              		.loc 1 105 45 discriminator 1
+ 105:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 791              		.loc 1 105 12 is_stmt 0 discriminator 1
+ 792 0072 93057050 		li	a1,1287
+ 793 0076 2285     		mv	a0,s0
+ 794 0078 97000000 		call	i2c_flag_get
+ 794      E7800000 
+ 795              	.LVL84:
+ 105:lib/mpu/src/gd32v_mpu6500_if.c ****     while(!i2c_flag_get(port, I2C_FLAG_TBE));
+ 796              		.loc 1 105 10 discriminator 1
+ 797 0080 6DD9     		beq	a0,zero,.L68
+ 107:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_start_on_bus(port);
+ 798              		.loc 1 107 5 is_stmt 1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 20
+
+
+ 799 0082 2285     		mv	a0,s0
+ 800 0084 97000000 		call	i2c_start_on_bus
+ 800      E7800000 
+ 801              	.LVL85:
+ 108:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 802              		.loc 1 108 5
+ 803              	.L69:
+ 108:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 804              		.loc 1 108 51 discriminator 1
+ 108:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 805              		.loc 1 108 14 is_stmt 0 discriminator 1
+ 806 008c 93050050 		li	a1,1280
+ 807 0090 2285     		mv	a0,s0
+ 808 0092 97000000 		call	i2c_flag_get
+ 808      E7800000 
+ 809              	.LVL86:
+ 108:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_SBSEND) );
+ 810              		.loc 1 108 10 discriminator 1
+ 811 009a 6DD9     		beq	a0,zero,.L69
+ 110:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_master_addressing(port, addr << 1, I2C_RECEIVER);
+ 812              		.loc 1 110 5 is_stmt 1
+ 813 009c 0546     		li	a2,1
+ 814 009e A685     		mv	a1,s1
+ 815 00a0 2285     		mv	a0,s0
+ 816 00a2 97000000 		call	i2c_master_addressing
+ 816      E7800000 
+ 817              	.LVL87:
+ 111:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 818              		.loc 1 111 5
+ 819              	.L70:
+ 111:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 820              		.loc 1 111 52 discriminator 1
+ 111:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 821              		.loc 1 111 14 is_stmt 0 discriminator 1
+ 822 00aa 93051050 		li	a1,1281
+ 823 00ae 2285     		mv	a0,s0
+ 824 00b0 97000000 		call	i2c_flag_get
+ 824      E7800000 
+ 825              	.LVL88:
+ 111:lib/mpu/src/gd32v_mpu6500_if.c ****     while( ! i2c_flag_get(port, I2C_FLAG_ADDSEND) );
+ 826              		.loc 1 111 10 discriminator 1
+ 827 00b8 6DD9     		beq	a0,zero,.L70
+ 112:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_flag_clear(port, I2C_FLAG_ADDSEND);
+ 828              		.loc 1 112 5 is_stmt 1
+ 829 00ba 2285     		mv	a0,s0
+ 830 00bc 93051050 		li	a1,1281
+ 831 00c0 97000000 		call	i2c_flag_clear
+ 831      E7800000 
+ 832              	.LVL89:
+ 114:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_ack_config(port, I2C_ACK_ENABLE);
+ 833              		.loc 1 114 5
+ 834 00c8 2285     		mv	a0,s0
+ 835 00ca 8545     		li	a1,1
+ 836 00cc 97000000 		call	i2c_ack_config
+ 836      E7800000 
+ 837              	.LVL90:
+ 115:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_dma_enable(port, I2C_DMA_ON);
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 21
+
+
+ 838              		.loc 1 115 5
+ 839 00d4 8565     		li	a1,4096
+ 840 00d6 2285     		mv	a0,s0
+ 841 00d8 93850580 		addi	a1,a1,-2048
+ 842 00dc 97000000 		call	i2c_dma_enable
+ 842      E7800000 
+ 843              	.LVL91:
+ 116:lib/mpu/src/gd32v_mpu6500_if.c ****     i2c_dma_last_transfer_config(port, I2C_DMALST_ON);
+ 844              		.loc 1 116 5
+ 845 00e4 2285     		mv	a0,s0
+ 846 00e6 8565     		li	a1,4096
+ 847 00e8 97000000 		call	i2c_dma_last_transfer_config
+ 847      E7800000 
+ 848              	.LVL92:
+ 117:lib/mpu/src/gd32v_mpu6500_if.c ****     dma_config();
+ 849              		.loc 1 117 5
+ 119:lib/mpu/src/gd32v_mpu6500_if.c **** }
+ 850              		.loc 1 119 1 is_stmt 0
+ 851 00f0 2244     		lw	s0,8(sp)
+ 852              		.cfi_restore 8
+ 853              	.LVL93:
+ 854 00f2 B240     		lw	ra,12(sp)
+ 855              		.cfi_restore 1
+ 856 00f4 9244     		lw	s1,4(sp)
+ 857              		.cfi_restore 9
+ 858 00f6 0249     		lw	s2,0(sp)
+ 859              		.cfi_restore 18
+ 860 00f8 4101     		addi	sp,sp,16
+ 861              	.LCFI15:
+ 862              		.cfi_def_cfa_offset 0
+ 117:lib/mpu/src/gd32v_mpu6500_if.c ****     dma_config();
+ 863              		.loc 1 117 5
+ 864 00fa 17030000 		tail	dma_config
+ 864      67000300 
+ 865              	.LVL94:
+ 866              		.cfi_endproc
+ 867              	.LFE10:
+ 869              		.comm	i2c_port,4,4
+ 870              		.comm	dataBuffer,22,4
+ 871              		.section	.rodata.mpu_delay.cst8,"aM",@progbits,8
+ 872              		.align	3
+ 873              	.LC0:
+ 874 0000 00000000 		.word	0
+ 875 0004 0040AF40 		.word	1085227008
+ 876              		.text
+ 877              	.Letext0:
+ 878              		.file 2 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 879              		.file 3 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 880              		.file 4 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 881              		.file 5 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 882              		.file 6 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 883              		.file 7 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 884              		.file 8 "./../../firmware/GD32VF103_standard_peripheral/system_gd32vf103.h"
+ 885              		.file 9 "lib/dma/include/dma.h"
+ 886              		.file 10 "./../../firmware/GD32VF103_standard_peripheral/Include/gd32vf103_i2c.h"
+ 887              		.file 11 "./../../firmware/RISCV/drivers/n200_func.h"
+ 888              		.file 12 "lib/mpu/include/mpu6500_driver.h"
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 22
+
+
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 gd32v_mpu6500_if.c
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:19     .text.mpu_delay:0000000000000000 mpu_delay
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:23     .text.mpu_delay:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:25     .text.mpu_delay:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:26     .text.mpu_delay:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:27     .text.mpu_delay:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:28     .text.mpu_delay:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:30     .text.mpu_delay:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:42     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:43     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:44     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:45     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:46     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:47     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:48     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:49     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:50     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:51     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:52     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:54     .text.mpu_delay:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:56     .text.mpu_delay:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:63     .text.mpu_delay:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:64     .text.mpu_delay:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:65     .text.mpu_delay:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:71     .text.mpu_delay:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:75     .text.mpu_delay:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:82     .text.mpu_delay:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:83     .text.mpu_delay:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:84     .text.mpu_delay:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:88     .text.mpu_delay:0000000000000054 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:94     .text.mpu_delay:000000000000005c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:99     .text.mpu_delay:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:101    .text.mpu_delay:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:103    .text.mpu_delay:000000000000006e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:111    .text.mpu_delay:0000000000000084 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:113    .text.mpu_delay:0000000000000086 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:115    .text.mpu_delay:0000000000000088 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:124    .text.mpu_delay:00000000000000a0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:132    .text.mpu_delay:00000000000000b4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:133    .text.mpu_delay:00000000000000b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:135    .text.mpu_delay:00000000000000b8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:138    .text.mpu_delay:00000000000000ba .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:140    .text.mpu_delay:00000000000000bc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:142    .text.mpu_delay:00000000000000be .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:144    .text.mpu_delay:00000000000000c0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:146    .text.mpu_delay:00000000000000c2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:148    .text.mpu_delay:00000000000000c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:151    .text.mpu_delay:00000000000000c6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:153    .text.mpu_delay:00000000000000c8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:155    .text.mpu_delay:00000000000000ca .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:158    .text.mpu_delay:00000000000000cc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:160    .text.mpu_delay:00000000000000ce .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:167    .text.i2c_master_read_register:0000000000000000 i2c_master_read_register
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:170    .text.i2c_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:172    .text.i2c_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:173    .text.i2c_master_read_register:0000000000000000 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 24
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:174    .text.i2c_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:176    .text.i2c_master_read_register:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:178    .text.i2c_master_read_register:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:180    .text.i2c_master_read_register:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:183    .text.i2c_master_read_register:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:184    .text.i2c_master_read_register:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:187    .text.i2c_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:190    .text.i2c_master_read_register:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:193    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:194    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:195    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:196    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:197    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:199    .text.i2c_master_read_register:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:204    .text.i2c_master_read_register:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:208    .text.i2c_master_read_register:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:209    .text.i2c_master_read_register:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:210    .text.i2c_master_read_register:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:215    .text.i2c_master_read_register:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:217    .text.i2c_master_read_register:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:218    .text.i2c_master_read_register:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:220    .text.i2c_master_read_register:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:227    .text.i2c_master_read_register:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:228    .text.i2c_master_read_register:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:229    .text.i2c_master_read_register:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:234    .text.i2c_master_read_register:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:236    .text.i2c_master_read_register:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:242    .text.i2c_master_read_register:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:243    .text.i2c_master_read_register:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:244    .text.i2c_master_read_register:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:249    .text.i2c_master_read_register:000000000000006e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:251    .text.i2c_master_read_register:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:257    .text.i2c_master_read_register:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:258    .text.i2c_master_read_register:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:259    .text.i2c_master_read_register:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:264    .text.i2c_master_read_register:000000000000008a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:266    .text.i2c_master_read_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:271    .text.i2c_master_read_register:0000000000000096 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:272    .text.i2c_master_read_register:0000000000000096 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:273    .text.i2c_master_read_register:0000000000000096 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:278    .text.i2c_master_read_register:00000000000000a4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:280    .text.i2c_master_read_register:00000000000000a6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:287    .text.i2c_master_read_register:00000000000000b4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:288    .text.i2c_master_read_register:00000000000000b4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:289    .text.i2c_master_read_register:00000000000000b4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:294    .text.i2c_master_read_register:00000000000000c2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:296    .text.i2c_master_read_register:00000000000000c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:301    .text.i2c_master_read_register:00000000000000d2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:307    .text.i2c_master_read_register:00000000000000de .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:308    .text.i2c_master_read_register:00000000000000de .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:309    .text.i2c_master_read_register:00000000000000de .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:311    .text.i2c_master_read_register:00000000000000e0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:315    .text.i2c_master_read_register:00000000000000e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:318    .text.i2c_master_read_register:00000000000000e8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:323    .text.i2c_master_read_register:00000000000000f2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:324    .text.i2c_master_read_register:00000000000000f2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:325    .text.i2c_master_read_register:00000000000000f2 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 25
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:327    .text.i2c_master_read_register:00000000000000f4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:329    .text.i2c_master_read_register:00000000000000f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:331    .text.i2c_master_read_register:00000000000000fa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:332    .text.i2c_master_read_register:00000000000000fc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:333    .text.i2c_master_read_register:00000000000000fc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:335    .text.i2c_master_read_register:00000000000000fe .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:338    .text.i2c_master_read_register:0000000000000100 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:341    .text.i2c_master_read_register:0000000000000102 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:343    .text.i2c_master_read_register:0000000000000104 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:345    .text.i2c_master_read_register:0000000000000106 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:348    .text.i2c_master_read_register:0000000000000108 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:353    .text.i2c_master_read_register:000000000000010a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:356    .text.i2c_master_read_register:000000000000010a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:357    .text.i2c_master_read_register:000000000000010a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:359    .text.i2c_master_read_register:000000000000010e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:365    .text.i2c_master_read_register:000000000000011a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:366    .text.i2c_master_read_register:000000000000011a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:371    .text.i2c_master_read_register:0000000000000128 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:374    .text.i2c_master_read_register:000000000000012a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:375    .text.i2c_master_read_register:000000000000012a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:379    .text.i2c_master_read_register:0000000000000134 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:382    .text.i2c_master_read_register:000000000000013c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:386    .text.i2c_master_read_register:0000000000000140 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:393    .text.i2c_master_write_register:0000000000000000 i2c_master_write_register
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:396    .text.i2c_master_write_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:398    .text.i2c_master_write_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:399    .text.i2c_master_write_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:400    .text.i2c_master_write_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:402    .text.i2c_master_write_register:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:404    .text.i2c_master_write_register:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:406    .text.i2c_master_write_register:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:409    .text.i2c_master_write_register:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:410    .text.i2c_master_write_register:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:415    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:416    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:417    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:418    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:419    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:421    .text.i2c_master_write_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:428    .text.i2c_master_write_register:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:429    .text.i2c_master_write_register:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:434    .text.i2c_master_write_register:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:436    .text.i2c_master_write_register:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:441    .text.i2c_master_write_register:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:442    .text.i2c_master_write_register:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:443    .text.i2c_master_write_register:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:448    .text.i2c_master_write_register:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:450    .text.i2c_master_write_register:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:457    .text.i2c_master_write_register:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:458    .text.i2c_master_write_register:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:459    .text.i2c_master_write_register:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:464    .text.i2c_master_write_register:0000000000000060 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:466    .text.i2c_master_write_register:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:472    .text.i2c_master_write_register:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:473    .text.i2c_master_write_register:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:474    .text.i2c_master_write_register:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:479    .text.i2c_master_write_register:000000000000007e .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 26
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:481    .text.i2c_master_write_register:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:487    .text.i2c_master_write_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:488    .text.i2c_master_write_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:489    .text.i2c_master_write_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:494    .text.i2c_master_write_register:000000000000009a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:497    .text.i2c_master_write_register:000000000000009c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:501    .text.i2c_master_write_register:000000000000009e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:504    .text.i2c_master_write_register:00000000000000a2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:509    .text.i2c_master_write_register:00000000000000ac .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:510    .text.i2c_master_write_register:00000000000000ac .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:511    .text.i2c_master_write_register:00000000000000ac .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:513    .text.i2c_master_write_register:00000000000000ae .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:515    .text.i2c_master_write_register:00000000000000b2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:517    .text.i2c_master_write_register:00000000000000b4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:518    .text.i2c_master_write_register:00000000000000b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:519    .text.i2c_master_write_register:00000000000000b6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:521    .text.i2c_master_write_register:00000000000000b8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:524    .text.i2c_master_write_register:00000000000000ba .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:527    .text.i2c_master_write_register:00000000000000bc .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:529    .text.i2c_master_write_register:00000000000000be .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:531    .text.i2c_master_write_register:00000000000000c0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:534    .text.i2c_master_write_register:00000000000000c2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:539    .text.i2c_master_write_register:00000000000000c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:542    .text.i2c_master_write_register:00000000000000c4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:549    .text.i2c_master_write_register:00000000000000d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:550    .text.i2c_master_write_register:00000000000000d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:551    .text.i2c_master_write_register:00000000000000d6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:556    .text.i2c_master_write_register:00000000000000e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:558    .text.i2c_master_write_register:00000000000000e6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:562    .text.i2c_master_write_register:00000000000000ea .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:569    .text.i2c_master_init:0000000000000000 i2c_master_init
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:572    .text.i2c_master_init:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:574    .text.i2c_master_init:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:575    .text.i2c_master_init:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:577    .text.i2c_master_init:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:579    .text.i2c_master_init:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:581    .text.i2c_master_init:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:584    .text.i2c_master_init:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:586    .text.i2c_master_init:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:587    .text.i2c_master_init:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:589    .text.i2c_master_init:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:591    .text.i2c_master_init:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:594    .text.i2c_master_init:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:596    .text.i2c_master_init:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:597    .text.i2c_master_init:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:600    .text.i2c_master_init:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:603    .text.i2c_master_init:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:605    .text.i2c_master_init:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:607    .text.i2c_master_init:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:614    .text.i2c_master_init_400k:0000000000000000 i2c_master_init_400k
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:617    .text.i2c_master_init_400k:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:619    .text.i2c_master_init_400k:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:620    .text.i2c_master_init_400k:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:622    .text.i2c_master_init_400k:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:624    .text.i2c_master_init_400k:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:626    .text.i2c_master_init_400k:0000000000000006 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:629    .text.i2c_master_init_400k:000000000000000c .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 27
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:631    .text.i2c_master_init_400k:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:632    .text.i2c_master_init_400k:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:634    .text.i2c_master_init_400k:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:636    .text.i2c_master_init_400k:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:639    .text.i2c_master_init_400k:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:641    .text.i2c_master_init_400k:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:642    .text.i2c_master_init_400k:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:645    .text.i2c_master_init_400k:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:648    .text.i2c_master_init_400k:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:650    .text.i2c_master_init_400k:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:652    .text.i2c_master_init_400k:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:659    .text.mpu6500_install:0000000000000000 mpu6500_install
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:662    .text.mpu6500_install:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:664    .text.mpu6500_install:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:665    .text.mpu6500_install:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:666    .text.mpu6500_install:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:668    .text.mpu6500_install:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:670    .text.mpu6500_install:0000000000000004 .L0 
+                            *COM*:0000000000000004 i2c_port
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:672    .text.mpu6500_install:0000000000000004 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:674    .text.mpu6500_install:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:675    .text.mpu6500_install:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:677    .text.mpu6500_install:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:679    .text.mpu6500_install:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:682    .text.mpu6500_install:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:684    .text.mpu6500_install:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:685    .text.mpu6500_install:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:687    .text.mpu6500_install:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:689    .text.mpu6500_install:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:693    .text.mpu6500_install:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:694    .text.mpu6500_install:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:698    .text.mpu6500_install:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:700    .text.mpu6500_install:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:702    .text.mpu6500_install:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:704    .text.mpu6500_install:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:711    .text.i2c_dma_master_read_register:0000000000000000 i2c_dma_master_read_register
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:714    .text.i2c_dma_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:716    .text.i2c_dma_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:717    .text.i2c_dma_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:718    .text.i2c_dma_master_read_register:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:720    .text.i2c_dma_master_read_register:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:725    .text.i2c_dma_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:726    .text.i2c_dma_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:727    .text.i2c_dma_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:728    .text.i2c_dma_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:730    .text.i2c_dma_master_read_register:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:733    .text.i2c_dma_master_read_register:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:734    .text.i2c_dma_master_read_register:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:737    .text.i2c_dma_master_read_register:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:741    .text.i2c_dma_master_read_register:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:742    .text.i2c_dma_master_read_register:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:743    .text.i2c_dma_master_read_register:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:748    .text.i2c_dma_master_read_register:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:750    .text.i2c_dma_master_read_register:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:751    .text.i2c_dma_master_read_register:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:753    .text.i2c_dma_master_read_register:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:760    .text.i2c_dma_master_read_register:0000000000000038 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 28
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:761    .text.i2c_dma_master_read_register:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:762    .text.i2c_dma_master_read_register:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:767    .text.i2c_dma_master_read_register:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:769    .text.i2c_dma_master_read_register:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:775    .text.i2c_dma_master_read_register:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:776    .text.i2c_dma_master_read_register:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:777    .text.i2c_dma_master_read_register:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:782    .text.i2c_dma_master_read_register:0000000000000064 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:784    .text.i2c_dma_master_read_register:0000000000000066 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:790    .text.i2c_dma_master_read_register:0000000000000072 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:791    .text.i2c_dma_master_read_register:0000000000000072 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:792    .text.i2c_dma_master_read_register:0000000000000072 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:797    .text.i2c_dma_master_read_register:0000000000000080 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:799    .text.i2c_dma_master_read_register:0000000000000082 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:804    .text.i2c_dma_master_read_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:805    .text.i2c_dma_master_read_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:806    .text.i2c_dma_master_read_register:000000000000008c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:811    .text.i2c_dma_master_read_register:000000000000009a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:813    .text.i2c_dma_master_read_register:000000000000009c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:820    .text.i2c_dma_master_read_register:00000000000000aa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:821    .text.i2c_dma_master_read_register:00000000000000aa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:822    .text.i2c_dma_master_read_register:00000000000000aa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:827    .text.i2c_dma_master_read_register:00000000000000b8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:829    .text.i2c_dma_master_read_register:00000000000000ba .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:834    .text.i2c_dma_master_read_register:00000000000000c8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:839    .text.i2c_dma_master_read_register:00000000000000d4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:845    .text.i2c_dma_master_read_register:00000000000000e4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:850    .text.i2c_dma_master_read_register:00000000000000f0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:851    .text.i2c_dma_master_read_register:00000000000000f0 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:852    .text.i2c_dma_master_read_register:00000000000000f2 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:855    .text.i2c_dma_master_read_register:00000000000000f4 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:857    .text.i2c_dma_master_read_register:00000000000000f6 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:859    .text.i2c_dma_master_read_register:00000000000000f8 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:862    .text.i2c_dma_master_read_register:00000000000000fa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:864    .text.i2c_dma_master_read_register:00000000000000fa .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:866    .text.i2c_dma_master_read_register:0000000000000102 .L0 
+                            *COM*:0000000000000016 dataBuffer
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:163    .text.mpu_delay:00000000000000ce .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:389    .text.i2c_master_read_register:0000000000000140 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:565    .text.i2c_master_write_register:00000000000000ea .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:610    .text.i2c_master_init:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:655    .text.i2c_master_init_400k:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:707    .text.mpu6500_install:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:871    .text.i2c_dma_master_read_register:0000000000000102 .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:873    .rodata.mpu_delay.cst8:0000000000000000 .LC0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:73     .text.mpu_delay:000000000000003a .L3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:61     .text.mpu_delay:0000000000000026 .L2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:80     .text.mpu_delay:000000000000004a .L4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:207    .text.i2c_master_read_register:0000000000000022 .L8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:226    .text.i2c_master_read_register:0000000000000042 .L9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:241    .text.i2c_master_read_register:0000000000000060 .L10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:256    .text.i2c_master_read_register:000000000000007c .L11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:270    .text.i2c_master_read_register:0000000000000096 .L12
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:286    .text.i2c_master_read_register:00000000000000b4 .L13
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:351    .text.i2c_master_read_register:000000000000010a .L17
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:322    .text.i2c_master_read_register:00000000000000f2 .L18
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 29
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:363    .text.i2c_master_read_register:000000000000011a .L16
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:313    .text.i2c_master_read_register:00000000000000e4 .L14
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:426    .text.i2c_master_write_register:0000000000000018 .L36
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:440    .text.i2c_master_write_register:0000000000000032 .L37
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:456    .text.i2c_master_write_register:0000000000000052 .L38
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:471    .text.i2c_master_write_register:0000000000000070 .L39
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:486    .text.i2c_master_write_register:000000000000008c .L40
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:537    .text.i2c_master_write_register:00000000000000c4 .L43
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:508    .text.i2c_master_write_register:00000000000000ac .L44
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:548    .text.i2c_master_write_register:00000000000000d6 .L42
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:499    .text.i2c_master_write_register:000000000000009e .L41
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:740    .text.i2c_dma_master_read_register:0000000000000018 .L65
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:759    .text.i2c_dma_master_read_register:0000000000000038 .L66
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:774    .text.i2c_dma_master_read_register:0000000000000056 .L67
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:789    .text.i2c_dma_master_read_register:0000000000000072 .L68
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:803    .text.i2c_dma_master_read_register:000000000000008c .L69
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:819    .text.i2c_dma_master_read_register:00000000000000aa .L70
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:3836   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5484   .debug_str:000000000000079f .LASF197
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5322   .debug_str:000000000000042f .LASF198
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5260   .debug_str:000000000000027b .LASF199
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5110   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5140   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5208   .debug_str:0000000000000182 .LASF0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5162   .debug_str:000000000000007f .LASF2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5398   .debug_str:00000000000005f4 .LASF1
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5520   .debug_str:00000000000008fa .LASF3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5144   .debug_str:000000000000000c .LASF4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5472   .debug_str:0000000000000762 .LASF5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5490   .debug_str:0000000000000841 .LASF6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5194   .debug_str:0000000000000135 .LASF7
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5230   .debug_str:00000000000001e7 .LASF8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5266   .debug_str:00000000000002f7 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5298   .debug_str:00000000000003a4 .LASF10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5242   .debug_str:000000000000021d .LASF11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5372   .debug_str:0000000000000555 .LASF12
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5180   .debug_str:00000000000000e9 .LASF13
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5470   .debug_str:0000000000000755 .LASF14
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5458   .debug_str:0000000000000720 .LASF15
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5444   .debug_str:00000000000006d5 .LASF16
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5170   .debug_str:00000000000000b1 .LASF17
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5456   .debug_str:0000000000000718 .LASF18
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5514   .debug_str:00000000000008dd .LASF19
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5326   .debug_str:0000000000000456 .LASF20
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5402   .debug_str:0000000000000608 .LASF21
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5446   .debug_str:00000000000006dc .LASF22
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5448   .debug_str:00000000000006e4 .LASF23
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5384   .debug_str:0000000000000599 .LASF24
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5346   .debug_str:00000000000004b5 .LASF25
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5388   .debug_str:00000000000005ac .LASF26
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5408   .debug_str:0000000000000626 .LASF27
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5278   .debug_str:000000000000032e .LASF32
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5478   .debug_str:0000000000000780 .LASF28
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5438   .debug_str:00000000000006c0 .LASF29
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5286   .debug_str:000000000000035c .LASF30
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5506   .debug_str:00000000000008aa .LASF31
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5288   .debug_str:0000000000000362 .LASF33
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 30
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5200   .debug_str:000000000000015c .LASF34
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5492   .debug_str:0000000000000854 .LASF35
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5216   .debug_str:00000000000001a5 .LASF36
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5544   .debug_str:000000000000096d .LASF37
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5360   .debug_str:0000000000000510 .LASF38
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5340   .debug_str:0000000000000491 .LASF39
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5382   .debug_str:000000000000058f .LASF40
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5410   .debug_str:000000000000062f .LASF41
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5528   .debug_str:0000000000000919 .LASF42
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5222   .debug_str:00000000000001b9 .LASF43
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5148   .debug_str:0000000000000026 .LASF44
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5142   .debug_str:0000000000000000 .LASF45
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5486   .debug_str:0000000000000827 .LASF46
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5236   .debug_str:0000000000000204 .LASF47
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5362   .debug_str:0000000000000519 .LASF48
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5428   .debug_str:0000000000000686 .LASF49
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5262   .debug_str:00000000000002ea .LASF50
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5412   .debug_str:0000000000000639 .LASF51
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5214   .debug_str:000000000000019f .LASF52
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5468   .debug_str:000000000000074f .LASF53
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5418   .debug_str:000000000000064f .LASF54
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5234   .debug_str:00000000000001fd .LASF55
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5300   .debug_str:00000000000003b6 .LASF56
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5540   .debug_str:0000000000000954 .LASF57
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5224   .debug_str:00000000000001c7 .LASF58
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5284   .debug_str:0000000000000356 .LASF59
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5338   .debug_str:000000000000048a .LASF60
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5450   .debug_str:00000000000006ec .LASF61
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5206   .debug_str:000000000000017b .LASF62
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5210   .debug_str:000000000000018e .LASF63
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5522   .debug_str:0000000000000904 .LASF64
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5466   .debug_str:0000000000000746 .LASF65
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5250   .debug_str:0000000000000242 .LASF66
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5306   .debug_str:00000000000003db .LASF67
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5330   .debug_str:0000000000000461 .LASF68
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5420   .debug_str:0000000000000657 .LASF69
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5414   .debug_str:0000000000000640 .LASF70
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5440   .debug_str:00000000000006c8 .LASF71
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5462   .debug_str:000000000000073a .LASF72
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5238   .debug_str:000000000000020c .LASF73
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5294   .debug_str:0000000000000394 .LASF74
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5276   .debug_str:0000000000000326 .LASF75
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5426   .debug_str:0000000000000681 .LASF76
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5476   .debug_str:0000000000000775 .LASF77
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5434   .debug_str:000000000000069d .LASF78
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5430   .debug_str:000000000000068b .LASF79
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5364   .debug_str:0000000000000521 .LASF80
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5432   .debug_str:0000000000000693 .LASF81
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5324   .debug_str:000000000000044e .LASF82
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5240   .debug_str:0000000000000213 .LASF83
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5538   .debug_str:000000000000094f .LASF84
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5380   .debug_str:0000000000000585 .LASF85
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5296   .debug_str:000000000000039c .LASF86
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5248   .debug_str:000000000000023a .LASF87
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5328   .debug_str:000000000000045c .LASF88
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5168   .debug_str:00000000000000a8 .LASF89
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5518   .debug_str:00000000000008f0 .LASF90
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 31
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5228   .debug_str:00000000000001df .LASF91
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5220   .debug_str:00000000000001b4 .LASF92
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5464   .debug_str:0000000000000741 .LASF93
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5416   .debug_str:0000000000000648 .LASF94
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5508   .debug_str:00000000000008af .LASF95
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5308   .debug_str:00000000000003e1 .LASF96
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5400   .debug_str:0000000000000602 .LASF97
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5150   .debug_str:000000000000002e .LASF98
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5442   .debug_str:00000000000006cf .LASF99
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5332   .debug_str:0000000000000467 .LASF100
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5494   .debug_str:000000000000085d .LASF101
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5504   .debug_str:000000000000089d .LASF102
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5480   .debug_str:0000000000000786 .LASF103
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5318   .debug_str:000000000000041d .LASF104
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5530   .debug_str:0000000000000924 .LASF105
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5366   .debug_str:000000000000052c .LASF106
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5314   .debug_str:0000000000000406 .LASF107
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5534   .debug_str:000000000000093c .LASF108
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5392   .debug_str:00000000000005cf .LASF109
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5536   .debug_str:0000000000000941 .LASF110
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5198   .debug_str:000000000000014e .LASF111
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5516   .debug_str:00000000000008e6 .LASF112
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5316   .debug_str:0000000000000411 .LASF113
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5166   .debug_str:000000000000009b .LASF114
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5256   .debug_str:0000000000000260 .LASF115
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5196   .debug_str:000000000000013f .LASF116
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5254   .debug_str:000000000000024f .LASF117
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5176   .debug_str:00000000000000c9 .LASF118
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5178   .debug_str:00000000000000d8 .LASF119
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5406   .debug_str:000000000000061d .LASF120
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5354   .debug_str:00000000000004eb .LASF121
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5344   .debug_str:00000000000004ac .LASF122
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5524   .debug_str:000000000000090a .LASF123
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5192   .debug_str:000000000000012a .LASF200
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5452   .debug_str:00000000000006f2 .LASF124
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5500   .debug_str:0000000000000881 .LASF125
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5474   .debug_str:000000000000076d .LASF126
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5202   .debug_str:0000000000000165 .LASF127
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5246   .debug_str:0000000000000231 .LASF128
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5396   .debug_str:00000000000005ec .LASF129
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5502   .debug_str:0000000000000894 .LASF130
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5350   .debug_str:00000000000004cc .LASF131
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5374   .debug_str:0000000000000560 .LASF132
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5292   .debug_str:0000000000000384 .LASF133
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5146   .debug_str:0000000000000016 .LASF134
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5158   .debug_str:0000000000000051 .LASF135
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5232   .debug_str:00000000000001f0 .LASF136
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5510   .debug_str:00000000000008b5 .LASF137
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5422   .debug_str:0000000000000660 .LASF138
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5404   .debug_str:000000000000060f .LASF139
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5368   .debug_str:000000000000053b .LASF140
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5204   .debug_str:000000000000016d .LASF141
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5488   .debug_str:0000000000000830 .LASF142
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5356   .debug_str:00000000000004f2 .LASF143
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5498   .debug_str:0000000000000872 .LASF144
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5358   .debug_str:0000000000000500 .LASF145
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5152   .debug_str:0000000000000036 .LASF146
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 32
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5280   .debug_str:0000000000000336 .LASF147
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5226   .debug_str:00000000000001cf .LASF148
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5496   .debug_str:0000000000000862 .LASF149
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5270   .debug_str:0000000000000309 .LASF150
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5460   .debug_str:000000000000072c .LASF151
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5394   .debug_str:00000000000005dc .LASF152
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5282   .debug_str:0000000000000346 .LASF153
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5336   .debug_str:000000000000047a .LASF154
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5184   .debug_str:000000000000010b .LASF155
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5186   .debug_str:0000000000000110 .LASF156
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5188   .debug_str:0000000000000115 .LASF157
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5174   .debug_str:00000000000000c4 .LASF158
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5244   .debug_str:000000000000022b .LASF159
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5154   .debug_str:0000000000000045 .LASF160
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5156   .debug_str:000000000000004b .LASF161
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5274   .debug_str:0000000000000320 .LASF162
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5386   .debug_str:00000000000005a4 .LASF163
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5264   .debug_str:00000000000002ef .LASF164
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5258   .debug_str:000000000000026e .LASF165
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5272   .debug_str:0000000000000315 .LASF166
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5532   .debug_str:0000000000000933 .LASF167
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5454   .debug_str:00000000000006fe .LASF173
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:394    .text.i2c_master_write_register:0000000000000000 .LFB11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:563    .text.i2c_master_write_register:00000000000000ea .LFE11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4535   .debug_loc:0000000000000000 .LLST12
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5526   .debug_str:0000000000000912 .LASF168
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4558   .debug_loc:0000000000000038 .LLST13
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5218   .debug_str:00000000000001af .LASF169
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4572   .debug_loc:0000000000000059 .LLST14
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4586   .debug_loc:000000000000007a .LLST15
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5312   .debug_str:0000000000000401 .LASF170
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4600   .debug_loc:000000000000009b .LLST16
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5252   .debug_str:000000000000024a .LASF171
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4614   .debug_loc:00000000000000bc .LLST17
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5320   .debug_str:000000000000042a .LASF172
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4654   .debug_loc:000000000000010c .LLST18
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4665   .debug_loc:000000000000012a .LLST19
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:546    .text.i2c_master_write_register:00000000000000d6 .LVL61
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:554    .text.i2c_master_write_register:00000000000000e4 .LVL62
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:432    .text.i2c_master_write_register:0000000000000026 .LVL47
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:438    .text.i2c_master_write_register:0000000000000032 .LVL48
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:446    .text.i2c_master_write_register:0000000000000040 .LVL49
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:454    .text.i2c_master_write_register:0000000000000052 .LVL50
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:462    .text.i2c_master_write_register:0000000000000060 .LVL51
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:469    .text.i2c_master_write_register:0000000000000070 .LVL52
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:477    .text.i2c_master_write_register:000000000000007e .LVL53
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:484    .text.i2c_master_write_register:000000000000008c .LVL54
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:492    .text.i2c_master_write_register:000000000000009a .LVL55
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:506    .text.i2c_master_write_register:00000000000000ac .LVL57
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5160   .debug_str:0000000000000062 .LASF174
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:712    .text.i2c_dma_master_read_register:0000000000000000 .LFB10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:867    .text.i2c_dma_master_read_register:0000000000000102 .LFE10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4676   .debug_loc:0000000000000148 .LLST26
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4694   .debug_loc:0000000000000174 .LLST27
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4712   .debug_loc:00000000000001a0 .LLST28
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4726   .debug_loc:00000000000001c1 .LLST29
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4740   .debug_loc:00000000000001e2 .LLST30
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 33
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:738    .text.i2c_dma_master_read_register:0000000000000018 .LVL77
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:746    .text.i2c_dma_master_read_register:0000000000000026 .LVL78
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:757    .text.i2c_dma_master_read_register:0000000000000038 .LVL79
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:765    .text.i2c_dma_master_read_register:0000000000000046 .LVL80
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:772    .text.i2c_dma_master_read_register:0000000000000056 .LVL81
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:780    .text.i2c_dma_master_read_register:0000000000000064 .LVL82
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:787    .text.i2c_dma_master_read_register:0000000000000072 .LVL83
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:795    .text.i2c_dma_master_read_register:0000000000000080 .LVL84
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:801    .text.i2c_dma_master_read_register:000000000000008c .LVL85
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:809    .text.i2c_dma_master_read_register:000000000000009a .LVL86
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:817    .text.i2c_dma_master_read_register:00000000000000aa .LVL87
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:825    .text.i2c_dma_master_read_register:00000000000000b8 .LVL88
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:832    .text.i2c_dma_master_read_register:00000000000000c8 .LVL89
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:837    .text.i2c_dma_master_read_register:00000000000000d4 .LVL90
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:843    .text.i2c_dma_master_read_register:00000000000000e4 .LVL91
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:848    .text.i2c_dma_master_read_register:00000000000000f0 .LVL92
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:865    .text.i2c_dma_master_read_register:0000000000000102 .LVL94
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5310   .debug_str:00000000000003e8 .LASF175
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:168    .text.i2c_master_read_register:0000000000000000 .LFB9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:387    .text.i2c_master_read_register:0000000000000140 .LFE9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4758   .debug_loc:000000000000020e .LLST4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4781   .debug_loc:0000000000000246 .LLST5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4795   .debug_loc:0000000000000267 .LLST6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4809   .debug_loc:0000000000000288 .LLST7
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4823   .debug_loc:00000000000002a9 .LLST8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4837   .debug_loc:00000000000002ca .LLST9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4886   .debug_loc:000000000000032a .LLST10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4897   .debug_loc:0000000000000348 .LLST11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:362    .text.i2c_master_read_register:000000000000011a .LVL39
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:369    .text.i2c_master_read_register:0000000000000128 .LVL40
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:377    .text.i2c_master_read_register:0000000000000134 .LVL42
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:205    .text.i2c_master_read_register:0000000000000022 .LVL20
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:213    .text.i2c_master_read_register:0000000000000030 .LVL21
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:224    .text.i2c_master_read_register:0000000000000042 .LVL22
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:232    .text.i2c_master_read_register:0000000000000050 .LVL23
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:239    .text.i2c_master_read_register:0000000000000060 .LVL24
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:247    .text.i2c_master_read_register:000000000000006e .LVL25
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:254    .text.i2c_master_read_register:000000000000007c .LVL26
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:262    .text.i2c_master_read_register:000000000000008a .LVL27
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:268    .text.i2c_master_read_register:0000000000000096 .LVL28
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:276    .text.i2c_master_read_register:00000000000000a4 .LVL29
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:284    .text.i2c_master_read_register:00000000000000b4 .LVL30
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:292    .text.i2c_master_read_register:00000000000000c2 .LVL31
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:299    .text.i2c_master_read_register:00000000000000d2 .LVL32
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:304    .text.i2c_master_read_register:00000000000000de .LVL33
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:320    .text.i2c_master_read_register:00000000000000f2 .LVL35
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5436   .debug_str:00000000000006b6 .LASF176
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:20     .text.mpu_delay:0000000000000000 .LFB8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:161    .text.mpu_delay:00000000000000ce .LFE8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4913   .debug_loc:0000000000000372 .LLST0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5268   .debug_str:0000000000000302 .LASF177
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4931   .debug_loc:000000000000039e .LLST1
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5482   .debug_str:0000000000000793 .LASF178
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4949   .debug_loc:00000000000003ca .LLST2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5172   .debug_str:00000000000000b8 .LASF201
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4961   .debug_loc:00000000000003e2 .LLST3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:57     .text.mpu_delay:0000000000000022 .LVL1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 34
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:66     .text.mpu_delay:000000000000002e .LVL3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:85     .text.mpu_delay:0000000000000052 .LVL6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5512   .debug_str:00000000000008c8 .LASF179
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:615    .text.i2c_master_init_400k:0000000000000000 .LFB7
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:653    .text.i2c_master_init_400k:000000000000002a .LFE7
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4973   .debug_loc:00000000000003fa .LLST22
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:4991   .debug_loc:0000000000000426 .LLST23
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:637    .text.i2c_master_init_400k:000000000000001a .LVL69
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:651    .text.i2c_master_init_400k:000000000000002a .LVL71
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5376   .debug_str:0000000000000566 .LASF180
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:570    .text.i2c_master_init:0000000000000000 .LFB6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:608    .text.i2c_master_init:0000000000000028 .LFE6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5013   .debug_loc:000000000000045d .LLST20
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5031   .debug_loc:0000000000000489 .LLST21
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:592    .text.i2c_master_init:0000000000000018 .LVL65
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:606    .text.i2c_master_init:0000000000000028 .LVL67
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5304   .debug_str:00000000000003cb .LASF181
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:660    .text.mpu6500_install:0000000000000000 .LFB5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:705    .text.mpu6500_install:0000000000000040 .LFE5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5053   .debug_loc:00000000000004c0 .LLST24
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5071   .debug_loc:00000000000004ec .LLST25
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:680    .text.mpu6500_install:0000000000000016 .LVL73
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:703    .text.mpu6500_install:0000000000000040 .LVL74
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5164   .debug_str:0000000000000089 .LASF182
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5370   .debug_str:0000000000000548 .LASF183
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5390   .debug_str:00000000000005be .LASF184
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5352   .debug_str:00000000000004d5 .LASF185
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5378   .debug_str:0000000000000576 .LASF186
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5542   .debug_str:000000000000095d .LASF187
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5302   .debug_str:00000000000003bc .LASF188
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5348   .debug_str:00000000000004bd .LASF189
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5290   .debug_str:0000000000000367 .LASF190
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5182   .debug_str:0000000000000100 .LASF191
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5424   .debug_str:0000000000000670 .LASF192
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5190   .debug_str:000000000000011a .LASF193
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5342   .debug_str:000000000000049b .LASF194
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5212   .debug_str:0000000000000194 .LASF195
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:5334   .debug_str:000000000000046d .LASF196
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:401    .text.i2c_master_write_register:0000000000000002 .LCFI5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:533    .text.i2c_master_write_register:00000000000000c2 .LCFI6
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:538    .text.i2c_master_write_register:00000000000000c4 .LCFI7
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:397    .text.i2c_master_write_register:0000000000000000 .LVL44
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:425    .text.i2c_master_write_register:0000000000000018 .LVL46
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:498    .text.i2c_master_write_register:000000000000009e .LVL56
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:525    .text.i2c_master_write_register:00000000000000ba .LVL59
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:536    .text.i2c_master_write_register:00000000000000c4 .LVL60
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:559    .text.i2c_master_write_register:00000000000000e8 .LVL63
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:407    .text.i2c_master_write_register:0000000000000006 .LVL45
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:522    .text.i2c_master_write_register:00000000000000b8 .LVL58
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:719    .text.i2c_dma_master_read_register:0000000000000002 .LCFI14
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:861    .text.i2c_dma_master_read_register:00000000000000fa .LCFI15
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:715    .text.i2c_dma_master_read_register:0000000000000000 .LVL75
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:853    .text.i2c_dma_master_read_register:00000000000000f2 .LVL93
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:731    .text.i2c_dma_master_read_register:000000000000000c .LVL76
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:175    .text.i2c_master_read_register:0000000000000002 .LCFI2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:347    .text.i2c_master_read_register:0000000000000108 .LCFI3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:352    .text.i2c_master_read_register:000000000000010a .LCFI4
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 35
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:171    .text.i2c_master_read_register:0000000000000000 .LVL17
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:188    .text.i2c_master_read_register:000000000000000c .LVL19
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:312    .text.i2c_master_read_register:00000000000000e4 .LVL34
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:339    .text.i2c_master_read_register:0000000000000100 .LVL37
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:350    .text.i2c_master_read_register:000000000000010a .LVL38
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:373    .text.i2c_master_read_register:000000000000012a .LVL41
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:383    .text.i2c_master_read_register:000000000000013e .LVL43
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:181    .text.i2c_master_read_register:0000000000000006 .LVL18
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:336    .text.i2c_master_read_register:00000000000000fe .LVL36
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:29     .text.mpu_delay:0000000000000002 .LCFI0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:157    .text.mpu_delay:00000000000000cc .LCFI1
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:24     .text.mpu_delay:0000000000000000 .LVL0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:149    .text.mpu_delay:00000000000000c4 .LVL16
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:69     .text.mpu_delay:0000000000000032 .LVL4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:136    .text.mpu_delay:00000000000000b8 .LVL15
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:60     .text.mpu_delay:0000000000000026 .LVL2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:77     .text.mpu_delay:0000000000000042 .LVL5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:623    .text.i2c_master_init_400k:0000000000000006 .LCFI10
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:647    .text.i2c_master_init_400k:0000000000000022 .LCFI11
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:618    .text.i2c_master_init_400k:0000000000000000 .LVL68
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:643    .text.i2c_master_init_400k:000000000000001e .LVL70
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:578    .text.i2c_master_init:0000000000000004 .LCFI8
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:602    .text.i2c_master_init:0000000000000020 .LCFI9
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:573    .text.i2c_master_init:0000000000000000 .LVL64
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:598    .text.i2c_master_init:000000000000001c .LVL66
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:667    .text.mpu6500_install:0000000000000002 .LCFI12
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:699    .text.mpu6500_install:0000000000000038 .LCFI13
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:663    .text.mpu6500_install:0000000000000000 .LVL72
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:890    .debug_info:0000000000000000 .Ldebug_info0
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:306    .text.i2c_master_read_register:00000000000000de .LBB2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:316    .text.i2c_master_read_register:00000000000000e8 .LBE2
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:354    .text.i2c_master_read_register:000000000000010a .LBB3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:385    .text.i2c_master_read_register:0000000000000140 .LBE3
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:495    .text.i2c_master_write_register:000000000000009c .LBB4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:502    .text.i2c_master_write_register:00000000000000a2 .LBE4
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:540    .text.i2c_master_write_register:00000000000000c4 .LBB5
+C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s:561    .text.i2c_master_write_register:00000000000000ea .LBE5
+
+UNDEFINED SYMBOLS
+__floatundidf
+__floatunsidf
+__divdf3
+__floatsidf
+__muldf3
+__ltdf2
+get_timer_value
+SystemCoreClock
+i2c_start_on_bus
+i2c_flag_get
+i2c_master_addressing
+i2c_flag_clear
+i2c_data_transmit
+i2c_ack_config
+i2c_stop_on_bus
+i2c_data_receive
+i2c_clock_config
+i2c_enable
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccbCAWhk.s 			page 36
+
+
+mpu6500_init
+i2c_dma_enable
+i2c_dma_last_transfer_config
+dma_config

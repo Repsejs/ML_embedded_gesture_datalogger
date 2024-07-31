@@ -1,0 +1,1249 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 1
+
+
+   1              		.file	"queue.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              		.section	.text.init_q,"ax",@progbits
+  10              		.align	1
+  11              		.globl	init_q
+  13              	init_q:
+  14              	.LFB2:
+  15              		.file 1 "lib/queue/src/queue.c"
+   1:lib/queue/src/queue.c **** #include "queue.h"
+   2:lib/queue/src/queue.c **** //Queue q;
+   3:lib/queue/src/queue.c **** 
+   4:lib/queue/src/queue.c **** Buf_queue w;
+   5:lib/queue/src/queue.c **** 
+   6:lib/queue/src/queue.c **** void init_q(void){
+  16              		.loc 1 6 18
+  17              		.cfi_startproc
+   7:lib/queue/src/queue.c ****     //q.memorySize = Q_SIZE;
+   8:lib/queue/src/queue.c ****     //q.size       = SIZE_INIT;
+   9:lib/queue/src/queue.c ****     //q.head       = HEAD_INIT;
+  10:lib/queue/src/queue.c ****     //q.tail       = TAIL_INIT;
+  11:lib/queue/src/queue.c **** 
+  12:lib/queue/src/queue.c ****     w.memorySize  = STRING_QUEUE_SIZE;
+  18              		.loc 1 12 5
+  19              		.loc 1 12 19 is_stmt 0
+  20 0000 B7470000 		lui	a5,%hi(w+16384)
+  21 0004 93870700 		addi	a5,a5,%lo(w+16384)
+  22 0008 13070002 		li	a4,32
+  23 000c 98C3     		sw	a4,0(a5)
+  13:lib/queue/src/queue.c ****     w.size        = SIZE_INIT;
+  24              		.loc 1 13 5 is_stmt 1
+  25              		.loc 1 13 19 is_stmt 0
+  26 000e 23A20700 		sw	zero,4(a5)
+  14:lib/queue/src/queue.c ****     w.head        = HEAD_INIT;
+  27              		.loc 1 14 5 is_stmt 1
+  28              		.loc 1 14 19 is_stmt 0
+  29 0012 23A40700 		sw	zero,8(a5)
+  15:lib/queue/src/queue.c ****     w.tail        = TAIL_INIT;
+  30              		.loc 1 15 5 is_stmt 1
+  31              		.loc 1 15 19 is_stmt 0
+  32 0016 23A60700 		sw	zero,12(a5)
+  16:lib/queue/src/queue.c ****     w.tail_string = TAIL_INIT;
+  33              		.loc 1 16 5 is_stmt 1
+  34              		.loc 1 16 19 is_stmt 0
+  35 001a 23A80700 		sw	zero,16(a5)
+  17:lib/queue/src/queue.c **** }
+  36              		.loc 1 17 1
+  37 001e 8280     		ret
+  38              		.cfi_endproc
+  39              	.LFE2:
+  41              		.section	.text.enqueue_string,"ax",@progbits
+  42              		.align	1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 2
+
+
+  43              		.globl	enqueue_string
+  45              	enqueue_string:
+  46              	.LFB3:
+  18:lib/queue/src/queue.c **** 
+  19:lib/queue/src/queue.c **** //int enqueue_vector(dma_vector_t value){
+  20:lib/queue/src/queue.c **** //    // enqueue a byte onto the queue. returns 1 if success, 0 if it couldn't add it
+  21:lib/queue/src/queue.c **** //	if (q.size == q.memorySize) {
+  22:lib/queue/src/queue.c **** //		return 0; // full
+  23:lib/queue/src/queue.c **** //	}
+  24:lib/queue/src/queue.c **** //	q.values[q.tail].milli = value.milli;
+  25:lib/queue/src/queue.c **** //    q.values[q.tail].seconds = value.seconds;
+  26:lib/queue/src/queue.c **** //    q.values[q.tail].minutes = value.minutes;
+  27:lib/queue/src/queue.c **** //
+  28:lib/queue/src/queue.c **** //    q.values[q.tail].accX  = value.accX;
+  29:lib/queue/src/queue.c **** //    q.values[q.tail].accY  = value.accY;
+  30:lib/queue/src/queue.c **** //    q.values[q.tail].accZ  = value.accZ;
+  31:lib/queue/src/queue.c **** //    q.values[q.tail].gyroX = value.gyroX;
+  32:lib/queue/src/queue.c **** //    q.values[q.tail].gyroY = value.gyroY;
+  33:lib/queue/src/queue.c **** //    q.values[q.tail].gyroZ = value.gyroZ;
+  34:lib/queue/src/queue.c **** //    q.values[q.tail].emg   = value.emg;
+  35:lib/queue/src/queue.c **** //
+  36:lib/queue/src/queue.c **** //	q.tail = (q.tail + 1) % q.memorySize;
+  37:lib/queue/src/queue.c **** //	q.size++;
+  38:lib/queue/src/queue.c **** //
+  39:lib/queue/src/queue.c **** //	return 1;
+  40:lib/queue/src/queue.c **** //}
+  41:lib/queue/src/queue.c **** //
+  42:lib/queue/src/queue.c **** //int dequeue_vector(dma_vector_t *data) {
+  43:lib/queue/src/queue.c **** //    if(q.size == 0){
+  44:lib/queue/src/queue.c **** //        return 0;
+  45:lib/queue/src/queue.c **** //    }
+  46:lib/queue/src/queue.c **** //    // dequeue a values off the queue
+  47:lib/queue/src/queue.c **** //	data->milli    = q.values[q.head].milli;
+  48:lib/queue/src/queue.c **** //    data->seconds  = q.values[q.head].seconds;
+  49:lib/queue/src/queue.c **** //    data->minutes  = q.values[q.head].minutes;
+  50:lib/queue/src/queue.c **** //
+  51:lib/queue/src/queue.c **** //    data->accX     = q.values[q.head].accX;
+  52:lib/queue/src/queue.c **** //    data->accY     = q.values[q.head].accY;
+  53:lib/queue/src/queue.c **** //    data->accZ     = q.values[q.head].accZ;
+  54:lib/queue/src/queue.c **** //    data->gyroX    = q.values[q.head].gyroX;
+  55:lib/queue/src/queue.c **** //    data->gyroY    = q.values[q.head].gyroY;
+  56:lib/queue/src/queue.c **** //    data->gyroZ    = q.values[q.head].gyroZ;
+  57:lib/queue/src/queue.c **** //    data->emg      = q.values[q.head].emg;
+  58:lib/queue/src/queue.c **** //
+  59:lib/queue/src/queue.c **** //	q.head = (q.head + 1) % q.memorySize;
+  60:lib/queue/src/queue.c **** //	q.size--;
+  61:lib/queue/src/queue.c **** //	return 1;
+  62:lib/queue/src/queue.c **** //}
+  63:lib/queue/src/queue.c **** 
+  64:lib/queue/src/queue.c **** int enqueue_string(char *string) {
+  47              		.loc 1 64 34 is_stmt 1
+  48              		.cfi_startproc
+  49              	.LVL0:
+  65:lib/queue/src/queue.c ****     // Check if the queue is already full.
+  66:lib/queue/src/queue.c ****     if (w.size == w.memorySize) {
+  50              		.loc 1 66 5
+  51              		.loc 1 66 20 is_stmt 0
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 3
+
+
+  52 0000 B7070000 		lui	a5,%hi(w)
+  53 0004 13870700 		addi	a4,a5,%lo(w)
+  54 0008 9166     		li	a3,16384
+  55 000a 3697     		add	a4,a4,a3
+  56 000c 83280700 		lw	a7,0(a4)
+  57              		.loc 1 66 8
+  58 0010 5843     		lw	a4,4(a4)
+  59 0012 93850700 		addi	a1,a5,%lo(w)
+  60 0016 B7470000 		lui	a5,%hi(w+16384)
+  61 001a 93870700 		addi	a5,a5,%lo(w+16384)
+  67:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is full.
+  68:lib/queue/src/queue.c ****     }
+  69:lib/queue/src/queue.c **** 
+  70:lib/queue/src/queue.c ****     // Iterate through the characters in the input 'string' and copy them into the queue.
+  71:lib/queue/src/queue.c ****     while (*string != '\0' && w.size != w.memorySize) {
+  72:lib/queue/src/queue.c ****         // Copy the current character from 'string' into the current buffer in the queue.
+  73:lib/queue/src/queue.c ****         w.buf[w.tail][w.tail_string] = *string;
+  74:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  75:lib/queue/src/queue.c ****         w.tail_string++; // Move to the next position in the current buffer.
+  76:lib/queue/src/queue.c **** 
+  77:lib/queue/src/queue.c ****         // If the current buffer is full (512 characters), wrap around to the next buffer.
+  78:lib/queue/src/queue.c ****         if (w.tail_string == MAX_STRING_SIZE - 1) {
+  62              		.loc 1 78 12
+  63 001e 130EF01F 		li	t3,511
+  66:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is full.
+  64              		.loc 1 66 8
+  65 0022 631C1703 		bne	a4,a7,.L4
+  67:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is full.
+  66              		.loc 1 67 16
+  67 0026 0145     		li	a0,0
+  68              	.LVL1:
+  69 0028 8280     		ret
+  70              	.LVL2:
+  71              	.L6:
+  73:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  72              		.loc 1 73 9 is_stmt 1
+  73:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  73              		.loc 1 73 16 is_stmt 0
+  74 002a D847     		lw	a4,12(a5)
+  73:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  75              		.loc 1 73 24
+  76 002c 944B     		lw	a3,16(a5)
+  74:lib/queue/src/queue.c ****         w.tail_string++; // Move to the next position in the current buffer.
+  77              		.loc 1 74 15
+  78 002e 0505     		addi	a0,a0,1
+  79              	.LVL3:
+  73:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  80              		.loc 1 73 38
+  81 0030 13189700 		slli	a6,a4,9
+  82 0034 2E98     		add	a6,a1,a6
+  83 0036 B30ED800 		add	t4,a6,a3
+  75:lib/queue/src/queue.c **** 
+  84              		.loc 1 75 22
+  85 003a 8506     		addi	a3,a3,1
+  73:lib/queue/src/queue.c ****         string++; // Move to the next character in 'string'.
+  86              		.loc 1 73 38
+  87 003c 23806E00 		sb	t1,0(t4)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 4
+
+
+  74:lib/queue/src/queue.c ****         w.tail_string++; // Move to the next position in the current buffer.
+  88              		.loc 1 74 9 is_stmt 1
+  89              	.LVL4:
+  75:lib/queue/src/queue.c **** 
+  90              		.loc 1 75 9
+  75:lib/queue/src/queue.c **** 
+  91              		.loc 1 75 22 is_stmt 0
+  92 0040 94CB     		sw	a3,16(a5)
+  93              		.loc 1 78 9 is_stmt 1
+  94              		.loc 1 78 12 is_stmt 0
+  95 0042 639CC601 		bne	a3,t3,.L4
+  79:lib/queue/src/queue.c ****             w.buf[w.tail][w.tail_string] = '\0';
+  96              		.loc 1 79 13 is_stmt 1
+  80:lib/queue/src/queue.c ****             w.tail_string = 0; // Reset the buffer position.
+  81:lib/queue/src/queue.c ****             w.tail = (w.tail + 1) % w.memorySize; // Move to the next buffer.
+  97              		.loc 1 81 30 is_stmt 0
+  98 0046 0507     		addi	a4,a4,1
+  99              		.loc 1 81 35
+ 100 0048 33671703 		rem	a4,a4,a7
+  82:lib/queue/src/queue.c ****             w.size++; // Increment the size of the queue.
+ 101              		.loc 1 82 19
+ 102 004c 0506     		addi	a2,a2,1
+  79:lib/queue/src/queue.c ****             w.buf[w.tail][w.tail_string] = '\0';
+ 103              		.loc 1 79 42
+ 104 004e A30F081E 		sb	zero,511(a6)
+  80:lib/queue/src/queue.c ****             w.tail_string = 0; // Reset the buffer position.
+ 105              		.loc 1 80 13 is_stmt 1
+  80:lib/queue/src/queue.c ****             w.tail_string = 0; // Reset the buffer position.
+ 106              		.loc 1 80 27 is_stmt 0
+ 107 0052 23A80700 		sw	zero,16(a5)
+  81:lib/queue/src/queue.c ****             w.size++; // Increment the size of the queue.
+ 108              		.loc 1 81 13 is_stmt 1
+ 109              		.loc 1 82 19 is_stmt 0
+ 110 0056 D0C3     		sw	a2,4(a5)
+  81:lib/queue/src/queue.c ****             w.size++; // Increment the size of the queue.
+ 111              		.loc 1 81 20
+ 112 0058 D8C7     		sw	a4,12(a5)
+ 113              		.loc 1 82 13 is_stmt 1
+ 114              	.L4:
+  71:lib/queue/src/queue.c ****         // Copy the current character from 'string' into the current buffer in the queue.
+ 115              		.loc 1 71 12 is_stmt 0
+ 116 005a 03430500 		lbu	t1,0(a0)
+  71:lib/queue/src/queue.c ****         // Copy the current character from 'string' into the current buffer in the queue.
+ 117              		.loc 1 71 11
+ 118 005e 63050300 		beq	t1,zero,.L8
+  71:lib/queue/src/queue.c ****         // Copy the current character from 'string' into the current buffer in the queue.
+ 119              		.loc 1 71 32 discriminator 1
+ 120 0062 D043     		lw	a2,4(a5)
+  71:lib/queue/src/queue.c ****         // Copy the current character from 'string' into the current buffer in the queue.
+ 121              		.loc 1 71 28 discriminator 1
+ 122 0064 E393C8FC 		bne	a7,a2,.L6
+ 123              	.L8:
+  83:lib/queue/src/queue.c ****         }
+  84:lib/queue/src/queue.c ****     }
+  85:lib/queue/src/queue.c **** 
+  86:lib/queue/src/queue.c ****     return 1; // Return 1 to indicate successful enqueuing.
+ 124              		.loc 1 86 12
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 5
+
+
+ 125 0068 0545     		li	a0,1
+ 126              	.LVL5:
+  87:lib/queue/src/queue.c **** }
+ 127              		.loc 1 87 1
+ 128 006a 8280     		ret
+ 129              		.cfi_endproc
+ 130              	.LFE3:
+ 132              		.section	.text.queue_str_len,"ax",@progbits
+ 133              		.align	1
+ 134              		.globl	queue_str_len
+ 136              	queue_str_len:
+ 137              	.LFB5:
+  88:lib/queue/src/queue.c **** 
+  89:lib/queue/src/queue.c **** int dequeue_string(char *string, int num_of_blocks) {
+  90:lib/queue/src/queue.c ****     int str_len = 0;
+  91:lib/queue/src/queue.c ****     int blocks_dequeued = 0; // Track the number of blocks dequeued
+  92:lib/queue/src/queue.c **** 
+  93:lib/queue/src/queue.c ****     // Check if the queue is empty.
+  94:lib/queue/src/queue.c ****     if (w.size == 0) {
+  95:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+  96:lib/queue/src/queue.c ****     } else if (num_of_blocks > w.size) {
+  97:lib/queue/src/queue.c ****         return -1; // Return -1 to indicate that there are not enough blocks in the queue.
+  98:lib/queue/src/queue.c ****     }
+  99:lib/queue/src/queue.c **** 
+ 100:lib/queue/src/queue.c ****     // Iterate through the queue and concatenate strings until the specified number of blocks are d
+ 101:lib/queue/src/queue.c ****     while (blocks_dequeued < num_of_blocks) {
+ 102:lib/queue/src/queue.c ****         // Concatenate the next string from the queue into the 'string' buffer.
+ 103:lib/queue/src/queue.c ****         str_len += fuseStrings(string, w.buf[w.head]);
+ 104:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 105:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 106:lib/queue/src/queue.c ****         blocks_dequeued++; // Increment the number of blocks dequeued.
+ 107:lib/queue/src/queue.c ****     }
+ 108:lib/queue/src/queue.c **** 
+ 109:lib/queue/src/queue.c ****     return str_len; // Return the length of the concatenated string.
+ 110:lib/queue/src/queue.c **** }
+ 111:lib/queue/src/queue.c **** 
+ 112:lib/queue/src/queue.c **** int queue_str_len(void) {
+ 138              		.loc 1 112 25 is_stmt 1
+ 139              		.cfi_startproc
+ 113:lib/queue/src/queue.c ****     return w.size; // Return the size of the queue.
+ 140              		.loc 1 113 5
+ 114:lib/queue/src/queue.c **** }
+ 141              		.loc 1 114 1 is_stmt 0
+ 142 0000 B7470000 		lui	a5,%hi(w+16384)
+ 143 0004 93870700 		addi	a5,a5,%lo(w+16384)
+ 144 0008 C843     		lw	a0,4(a5)
+ 145 000a 8280     		ret
+ 146              		.cfi_endproc
+ 147              	.LFE5:
+ 149              		.section	.text.fuseStrings,"ax",@progbits
+ 150              		.align	1
+ 151              		.globl	fuseStrings
+ 153              	fuseStrings:
+ 154              	.LFB7:
+ 115:lib/queue/src/queue.c **** 
+ 116:lib/queue/src/queue.c **** int empty_string_queue(char *dest, int max_block_size){
+ 117:lib/queue/src/queue.c ****     int str_len = 0;
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 6
+
+
+ 118:lib/queue/src/queue.c ****     int blocks_dequeued = 0;
+ 119:lib/queue/src/queue.c ****     
+ 120:lib/queue/src/queue.c ****     for(int i = max_block_size; i > 0; i--){
+ 121:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 122:lib/queue/src/queue.c ****         if(str_len > 0){
+ 123:lib/queue/src/queue.c ****             blocks_dequeued = i;
+ 124:lib/queue/src/queue.c ****             break;
+ 125:lib/queue/src/queue.c ****         }
+ 126:lib/queue/src/queue.c ****     }
+ 127:lib/queue/src/queue.c ****     if(w.size == 0 && blocks_dequeued < max_block_size){
+ 128:lib/queue/src/queue.c ****         w.buf[w.head][w.tail_string] = '\0';
+ 129:lib/queue/src/queue.c ****         str_len = fuseStrings(dest, w.buf[w.head]);
+ 130:lib/queue/src/queue.c ****         w.tail_string = 0;
+ 131:lib/queue/src/queue.c ****     }
+ 132:lib/queue/src/queue.c ****     return str_len;
+ 133:lib/queue/src/queue.c **** }
+ 134:lib/queue/src/queue.c **** 
+ 135:lib/queue/src/queue.c **** int fuseStrings(char *str1, const char *str2) {
+ 155              		.loc 1 135 47 is_stmt 1
+ 156              		.cfi_startproc
+ 157              	.LVL6:
+ 136:lib/queue/src/queue.c ****     char *start = str1;  // Save the starting position of str1
+ 158              		.loc 1 136 5
+ 137:lib/queue/src/queue.c ****     // Find the end of the first string
+ 138:lib/queue/src/queue.c ****     while (*str1 != '\0') {
+ 159              		.loc 1 138 5
+ 160              		.loc 1 138 11 is_stmt 0
+ 161 0000 AA87     		mv	a5,a0
+ 162              	.LVL7:
+ 163              	.L11:
+ 164 0002 03C70700 		lbu	a4,0(a5)
+ 165 0006 09EB     		bne	a4,zero,.L12
+ 166              	.L13:
+ 139:lib/queue/src/queue.c ****         str1++;
+ 140:lib/queue/src/queue.c ****     }
+ 141:lib/queue/src/queue.c ****     // Copy characters from the second string to the end of the first string
+ 142:lib/queue/src/queue.c ****     while (*str2 != '\0') {
+ 167              		.loc 1 142 12
+ 168 0008 03C70500 		lbu	a4,0(a1)
+ 169              		.loc 1 142 11
+ 170 000c 01EB     		bne	a4,zero,.L14
+ 143:lib/queue/src/queue.c ****         *str1 = *str2;
+ 144:lib/queue/src/queue.c ****         str1++;
+ 145:lib/queue/src/queue.c ****         str2++;
+ 146:lib/queue/src/queue.c ****     }
+ 147:lib/queue/src/queue.c ****     // Add the null terminator to mark the end of the concatenated string
+ 148:lib/queue/src/queue.c ****     *str1 = '\0';
+ 171              		.loc 1 148 5 is_stmt 1
+ 172              		.loc 1 148 11 is_stmt 0
+ 173 000e 23800700 		sb	zero,0(a5)
+ 149:lib/queue/src/queue.c ****     // Calculate and return the length of the concatenated string
+ 150:lib/queue/src/queue.c ****     return str1 - start;
+ 174              		.loc 1 150 5 is_stmt 1
+ 151:lib/queue/src/queue.c **** }
+ 175              		.loc 1 151 1 is_stmt 0
+ 176 0012 3385A740 		sub	a0,a5,a0
+ 177              	.LVL8:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 7
+
+
+ 178 0016 8280     		ret
+ 179              	.LVL9:
+ 180              	.L12:
+ 139:lib/queue/src/queue.c ****     }
+ 181              		.loc 1 139 9 is_stmt 1
+ 139:lib/queue/src/queue.c ****     }
+ 182              		.loc 1 139 13 is_stmt 0
+ 183 0018 8507     		addi	a5,a5,1
+ 184              	.LVL10:
+ 185 001a E5B7     		j	.L11
+ 186              	.L14:
+ 143:lib/queue/src/queue.c ****         str1++;
+ 187              		.loc 1 143 9 is_stmt 1
+ 143:lib/queue/src/queue.c ****         str1++;
+ 188              		.loc 1 143 15 is_stmt 0
+ 189 001c 2380E700 		sb	a4,0(a5)
+ 144:lib/queue/src/queue.c ****         str2++;
+ 190              		.loc 1 144 9 is_stmt 1
+ 145:lib/queue/src/queue.c ****     }
+ 191              		.loc 1 145 13 is_stmt 0
+ 192 0020 8505     		addi	a1,a1,1
+ 193              	.LVL11:
+ 144:lib/queue/src/queue.c ****         str2++;
+ 194              		.loc 1 144 13
+ 195 0022 8507     		addi	a5,a5,1
+ 196              	.LVL12:
+ 145:lib/queue/src/queue.c ****     }
+ 197              		.loc 1 145 9 is_stmt 1
+ 198 0024 D5B7     		j	.L13
+ 199              		.cfi_endproc
+ 200              	.LFE7:
+ 202              		.section	.text.dequeue_string,"ax",@progbits
+ 203              		.align	1
+ 204              		.globl	dequeue_string
+ 206              	dequeue_string:
+ 207              	.LFB4:
+  89:lib/queue/src/queue.c ****     int str_len = 0;
+ 208              		.loc 1 89 53
+ 209              		.cfi_startproc
+ 210              	.LVL13:
+  90:lib/queue/src/queue.c ****     int blocks_dequeued = 0; // Track the number of blocks dequeued
+ 211              		.loc 1 90 5
+  91:lib/queue/src/queue.c **** 
+ 212              		.loc 1 91 5
+  94:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+ 213              		.loc 1 94 5
+  94:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+ 214              		.loc 1 94 10 is_stmt 0
+ 215 0000 B7070000 		lui	a5,%hi(w)
+ 216 0004 13870700 		addi	a4,a5,%lo(w)
+ 217 0008 9166     		li	a3,16384
+  89:lib/queue/src/queue.c ****     int str_len = 0;
+ 218              		.loc 1 89 53
+ 219 000a 0111     		addi	sp,sp,-32
+ 220              	.LCFI0:
+ 221              		.cfi_def_cfa_offset 32
+  94:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 8
+
+
+ 222              		.loc 1 94 10
+ 223 000c 3697     		add	a4,a4,a3
+  89:lib/queue/src/queue.c ****     int str_len = 0;
+ 224              		.loc 1 89 53
+ 225 000e 26CA     		sw	s1,20(sp)
+ 226              		.cfi_offset 9, -12
+  94:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+ 227              		.loc 1 94 10
+ 228 0010 4443     		lw	s1,4(a4)
+  89:lib/queue/src/queue.c ****     int str_len = 0;
+ 229              		.loc 1 89 53
+ 230 0012 06CE     		sw	ra,28(sp)
+ 231 0014 22CC     		sw	s0,24(sp)
+ 232 0016 4AC8     		sw	s2,16(sp)
+ 233 0018 4EC6     		sw	s3,12(sp)
+ 234 001a 52C4     		sw	s4,8(sp)
+ 235 001c 56C2     		sw	s5,4(sp)
+ 236              		.cfi_offset 1, -4
+ 237              		.cfi_offset 8, -8
+ 238              		.cfi_offset 18, -16
+ 239              		.cfi_offset 19, -20
+ 240              		.cfi_offset 20, -24
+ 241              		.cfi_offset 21, -28
+  94:lib/queue/src/queue.c ****         return 0; // Return 0 to indicate that the queue is empty.
+ 242              		.loc 1 94 8
+ 243 001e 99CC     		beq	s1,zero,.L15
+  96:lib/queue/src/queue.c ****         return -1; // Return -1 to indicate that there are not enough blocks in the queue.
+ 244              		.loc 1 96 12 is_stmt 1
+  96:lib/queue/src/queue.c ****         return -1; // Return -1 to indicate that there are not enough blocks in the queue.
+ 245              		.loc 1 96 15 is_stmt 0
+ 246 0020 63CCB404 		blt	s1,a1,.L19
+ 247 0024 37440000 		lui	s0,%hi(w+16384)
+ 248 0028 93890700 		addi	s3,a5,%lo(w)
+ 249 002c 13040400 		addi	s0,s0,%lo(w+16384)
+ 250 0030 2E89     		mv	s2,a1
+ 251 0032 AA8A     		mv	s5,a0
+ 252              	.LBB4:
+ 253              	.LBB5:
+  91:lib/queue/src/queue.c **** 
+ 254              		.loc 1 91 9
+ 255 0034 014A     		li	s4,0
+  90:lib/queue/src/queue.c ****     int blocks_dequeued = 0; // Track the number of blocks dequeued
+ 256              		.loc 1 90 9
+ 257 0036 8144     		li	s1,0
+ 258              	.LVL14:
+ 259              	.L17:
+ 101:lib/queue/src/queue.c ****         // Concatenate the next string from the queue into the 'string' buffer.
+ 260              		.loc 1 101 11
+ 261 0038 634C2A01 		bgt	s2,s4,.L18
+ 262              	.LVL15:
+ 263              	.L15:
+ 264              	.LBE5:
+ 265              	.LBE4:
+ 110:lib/queue/src/queue.c **** 
+ 266              		.loc 1 110 1
+ 267 003c F240     		lw	ra,28(sp)
+ 268              		.cfi_remember_state
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 9
+
+
+ 269              		.cfi_restore 1
+ 270 003e 6244     		lw	s0,24(sp)
+ 271              		.cfi_restore 8
+ 272 0040 2685     		mv	a0,s1
+ 273 0042 4249     		lw	s2,16(sp)
+ 274              		.cfi_restore 18
+ 275 0044 D244     		lw	s1,20(sp)
+ 276              		.cfi_restore 9
+ 277 0046 B249     		lw	s3,12(sp)
+ 278              		.cfi_restore 19
+ 279 0048 224A     		lw	s4,8(sp)
+ 280              		.cfi_restore 20
+ 281 004a 924A     		lw	s5,4(sp)
+ 282              		.cfi_restore 21
+ 283 004c 0561     		addi	sp,sp,32
+ 284              	.LCFI1:
+ 285              		.cfi_def_cfa_offset 0
+ 286 004e 8280     		jr	ra
+ 287              	.LVL16:
+ 288              	.L18:
+ 289              	.LCFI2:
+ 290              		.cfi_restore_state
+ 291              	.LBB7:
+ 292              	.LBB6:
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 293              		.loc 1 103 9 is_stmt 1
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 294              		.loc 1 103 45 is_stmt 0
+ 295 0050 0C44     		lw	a1,8(s0)
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 296              		.loc 1 103 20
+ 297 0052 5685     		mv	a0,s5
+ 106:lib/queue/src/queue.c ****     }
+ 298              		.loc 1 106 24
+ 299 0054 050A     		addi	s4,s4,1
+ 300              	.LVL17:
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 301              		.loc 1 103 45
+ 302 0056 A605     		slli	a1,a1,9
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 303              		.loc 1 103 20
+ 304 0058 CE95     		add	a1,s3,a1
+ 305 005a 97000000 		call	fuseStrings
+ 305      E7800000 
+ 306              	.LVL18:
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 307              		.loc 1 104 26
+ 308 0062 1C44     		lw	a5,8(s0)
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 309              		.loc 1 104 31
+ 310 0064 1840     		lw	a4,0(s0)
+ 103:lib/queue/src/queue.c ****         w.head = (w.head + 1) % w.memorySize; // Move to the next element in the queue.
+ 311              		.loc 1 103 17
+ 312 0066 AA94     		add	s1,s1,a0
+ 313              	.LVL19:
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 314              		.loc 1 104 9 is_stmt 1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 10
+
+
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 315              		.loc 1 104 26 is_stmt 0
+ 316 0068 8507     		addi	a5,a5,1
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 317              		.loc 1 104 31
+ 318 006a B3E7E702 		rem	a5,a5,a4
+ 104:lib/queue/src/queue.c ****         w.size--; // Decrement the size of the queue.
+ 319              		.loc 1 104 16
+ 320 006e 1CC4     		sw	a5,8(s0)
+ 105:lib/queue/src/queue.c ****         blocks_dequeued++; // Increment the number of blocks dequeued.
+ 321              		.loc 1 105 9 is_stmt 1
+ 105:lib/queue/src/queue.c ****         blocks_dequeued++; // Increment the number of blocks dequeued.
+ 322              		.loc 1 105 15 is_stmt 0
+ 323 0070 5C40     		lw	a5,4(s0)
+ 324 0072 FD17     		addi	a5,a5,-1
+ 325 0074 5CC0     		sw	a5,4(s0)
+ 106:lib/queue/src/queue.c ****     }
+ 326              		.loc 1 106 9 is_stmt 1
+ 327              	.LVL20:
+ 328 0076 C9B7     		j	.L17
+ 329              	.LVL21:
+ 330              	.L19:
+ 331              	.LBE6:
+ 332              	.LBE7:
+  97:lib/queue/src/queue.c ****     }
+ 333              		.loc 1 97 16 is_stmt 0
+ 334 0078 FD54     		li	s1,-1
+ 335 007a C9B7     		j	.L15
+ 336              		.cfi_endproc
+ 337              	.LFE4:
+ 339              		.section	.text.empty_string_queue,"ax",@progbits
+ 340              		.align	1
+ 341              		.globl	empty_string_queue
+ 343              	empty_string_queue:
+ 344              	.LFB6:
+ 116:lib/queue/src/queue.c ****     int str_len = 0;
+ 345              		.loc 1 116 55 is_stmt 1
+ 346              		.cfi_startproc
+ 347              	.LVL22:
+ 117:lib/queue/src/queue.c ****     int blocks_dequeued = 0;
+ 348              		.loc 1 117 5
+ 118:lib/queue/src/queue.c ****     
+ 349              		.loc 1 118 5
+ 120:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 350              		.loc 1 120 5
+ 351              	.LBB8:
+ 120:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 352              		.loc 1 120 9
+ 353              	.LBE8:
+ 116:lib/queue/src/queue.c ****     int str_len = 0;
+ 354              		.loc 1 116 55 is_stmt 0
+ 355 0000 0111     		addi	sp,sp,-32
+ 356              	.LCFI3:
+ 357              		.cfi_def_cfa_offset 32
+ 358 0002 26CA     		sw	s1,20(sp)
+ 359 0004 4AC8     		sw	s2,16(sp)
+ 360 0006 4EC6     		sw	s3,12(sp)
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 11
+
+
+ 361              		.cfi_offset 9, -12
+ 362              		.cfi_offset 18, -16
+ 363              		.cfi_offset 19, -20
+ 364 0008 2A89     		mv	s2,a0
+ 365 000a 06CE     		sw	ra,28(sp)
+ 366 000c 22CC     		sw	s0,24(sp)
+ 367              		.cfi_offset 1, -4
+ 368              		.cfi_offset 8, -8
+ 116:lib/queue/src/queue.c ****     int str_len = 0;
+ 369              		.loc 1 116 55
+ 370 000e AE89     		mv	s3,a1
+ 371              	.LBB9:
+ 120:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 372              		.loc 1 120 13
+ 373 0010 AE84     		mv	s1,a1
+ 374              	.LBE9:
+ 117:lib/queue/src/queue.c ****     int blocks_dequeued = 0;
+ 375              		.loc 1 117 9
+ 376 0012 0145     		li	a0,0
+ 377              	.LVL23:
+ 378              	.L25:
+ 379              	.LBB10:
+ 120:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 380              		.loc 1 120 5 discriminator 1
+ 381 0014 63429004 		bgt	s1,zero,.L27
+ 382              	.LBE10:
+ 118:lib/queue/src/queue.c ****     
+ 383              		.loc 1 118 9
+ 384 0018 8144     		li	s1,0
+ 385              	.LVL24:
+ 386              	.L26:
+ 127:lib/queue/src/queue.c ****         w.buf[w.head][w.tail_string] = '\0';
+ 387              		.loc 1 127 5 is_stmt 1
+ 127:lib/queue/src/queue.c ****         w.buf[w.head][w.tail_string] = '\0';
+ 388              		.loc 1 127 9 is_stmt 0
+ 389 001a B7050000 		lui	a1,%hi(w)
+ 390 001e 93850500 		addi	a1,a1,%lo(w)
+ 391 0022 1164     		li	s0,16384
+ 392 0024 2E94     		add	s0,a1,s0
+ 127:lib/queue/src/queue.c ****         w.buf[w.head][w.tail_string] = '\0';
+ 393              		.loc 1 127 7
+ 394 0026 5C40     		lw	a5,4(s0)
+ 395 0028 8DE3     		bne	a5,zero,.L24
+ 127:lib/queue/src/queue.c ****         w.buf[w.head][w.tail_string] = '\0';
+ 396              		.loc 1 127 20 discriminator 1
+ 397 002a 63D03403 		bge	s1,s3,.L24
+ 128:lib/queue/src/queue.c ****         str_len = fuseStrings(dest, w.buf[w.head]);
+ 398              		.loc 1 128 9 is_stmt 1
+ 128:lib/queue/src/queue.c ****         str_len = fuseStrings(dest, w.buf[w.head]);
+ 399              		.loc 1 128 16 is_stmt 0
+ 400 002e 1844     		lw	a4,8(s0)
+ 128:lib/queue/src/queue.c ****         str_len = fuseStrings(dest, w.buf[w.head]);
+ 401              		.loc 1 128 38
+ 402 0030 1C48     		lw	a5,16(s0)
+ 129:lib/queue/src/queue.c ****         w.tail_string = 0;
+ 403              		.loc 1 129 19
+ 404 0032 4A85     		mv	a0,s2
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 12
+
+
+ 405              	.LVL25:
+ 128:lib/queue/src/queue.c ****         str_len = fuseStrings(dest, w.buf[w.head]);
+ 406              		.loc 1 128 38
+ 407 0034 2607     		slli	a4,a4,9
+ 408 0036 BA95     		add	a1,a1,a4
+ 409 0038 AE97     		add	a5,a1,a5
+ 410 003a 23800700 		sb	zero,0(a5)
+ 129:lib/queue/src/queue.c ****         w.tail_string = 0;
+ 411              		.loc 1 129 9 is_stmt 1
+ 129:lib/queue/src/queue.c ****         w.tail_string = 0;
+ 412              		.loc 1 129 19 is_stmt 0
+ 413 003e 97000000 		call	fuseStrings
+ 413      E7800000 
+ 414              	.LVL26:
+ 130:lib/queue/src/queue.c ****     }
+ 415              		.loc 1 130 9 is_stmt 1
+ 130:lib/queue/src/queue.c ****     }
+ 416              		.loc 1 130 23 is_stmt 0
+ 417 0046 23280400 		sw	zero,16(s0)
+ 132:lib/queue/src/queue.c **** }
+ 418              		.loc 1 132 5 is_stmt 1
+ 419              	.L24:
+ 133:lib/queue/src/queue.c **** 
+ 420              		.loc 1 133 1 is_stmt 0
+ 421 004a F240     		lw	ra,28(sp)
+ 422              		.cfi_remember_state
+ 423              		.cfi_restore 1
+ 424 004c 6244     		lw	s0,24(sp)
+ 425              		.cfi_restore 8
+ 426 004e D244     		lw	s1,20(sp)
+ 427              		.cfi_restore 9
+ 428              	.LVL27:
+ 429 0050 4249     		lw	s2,16(sp)
+ 430              		.cfi_restore 18
+ 431              	.LVL28:
+ 432 0052 B249     		lw	s3,12(sp)
+ 433              		.cfi_restore 19
+ 434              	.LVL29:
+ 435 0054 0561     		addi	sp,sp,32
+ 436              	.LCFI4:
+ 437              		.cfi_def_cfa_offset 0
+ 438 0056 8280     		jr	ra
+ 439              	.LVL30:
+ 440              	.L27:
+ 441              	.LCFI5:
+ 442              		.cfi_restore_state
+ 443              	.LBB11:
+ 121:lib/queue/src/queue.c ****         if(str_len > 0){
+ 444              		.loc 1 121 9 is_stmt 1
+ 121:lib/queue/src/queue.c ****         if(str_len > 0){
+ 445              		.loc 1 121 19 is_stmt 0
+ 446 0058 A685     		mv	a1,s1
+ 447 005a 4A85     		mv	a0,s2
+ 448              	.LVL31:
+ 449 005c 97000000 		call	dequeue_string
+ 449      E7800000 
+ 450              	.LVL32:
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 13
+
+
+ 122:lib/queue/src/queue.c ****             blocks_dequeued = i;
+ 451              		.loc 1 122 9 is_stmt 1
+ 122:lib/queue/src/queue.c ****             blocks_dequeued = i;
+ 452              		.loc 1 122 11 is_stmt 0
+ 453 0064 E34BA0FA 		bgt	a0,zero,.L26
+ 120:lib/queue/src/queue.c ****         str_len = dequeue_string(dest,i);
+ 454              		.loc 1 120 41 discriminator 2
+ 455 0068 FD14     		addi	s1,s1,-1
+ 456              	.LVL33:
+ 457 006a 6DB7     		j	.L25
+ 458              	.LBE11:
+ 459              		.cfi_endproc
+ 460              	.LFE6:
+ 462              		.section	.text.clear_queues,"ax",@progbits
+ 463              		.align	1
+ 464              		.globl	clear_queues
+ 466              	clear_queues:
+ 467              	.LFB8:
+ 152:lib/queue/src/queue.c **** 
+ 153:lib/queue/src/queue.c **** void clear_queues(void) {
+ 468              		.loc 1 153 25 is_stmt 1
+ 469              		.cfi_startproc
+ 154:lib/queue/src/queue.c ****     // Reset the main queue (q)
+ 155:lib/queue/src/queue.c ****     //q.size = SIZE_INIT;
+ 156:lib/queue/src/queue.c ****     //q.head = HEAD_INIT;
+ 157:lib/queue/src/queue.c ****     //q.tail = TAIL_INIT;
+ 158:lib/queue/src/queue.c **** 
+ 159:lib/queue/src/queue.c ****     // Reset the string queue (w)
+ 160:lib/queue/src/queue.c ****     w.size = SIZE_INIT;
+ 470              		.loc 1 160 5
+ 471              		.loc 1 160 12 is_stmt 0
+ 472 0000 B7070000 		lui	a5,%hi(w)
+ 473 0004 13870700 		addi	a4,a5,%lo(w)
+ 474 0008 9166     		li	a3,16384
+ 475 000a 3697     		add	a4,a4,a3
+ 476 000c 23220700 		sw	zero,4(a4)
+ 161:lib/queue/src/queue.c ****     w.head = HEAD_INIT;
+ 477              		.loc 1 161 5 is_stmt 1
+ 478              		.loc 1 161 12 is_stmt 0
+ 479 0010 23240700 		sw	zero,8(a4)
+ 162:lib/queue/src/queue.c ****     w.tail = TAIL_INIT;
+ 480              		.loc 1 162 5 is_stmt 1
+ 481              		.loc 1 162 12 is_stmt 0
+ 482 0014 23260700 		sw	zero,12(a4)
+ 163:lib/queue/src/queue.c ****     w.tail_string = TAIL_INIT;
+ 483              		.loc 1 163 5 is_stmt 1
+ 484              		.loc 1 163 19 is_stmt 0
+ 485 0018 23280700 		sw	zero,16(a4)
+ 164:lib/queue/src/queue.c **** 
+ 165:lib/queue/src/queue.c ****     // Clear values in the main queue
+ 166:lib/queue/src/queue.c ****     //for (int i = 0; i < Q_SIZE; i++) {
+ 167:lib/queue/src/queue.c ****     //    q.values[i].milli = 0;
+ 168:lib/queue/src/queue.c ****     //    q.values[i].seconds = 0;
+ 169:lib/queue/src/queue.c ****     //    q.values[i].minutes = 0;
+ 170:lib/queue/src/queue.c ****     //    q.values[i].accX = 0;
+ 171:lib/queue/src/queue.c ****     //    q.values[i].accY = 0;
+ 172:lib/queue/src/queue.c ****     //    q.values[i].accZ = 0;
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 14
+
+
+ 173:lib/queue/src/queue.c ****     //    q.values[i].gyroX = 0;
+ 174:lib/queue/src/queue.c ****     //    q.values[i].gyroY = 0;
+ 175:lib/queue/src/queue.c ****     //    q.values[i].gyroZ = 0;
+ 176:lib/queue/src/queue.c ****     //    q.values[i].emg = 0;
+ 177:lib/queue/src/queue.c ****     //}
+ 178:lib/queue/src/queue.c **** 
+ 179:lib/queue/src/queue.c ****     // Clear values in the string queue
+ 180:lib/queue/src/queue.c ****     for (int i = 0; i < STRING_QUEUE_SIZE; i++) {
+ 486              		.loc 1 180 5 is_stmt 1
+ 487              	.LBB12:
+ 488              		.loc 1 180 10
+ 489              	.LVL34:
+ 490 001c 93870700 		addi	a5,a5,%lo(w)
+ 491              	.LBB13:
+ 181:lib/queue/src/queue.c ****         for (int j = 0; j < MAX_STRING_SIZE; j++) {
+ 492              		.loc 1 181 9 is_stmt 0
+ 493 0020 13060020 		li	a2,512
+ 494              	.LVL35:
+ 495              	.L31:
+ 496              		.loc 1 181 18
+ 497 0024 8146     		li	a3,0
+ 498              	.LVL36:
+ 499              	.L32:
+ 182:lib/queue/src/queue.c ****             w.buf[i][j] = '\0';
+ 500              		.loc 1 182 13 is_stmt 1 discriminator 3
+ 501              		.loc 1 182 25 is_stmt 0 discriminator 3
+ 502 0026 B385D700 		add	a1,a5,a3
+ 503 002a 23800500 		sb	zero,0(a1)
+ 181:lib/queue/src/queue.c ****         for (int j = 0; j < MAX_STRING_SIZE; j++) {
+ 504              		.loc 1 181 47 discriminator 3
+ 505 002e 8506     		addi	a3,a3,1
+ 506              	.LVL37:
+ 181:lib/queue/src/queue.c ****         for (int j = 0; j < MAX_STRING_SIZE; j++) {
+ 507              		.loc 1 181 9 discriminator 3
+ 508 0030 E39BC6FE 		bne	a3,a2,.L32
+ 509 0034 93870720 		addi	a5,a5,512
+ 510              	.LBE13:
+ 180:lib/queue/src/queue.c ****         for (int j = 0; j < MAX_STRING_SIZE; j++) {
+ 511              		.loc 1 180 5 discriminator 2
+ 512 0038 E316F7FE 		bne	a4,a5,.L31
+ 513              	.LBE12:
+ 183:lib/queue/src/queue.c ****         }
+ 184:lib/queue/src/queue.c ****     }
+ 185:lib/queue/src/queue.c **** }
+ 514              		.loc 1 185 1
+ 515 003c 8280     		ret
+ 516              		.cfi_endproc
+ 517              	.LFE8:
+ 519              		.comm	w,16404,4
+ 520              		.comm	dataBuffer,22,4
+ 521              		.text
+ 522              	.Letext0:
+ 523              		.file 2 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 524              		.file 3 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 525              		.file 4 "lib/dma/include/dma.h"
+ 526              		.file 5 "./../../firmware/GD32VF103_standard_peripheral/system_gd32vf103.h"
+ 527              		.file 6 "lib/queue/include/queue.h"
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 15
+
+
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 queue.c
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:13     .text.init_q:0000000000000000 init_q
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:17     .text.init_q:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:18     .text.init_q:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:19     .text.init_q:0000000000000000 .L0 
+                            *COM*:0000000000004014 w
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:20     .text.init_q:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:25     .text.init_q:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:26     .text.init_q:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:28     .text.init_q:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:29     .text.init_q:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:31     .text.init_q:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:32     .text.init_q:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:34     .text.init_q:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:35     .text.init_q:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:37     .text.init_q:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:38     .text.init_q:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:45     .text.enqueue_string:0000000000000000 enqueue_string
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:48     .text.enqueue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:50     .text.enqueue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:51     .text.enqueue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:52     .text.enqueue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:58     .text.enqueue_string:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:63     .text.enqueue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:65     .text.enqueue_string:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:67     .text.enqueue_string:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:73     .text.enqueue_string:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:74     .text.enqueue_string:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:76     .text.enqueue_string:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:78     .text.enqueue_string:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:81     .text.enqueue_string:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:85     .text.enqueue_string:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:87     .text.enqueue_string:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:90     .text.enqueue_string:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:91     .text.enqueue_string:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:92     .text.enqueue_string:0000000000000040 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:94     .text.enqueue_string:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:95     .text.enqueue_string:0000000000000042 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:97     .text.enqueue_string:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:98     .text.enqueue_string:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:100    .text.enqueue_string:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:102    .text.enqueue_string:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:104    .text.enqueue_string:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:106    .text.enqueue_string:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:107    .text.enqueue_string:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:109    .text.enqueue_string:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:110    .text.enqueue_string:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:112    .text.enqueue_string:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:115    .text.enqueue_string:000000000000005a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:116    .text.enqueue_string:000000000000005a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:118    .text.enqueue_string:000000000000005e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:120    .text.enqueue_string:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:122    .text.enqueue_string:0000000000000064 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:125    .text.enqueue_string:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:128    .text.enqueue_string:000000000000006a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:129    .text.enqueue_string:000000000000006c .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 17
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:136    .text.queue_str_len:0000000000000000 queue_str_len
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:139    .text.queue_str_len:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:140    .text.queue_str_len:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:141    .text.queue_str_len:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:142    .text.queue_str_len:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:146    .text.queue_str_len:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:153    .text.fuseStrings:0000000000000000 fuseStrings
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:156    .text.fuseStrings:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:158    .text.fuseStrings:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:159    .text.fuseStrings:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:160    .text.fuseStrings:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:161    .text.fuseStrings:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:168    .text.fuseStrings:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:170    .text.fuseStrings:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:172    .text.fuseStrings:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:173    .text.fuseStrings:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:175    .text.fuseStrings:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:176    .text.fuseStrings:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:182    .text.fuseStrings:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:183    .text.fuseStrings:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:188    .text.fuseStrings:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:189    .text.fuseStrings:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:191    .text.fuseStrings:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:192    .text.fuseStrings:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:195    .text.fuseStrings:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:198    .text.fuseStrings:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:199    .text.fuseStrings:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:206    .text.dequeue_string:0000000000000000 dequeue_string
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:209    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:211    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:212    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:213    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:214    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:215    .text.dequeue_string:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:219    .text.dequeue_string:000000000000000a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:221    .text.dequeue_string:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:223    .text.dequeue_string:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:225    .text.dequeue_string:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:226    .text.dequeue_string:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:228    .text.dequeue_string:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:230    .text.dequeue_string:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:236    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:237    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:238    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:239    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:240    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:241    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:243    .text.dequeue_string:000000000000001e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:245    .text.dequeue_string:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:246    .text.dequeue_string:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:255    .text.dequeue_string:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:257    .text.dequeue_string:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:261    .text.dequeue_string:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:267    .text.dequeue_string:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:268    .text.dequeue_string:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:269    .text.dequeue_string:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:271    .text.dequeue_string:0000000000000040 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 18
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:274    .text.dequeue_string:0000000000000044 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:276    .text.dequeue_string:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:278    .text.dequeue_string:0000000000000048 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:280    .text.dequeue_string:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:282    .text.dequeue_string:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:285    .text.dequeue_string:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:290    .text.dequeue_string:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:294    .text.dequeue_string:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:295    .text.dequeue_string:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:297    .text.dequeue_string:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:299    .text.dequeue_string:0000000000000054 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:302    .text.dequeue_string:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:304    .text.dequeue_string:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:308    .text.dequeue_string:0000000000000062 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:310    .text.dequeue_string:0000000000000064 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:312    .text.dequeue_string:0000000000000066 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:315    .text.dequeue_string:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:316    .text.dequeue_string:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:318    .text.dequeue_string:000000000000006a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:320    .text.dequeue_string:000000000000006e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:322    .text.dequeue_string:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:323    .text.dequeue_string:0000000000000070 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:328    .text.dequeue_string:0000000000000076 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:334    .text.dequeue_string:0000000000000078 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:336    .text.dequeue_string:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:343    .text.empty_string_queue:0000000000000000 empty_string_queue
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:346    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:348    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:349    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:350    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:352    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:354    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:355    .text.empty_string_queue:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:357    .text.empty_string_queue:0000000000000002 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:361    .text.empty_string_queue:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:362    .text.empty_string_queue:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:363    .text.empty_string_queue:0000000000000008 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:367    .text.empty_string_queue:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:368    .text.empty_string_queue:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:370    .text.empty_string_queue:000000000000000e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:373    .text.empty_string_queue:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:376    .text.empty_string_queue:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:381    .text.empty_string_queue:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:384    .text.empty_string_queue:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:388    .text.empty_string_queue:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:389    .text.empty_string_queue:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:394    .text.empty_string_queue:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:397    .text.empty_string_queue:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:399    .text.empty_string_queue:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:400    .text.empty_string_queue:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:402    .text.empty_string_queue:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:404    .text.empty_string_queue:0000000000000032 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:407    .text.empty_string_queue:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:412    .text.empty_string_queue:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:413    .text.empty_string_queue:000000000000003e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:416    .text.empty_string_queue:0000000000000046 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:417    .text.empty_string_queue:0000000000000046 .L0 
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 19
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:420    .text.empty_string_queue:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:421    .text.empty_string_queue:000000000000004a .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:422    .text.empty_string_queue:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:423    .text.empty_string_queue:000000000000004c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:425    .text.empty_string_queue:000000000000004e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:427    .text.empty_string_queue:0000000000000050 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:430    .text.empty_string_queue:0000000000000052 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:433    .text.empty_string_queue:0000000000000054 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:437    .text.empty_string_queue:0000000000000056 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:442    .text.empty_string_queue:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:445    .text.empty_string_queue:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:446    .text.empty_string_queue:0000000000000058 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:452    .text.empty_string_queue:0000000000000064 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:453    .text.empty_string_queue:0000000000000064 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:455    .text.empty_string_queue:0000000000000068 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:459    .text.empty_string_queue:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:466    .text.clear_queues:0000000000000000 clear_queues
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:469    .text.clear_queues:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:470    .text.clear_queues:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:471    .text.clear_queues:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:472    .text.clear_queues:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:478    .text.clear_queues:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:479    .text.clear_queues:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:481    .text.clear_queues:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:482    .text.clear_queues:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:484    .text.clear_queues:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:485    .text.clear_queues:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:488    .text.clear_queues:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:490    .text.clear_queues:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:493    .text.clear_queues:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:497    .text.clear_queues:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:501    .text.clear_queues:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:502    .text.clear_queues:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:505    .text.clear_queues:000000000000002e .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:508    .text.clear_queues:0000000000000030 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:512    .text.clear_queues:0000000000000038 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:515    .text.clear_queues:000000000000003c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:516    .text.clear_queues:000000000000003e .L0 
+                            *COM*:0000000000000016 dataBuffer
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:41     .text.init_q:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:132    .text.enqueue_string:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:149    .text.queue_str_len:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:202    .text.fuseStrings:0000000000000026 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:339    .text.dequeue_string:000000000000007c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:462    .text.empty_string_queue:000000000000006c .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:521    .text.clear_queues:000000000000003e .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:114    .text.enqueue_string:000000000000005a .L4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:123    .text.enqueue_string:0000000000000068 .L8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:71     .text.enqueue_string:000000000000002a .L6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:180    .text.fuseStrings:0000000000000018 .L12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:186    .text.fuseStrings:000000000000001c .L14
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:163    .text.fuseStrings:0000000000000002 .L11
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:166    .text.fuseStrings:0000000000000008 .L13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:263    .text.dequeue_string:000000000000003c .L15
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:330    .text.dequeue_string:0000000000000078 .L19
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:288    .text.dequeue_string:0000000000000050 .L18
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 20
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:259    .text.dequeue_string:0000000000000038 .L17
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:440    .text.empty_string_queue:0000000000000058 .L27
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:419    .text.empty_string_queue:000000000000004a .L24
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:386    .text.empty_string_queue:000000000000001a .L26
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:378    .text.empty_string_queue:0000000000000014 .L25
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:499    .text.clear_queues:0000000000000026 .L32
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:495    .text.clear_queues:0000000000000024 .L31
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1154   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2211   .debug_str:000000000000026c .LASF50
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2189   .debug_str:00000000000001f3 .LASF51
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2145   .debug_str:00000000000000af .LASF52
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2075   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2109   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2169   .debug_str:000000000000018c .LASF0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2219   .debug_str:0000000000000312 .LASF1
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2115   .debug_str:000000000000000e .LASF3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2167   .debug_str:000000000000017e .LASF2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2163   .debug_str:0000000000000168 .LASF4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2201   .debug_str:0000000000000241 .LASF5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2149   .debug_str:0000000000000128 .LASF6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2139   .debug_str:0000000000000082 .LASF7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2215   .debug_str:00000000000002fd .LASF8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2141   .debug_str:0000000000000095 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2135   .debug_str:000000000000006b .LASF10
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2187   .debug_str:00000000000001e5 .LASF11
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2171   .debug_str:0000000000000199 .LASF12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2173   .debug_str:00000000000001b0 .LASF13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2179   .debug_str:00000000000001ca .LASF14
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2205   .debug_str:0000000000000251 .LASF15
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2213   .debug_str:00000000000002f4 .LASF16
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2195   .debug_str:0000000000000216 .LASF29
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2217   .debug_str:0000000000000306 .LASF17
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2127   .debug_str:000000000000004e .LASF18
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2129   .debug_str:0000000000000053 .LASF19
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2131   .debug_str:0000000000000058 .LASF20
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2137   .debug_str:000000000000007d .LASF21
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2203   .debug_str:000000000000024b .LASF22
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2183   .debug_str:00000000000001d9 .LASF23
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2185   .debug_str:00000000000001df .LASF24
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2113   .debug_str:0000000000000008 .LASF25
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2191   .debug_str:0000000000000209 .LASF26
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2111   .debug_str:0000000000000000 .LASF27
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2209   .debug_str:000000000000025f .LASF28
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2155   .debug_str:000000000000014e .LASF30
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2125   .debug_str:0000000000000043 .LASF31
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2221   .debug_str:000000000000031e .LASF32
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2161   .debug_str:0000000000000163 .LASF33
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2207   .debug_str:000000000000025a .LASF34
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2197   .debug_str:0000000000000226 .LASF35
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2193   .debug_str:0000000000000211 .LASF36
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2147   .debug_str:000000000000011e .LASF37
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2175   .debug_str:00000000000001b8 .LASF53
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:467    .text.clear_queues:0000000000000000 .LFB8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:517    .text.clear_queues:000000000000003e .LFE8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:487    .text.clear_queues:000000000000001c .LBB12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:513    .text.clear_queues:000000000000003c .LBE12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1730   .debug_loc:0000000000000000 .LLST15
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 21
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:491    .text.clear_queues:0000000000000020 .LBB13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:510    .text.clear_queues:0000000000000038 .LBE13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1738   .debug_loc:0000000000000014 .LLST16
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2165   .debug_str:0000000000000172 .LASF41
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:154    .text.fuseStrings:0000000000000000 .LFB7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:200    .text.fuseStrings:0000000000000026 .LFE7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2157   .debug_str:0000000000000159 .LASF38
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1750   .debug_loc:0000000000000033 .LLST1
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2159   .debug_str:000000000000015e .LASF39
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1761   .debug_loc:0000000000000051 .LLST2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2119   .debug_str:0000000000000026 .LASF40
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1778   .debug_loc:000000000000007c .LLST3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2153   .debug_str:000000000000013b .LASF42
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:344    .text.empty_string_queue:0000000000000000 .LFB6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:460    .text.empty_string_queue:000000000000006c .LFE6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1796   .debug_loc:00000000000000a8 .LLST9
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2177   .debug_str:00000000000001c5 .LASF43
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1819   .debug_loc:00000000000000e0 .LLST10
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2223   .debug_str:0000000000000323 .LASF44
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1841   .debug_loc:0000000000000117 .LLST11
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2151   .debug_str:0000000000000133 .LASF45
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1863   .debug_loc:000000000000014e .LLST12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2121   .debug_str:000000000000002c .LASF46
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1883   .debug_loc:0000000000000183 .LLST13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1900   .debug_loc:00000000000001ae .LLST14
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:450    .text.empty_string_queue:0000000000000064 .LVL32
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:414    .text.empty_string_queue:0000000000000046 .LVL26
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2117   .debug_str:0000000000000018 .LASF54
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:137    .text.queue_str_len:0000000000000000 .LFB5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:147    .text.queue_str_len:000000000000000c .LFE5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2199   .debug_str:0000000000000232 .LASF55
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2123   .debug_str:000000000000003c .LASF47
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2133   .debug_str:000000000000005d .LASF48
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2143   .debug_str:00000000000000a0 .LASF49
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:46     .text.enqueue_string:0000000000000000 .LFB3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:130    .text.enqueue_string:000000000000006c .LFE3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1915   .debug_loc:00000000000001d7 .LLST0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2181   .debug_str:00000000000001d2 .LASF56
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:14     .text.init_q:0000000000000000 .LFB2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:39     .text.init_q:0000000000000020 .LFE2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:207    .text.dequeue_string:0000000000000000 .LFB4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:337    .text.dequeue_string:000000000000007c .LFE4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1943   .debug_loc:000000000000021b .LLST4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1966   .debug_loc:0000000000000253 .LLST5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:1992   .debug_loc:0000000000000295 .LLST6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:252    .text.dequeue_string:0000000000000034 .LBB4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2018   .debug_loc:00000000000002d7 .LLST7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:2029   .debug_loc:00000000000002f5 .LLST8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:306    .text.dequeue_string:0000000000000062 .LVL18
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:489    .text.clear_queues:000000000000001c .LVL34
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:494    .text.clear_queues:0000000000000024 .LVL35
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:498    .text.clear_queues:0000000000000026 .LVL36
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:157    .text.fuseStrings:0000000000000000 .LVL6
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:162    .text.fuseStrings:0000000000000002 .LVL7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:193    .text.fuseStrings:0000000000000022 .LVL11
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:196    .text.fuseStrings:0000000000000024 .LVL12
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:177    .text.fuseStrings:0000000000000016 .LVL8
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s 			page 22
+
+
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:179    .text.fuseStrings:0000000000000018 .LVL9
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:356    .text.empty_string_queue:0000000000000002 .LCFI3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:436    .text.empty_string_queue:0000000000000056 .LCFI4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:441    .text.empty_string_queue:0000000000000058 .LCFI5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:347    .text.empty_string_queue:0000000000000000 .LVL22
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:377    .text.empty_string_queue:0000000000000014 .LVL23
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:431    .text.empty_string_queue:0000000000000052 .LVL28
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:439    .text.empty_string_queue:0000000000000058 .LVL30
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:434    .text.empty_string_queue:0000000000000054 .LVL29
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:405    .text.empty_string_queue:0000000000000034 .LVL25
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:448    .text.empty_string_queue:000000000000005c .LVL31
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:385    .text.empty_string_queue:000000000000001a .LVL24
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:428    .text.empty_string_queue:0000000000000050 .LVL27
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:49     .text.enqueue_string:0000000000000000 .LVL0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:68     .text.enqueue_string:0000000000000028 .LVL1
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:70     .text.enqueue_string:000000000000002a .LVL2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:79     .text.enqueue_string:0000000000000030 .LVL3
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:89     .text.enqueue_string:0000000000000040 .LVL4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:126    .text.enqueue_string:000000000000006a .LVL5
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:220    .text.dequeue_string:000000000000000c .LCFI0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:284    .text.dequeue_string:000000000000004e .LCFI1
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:289    .text.dequeue_string:0000000000000050 .LCFI2
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:210    .text.dequeue_string:0000000000000000 .LVL13
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:258    .text.dequeue_string:0000000000000038 .LVL14
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:262    .text.dequeue_string:000000000000003c .LVL15
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:287    .text.dequeue_string:0000000000000050 .LVL16
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:329    .text.dequeue_string:0000000000000078 .LVL21
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:300    .text.dequeue_string:0000000000000056 .LVL17
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:327    .text.dequeue_string:0000000000000076 .LVL20
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:529    .debug_info:0000000000000000 .Ldebug_info0
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:265    .text.dequeue_string:000000000000003c .LBE4
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:291    .text.dequeue_string:0000000000000050 .LBB7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:332    .text.dequeue_string:0000000000000078 .LBE7
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:351    .text.empty_string_queue:0000000000000000 .LBB8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:353    .text.empty_string_queue:0000000000000000 .LBE8
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:371    .text.empty_string_queue:0000000000000010 .LBB9
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:374    .text.empty_string_queue:0000000000000012 .LBE9
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:379    .text.empty_string_queue:0000000000000014 .LBB10
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:382    .text.empty_string_queue:0000000000000018 .LBE10
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:443    .text.empty_string_queue:0000000000000058 .LBB11
+C:\Users\Jesper\AppData\Local\Temp\ccVBzZiR.s:458    .text.empty_string_queue:000000000000006c .LBE11
+
+NO UNDEFINED SYMBOLS

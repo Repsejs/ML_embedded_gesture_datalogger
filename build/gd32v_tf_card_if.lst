@@ -1,0 +1,360 @@
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 1
+
+
+   1              		.file	"gd32v_tf_card_if.c"
+   2              		.option nopic
+   3              		.attribute arch, "rv32i2p0_m2p0_a2p0_c2p0"
+   4              		.attribute unaligned_access, 0
+   5              		.attribute stack_align, 16
+   6              		.text
+   7              	.Ltext0:
+   8              		.cfi_sections	.debug_frame
+   9              		.section	.text.set_fattime,"ax",@progbits
+  10              		.align	1
+  11              		.globl	set_fattime
+  13              	set_fattime:
+  14              	.LFB5:
+  15              		.file 1 "lib/fatfs/src/gd32v_tf_card_if.c"
+   1:lib/fatfs/src/gd32v_tf_card_if.c **** #include "gd32vf103.h"
+   2:lib/fatfs/src/gd32v_tf_card_if.c **** #include "gd32v_tf_card_if.h"
+   3:lib/fatfs/src/gd32v_tf_card_if.c **** #include "tf_card.h"
+   4:lib/fatfs/src/gd32v_tf_card_if.c **** 
+   5:lib/fatfs/src/gd32v_tf_card_if.c **** fat_time_t time = {.year = 2020, .month = 3, .day = 6, .hour = 0, .minute = 0};
+   6:lib/fatfs/src/gd32v_tf_card_if.c **** 
+   7:lib/fatfs/src/gd32v_tf_card_if.c **** void set_fattime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t s
+  16              		.loc 1 7 106
+  17              		.cfi_startproc
+  18              	.LVL0:
+   8:lib/fatfs/src/gd32v_tf_card_if.c ****     time.year = year;
+  19              		.loc 1 8 5
+  20              		.loc 1 8 15 is_stmt 0
+  21 0000 37080000 		lui	a6,%hi(.LANCHOR0)
+  22 0004 13080800 		addi	a6,a6,%lo(.LANCHOR0)
+  23 0008 2310A800 		sh	a0,0(a6)
+   9:lib/fatfs/src/gd32v_tf_card_if.c ****     time.month = month;
+  24              		.loc 1 9 5 is_stmt 1
+  25              		.loc 1 9 16 is_stmt 0
+  26 000c 2301B800 		sb	a1,2(a6)
+  10:lib/fatfs/src/gd32v_tf_card_if.c ****     time.day = day;
+  27              		.loc 1 10 5 is_stmt 1
+  28              		.loc 1 10 14 is_stmt 0
+  29 0010 A301C800 		sb	a2,3(a6)
+  11:lib/fatfs/src/gd32v_tf_card_if.c ****     time.hour = hour;
+  30              		.loc 1 11 5 is_stmt 1
+  31              		.loc 1 11 15 is_stmt 0
+  32 0014 2302D800 		sb	a3,4(a6)
+  12:lib/fatfs/src/gd32v_tf_card_if.c ****     time.minute = minute;
+  33              		.loc 1 12 5 is_stmt 1
+  34              		.loc 1 12 17 is_stmt 0
+  35 0018 A302E800 		sb	a4,5(a6)
+  13:lib/fatfs/src/gd32v_tf_card_if.c ****     time.second = second;
+  36              		.loc 1 13 5 is_stmt 1
+  37              		.loc 1 13 17 is_stmt 0
+  38 001c 2303F800 		sb	a5,6(a6)
+  14:lib/fatfs/src/gd32v_tf_card_if.c **** }
+  39              		.loc 1 14 1
+  40 0020 8280     		ret
+  41              		.cfi_endproc
+  42              	.LFE5:
+  44              		.section	.text.get_fattime,"ax",@progbits
+  45              		.align	1
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 2
+
+
+  46              		.globl	get_fattime
+  48              	get_fattime:
+  49              	.LFB6:
+  15:lib/fatfs/src/gd32v_tf_card_if.c **** 
+  16:lib/fatfs/src/gd32v_tf_card_if.c **** DWORD get_fattime (void){
+  50              		.loc 1 16 25 is_stmt 1
+  51              		.cfi_startproc
+  17:lib/fatfs/src/gd32v_tf_card_if.c **** 	return
+  52              		.loc 1 17 2
+  18:lib/fatfs/src/gd32v_tf_card_if.c **** 		(((uint8_t)(time.year - 1980))  << 25) |
+  19:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.month	                    << 21) |
+  53              		.loc 1 19 8 is_stmt 0
+  54 0000 37070000 		lui	a4,%hi(.LANCHOR0)
+  55 0004 13070700 		addi	a4,a4,%lo(.LANCHOR0)
+  56 0008 83472700 		lbu	a5,2(a4)
+  20:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.day	                    << 16) |
+  57              		.loc 1 20 8
+  58 000c 03453700 		lbu	a0,3(a4)
+  19:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.day	                    << 16) |
+  59              		.loc 1 19 35
+  60 0010 D607     		slli	a5,a5,21
+  61              		.loc 1 20 33
+  62 0012 4205     		slli	a0,a0,16
+  21:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.hour	                    << 11) |
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.minute	                <<  5) |
+  63              		.loc 1 22 39
+  64 0014 C98F     		or	a5,a5,a0
+  23:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  65              		.loc 1 23 32
+  66 0016 03456700 		lbu	a0,6(a4)
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  67              		.loc 1 22 39
+  68 001a C98F     		or	a5,a5,a0
+  21:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.hour	                    << 11) |
+  69              		.loc 1 21 8
+  70 001c 03454700 		lbu	a0,4(a4)
+  21:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.hour	                    << 11) |
+  71              		.loc 1 21 34
+  72 0020 2E05     		slli	a0,a0,11
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  73              		.loc 1 22 39
+  74 0022 C98F     		or	a5,a5,a0
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  75              		.loc 1 22 8
+  76 0024 03455700 		lbu	a0,5(a4)
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  77              		.loc 1 22 32
+  78 0028 1605     		slli	a0,a0,5
+  22:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.second	                <<  0);
+  79              		.loc 1 22 39
+  80 002a C98F     		or	a5,a5,a0
+  18:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.month	                    << 21) |
+  81              		.loc 1 18 5
+  82 002c 03450700 		lbu	a0,0(a4)
+  83 0030 13054504 		addi	a0,a0,68
+  18:lib/fatfs/src/gd32v_tf_card_if.c **** 		(time.month	                    << 21) |
+  84              		.loc 1 18 35
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 3
+
+
+  85 0034 6605     		slli	a0,a0,25
+  24:lib/fatfs/src/gd32v_tf_card_if.c **** }  ...
+  86              		.loc 1 24 1
+  87 0036 5D8D     		or	a0,a5,a0
+  88 0038 8280     		ret
+  89              		.cfi_endproc
+  90              	.LFE6:
+  92              		.globl	time
+  93              		.section	.sdata.time,"aw"
+  94              		.align	2
+  95              		.set	.LANCHOR0,. + 0
+  98              	time:
+  99 0000 E407     		.half	2020
+ 100 0002 03       		.byte	3
+ 101 0003 06       		.byte	6
+ 102 0004 00       		.byte	0
+ 103 0005 00       		.byte	0
+ 104 0006 0000     		.zero	2
+ 105              		.text
+ 106              	.Letext0:
+ 107              		.file 2 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 108              		.file 3 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 109              		.file 4 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 110              		.file 5 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 111              		.file 6 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 112              		.file 7 "c:\\users\\jesper\\documents\\ml_sommarjobb\\toolchain-gd32v-v201-win\\toolchain-gd32v-v2
+ 113              		.file 8 "./../../firmware/GD32VF103_standard_peripheral/system_gd32vf103.h"
+ 114              		.file 9 "lib/fatfs/include/ff.h"
+ 115              		.file 10 "lib/fatfs/include/gd32v_tf_card_if.h"
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 gd32v_tf_card_if.c
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:13     .text.set_fattime:0000000000000000 set_fattime
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:17     .text.set_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:19     .text.set_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:20     .text.set_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:21     .text.set_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:25     .text.set_fattime:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:26     .text.set_fattime:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:28     .text.set_fattime:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:29     .text.set_fattime:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:31     .text.set_fattime:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:32     .text.set_fattime:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:34     .text.set_fattime:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:35     .text.set_fattime:0000000000000018 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:37     .text.set_fattime:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:38     .text.set_fattime:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:40     .text.set_fattime:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:41     .text.set_fattime:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:48     .text.get_fattime:0000000000000000 get_fattime
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:51     .text.get_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:52     .text.get_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:53     .text.get_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:54     .text.get_fattime:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:58     .text.get_fattime:000000000000000c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:60     .text.get_fattime:0000000000000010 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:62     .text.get_fattime:0000000000000012 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:64     .text.get_fattime:0000000000000014 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:66     .text.get_fattime:0000000000000016 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:68     .text.get_fattime:000000000000001a .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:70     .text.get_fattime:000000000000001c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:72     .text.get_fattime:0000000000000020 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:74     .text.get_fattime:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:76     .text.get_fattime:0000000000000024 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:78     .text.get_fattime:0000000000000028 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:80     .text.get_fattime:000000000000002a .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:82     .text.get_fattime:000000000000002c .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:85     .text.get_fattime:0000000000000034 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:87     .text.get_fattime:0000000000000036 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:89     .text.get_fattime:000000000000003a .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:98     .sdata.time:0000000000000000 time
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:95     .sdata.time:0000000000000000 .LANCHOR0
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:44     .text.set_fattime:0000000000000022 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:93     .text.get_fattime:000000000000003a .L0 
+                     .debug_frame:0000000000000000 .L0 
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:1708   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2480   .debug_str:00000000000004c9 .LASF135
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2386   .debug_str:0000000000000301 .LASF136
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2268   .debug_str:000000000000008c .LASF137
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2234   .debug_ranges:0000000000000000 .Ldebug_ranges0
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2242   .debug_line:0000000000000000 .Ldebug_line0
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2470   .debug_str:0000000000000496 .LASF0
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2284   .debug_str:0000000000000140 .LASF1
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2256   .debug_str:0000000000000039 .LASF4
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2406   .debug_str:000000000000037c .LASF2
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2246   .debug_str:000000000000000c .LASF3
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2472   .debug_str:00000000000004a3 .LASF5
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 5
+
+
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2484   .debug_str:000000000000055a .LASF6
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2304   .debug_str:0000000000000195 .LASF7
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2328   .debug_str:0000000000000209 .LASF8
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2354   .debug_str:0000000000000273 .LASF9
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2314   .debug_str:00000000000001be .LASF10
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2264   .debug_str:000000000000006c .LASF11
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2474   .debug_str:00000000000004ae .LASF12
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2316   .debug_str:00000000000001cc .LASF13
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2494   .debug_str:000000000000059a .LASF14
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2348   .debug_str:0000000000000253 .LASF124
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2460   .debug_str:000000000000046f .LASF15
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2400   .debug_str:0000000000000359 .LASF16
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2280   .debug_str:0000000000000132 .LASF17
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2458   .debug_str:0000000000000467 .LASF18
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2502   .debug_str:00000000000005bb .LASF19
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2370   .debug_str:00000000000002c4 .LASF20
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2346   .debug_str:000000000000024c .LASF21
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2448   .debug_str:0000000000000440 .LASF22
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2450   .debug_str:0000000000000448 .LASF23
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2424   .debug_str:00000000000003cd .LASF24
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2488   .debug_str:0000000000000572 .LASF25
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2404   .debug_str:000000000000036a .LASF26
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2414   .debug_str:00000000000003a4 .LASF27
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2336   .debug_str:000000000000022e .LASF32
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2476   .debug_str:00000000000004b6 .LASF28
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2442   .debug_str:000000000000042b .LASF29
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2330   .debug_str:0000000000000214 .LASF30
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2498   .debug_str:00000000000005b0 .LASF31
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2342   .debug_str:0000000000000241 .LASF33
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2278   .debug_str:0000000000000129 .LASF34
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2516   .debug_str:0000000000000600 .LASF35
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2290   .debug_str:0000000000000158 .LASF36
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2524   .debug_str:0000000000000621 .LASF37
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2390   .debug_str:0000000000000329 .LASF38
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2382   .debug_str:00000000000002ee .LASF39
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2456   .debug_str:000000000000045d .LASF40
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2416   .debug_str:00000000000003ad .LASF41
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2512   .debug_str:00000000000005e6 .LASF42
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2294   .debug_str:0000000000000167 .LASF43
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2248   .debug_str:0000000000000016 .LASF44
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2244   .debug_str:0000000000000000 .LASF45
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2482   .debug_str:0000000000000551 .LASF46
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2308   .debug_str:00000000000001a5 .LASF47
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2392   .debug_str:0000000000000332 .LASF48
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2434   .debug_str:00000000000003fb .LASF49
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2326   .debug_str:0000000000000204 .LASF50
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2418   .debug_str:00000000000003b7 .LASF51
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2288   .debug_str:0000000000000152 .LASF52
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2468   .debug_str:0000000000000490 .LASF53
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2426   .debug_str:00000000000003d8 .LASF54
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2306   .debug_str:000000000000019e .LASF55
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2356   .debug_str:0000000000000285 .LASF56
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2266   .debug_str:0000000000000083 .LASF57
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2250   .debug_str:000000000000001e .LASF58
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2340   .debug_str:000000000000023b .LASF59
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2380   .debug_str:00000000000002e7 .LASF60
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2452   .debug_str:0000000000000450 .LASF61
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 6
+
+
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2282   .debug_str:0000000000000139 .LASF62
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2286   .debug_str:000000000000014c .LASF63
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2508   .debug_str:00000000000005d8 .LASF64
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2466   .debug_str:0000000000000487 .LASF65
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2320   .debug_str:00000000000001dd .LASF66
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2358   .debug_str:000000000000028b .LASF67
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2374   .debug_str:00000000000002cf .LASF68
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2428   .debug_str:00000000000003e0 .LASF69
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2420   .debug_str:00000000000003be .LASF70
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2444   .debug_str:0000000000000433 .LASF71
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2462   .debug_str:000000000000047b .LASF72
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2310   .debug_str:00000000000001ad .LASF73
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2350   .debug_str:0000000000000263 .LASF74
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2334   .debug_str:0000000000000226 .LASF75
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2432   .debug_str:00000000000003f6 .LASF76
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2254   .debug_str:000000000000002e .LASF77
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2440   .debug_str:0000000000000412 .LASF78
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2436   .debug_str:0000000000000400 .LASF79
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2396   .debug_str:000000000000033f .LASF80
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2438   .debug_str:0000000000000408 .LASF81
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2368   .debug_str:00000000000002bc .LASF82
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2312   .debug_str:00000000000001b4 .LASF83
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2522   .debug_str:000000000000061c .LASF84
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2402   .debug_str:0000000000000360 .LASF85
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2352   .debug_str:000000000000026b .LASF86
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2318   .debug_str:00000000000001d5 .LASF87
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2372   .debug_str:00000000000002ca .LASF88
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2258   .debug_str:0000000000000043 .LASF89
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2506   .debug_str:00000000000005ce .LASF90
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2302   .debug_str:000000000000018d .LASF91
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2292   .debug_str:0000000000000162 .LASF92
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2464   .debug_str:0000000000000482 .LASF93
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2422   .debug_str:00000000000003c6 .LASF94
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2500   .debug_str:00000000000005b5 .LASF95
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2360   .debug_str:0000000000000291 .LASF96
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2408   .debug_str:000000000000038a .LASF97
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2252   .debug_str:0000000000000026 .LASF98
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2446   .debug_str:000000000000043a .LASF99
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2376   .debug_str:00000000000002d5 .LASF100
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2486   .debug_str:000000000000056d .LASF101
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2496   .debug_str:00000000000005a3 .LASF102
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2478   .debug_str:00000000000004bc .LASF103
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2366   .debug_str:00000000000002af .LASF104
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2514   .debug_str:00000000000005f1 .LASF105
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2398   .debug_str:000000000000034a .LASF106
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2362   .debug_str:0000000000000298 .LASF107
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2518   .debug_str:0000000000000609 .LASF108
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2430   .debug_str:00000000000003e9 .LASF109
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2520   .debug_str:000000000000060e .LASF110
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2276   .debug_str:000000000000011b .LASF111
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2504   .debug_str:00000000000005c4 .LASF112
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2364   .debug_str:00000000000002a3 .LASF113
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2490   .debug_str:000000000000057a .LASF114
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2324   .debug_str:00000000000001f6 .LASF115
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2272   .debug_str:0000000000000106 .LASF116
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2322   .debug_str:00000000000001e5 .LASF117
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2260   .debug_str:000000000000004c .LASF118
+GAS LISTING C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s 			page 7
+
+
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2262   .debug_str:000000000000005b .LASF119
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2412   .debug_str:000000000000039b .LASF120
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2388   .debug_str:0000000000000322 .LASF121
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2384   .debug_str:00000000000002f8 .LASF122
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2510   .debug_str:00000000000005de .LASF123
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2270   .debug_str:00000000000000fb .LASF138
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2332   .debug_str:000000000000021a .LASF125
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2492   .debug_str:0000000000000587 .LASF126
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2274   .debug_str:0000000000000115 .LASF127
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2300   .debug_str:0000000000000188 .LASF128
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2344   .debug_str:0000000000000246 .LASF129
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2338   .debug_str:0000000000000236 .LASF130
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2454   .debug_str:0000000000000456 .LASF131
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2296   .debug_str:0000000000000175 .LASF132
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2410   .debug_str:0000000000000390 .LASF133
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2394   .debug_str:000000000000033a .LASF134
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2298   .debug_str:000000000000017c .LASF139
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:49     .text.get_fattime:0000000000000000 .LFB6
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:90     .text.get_fattime:000000000000003a .LFE6
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:2378   .debug_str:00000000000002db .LASF140
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:14     .text.set_fattime:0000000000000000 .LFB5
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:42     .text.set_fattime:0000000000000022 .LFE5
+C:\Users\Jesper\AppData\Local\Temp\cciMYjmJ.s:117    .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS
